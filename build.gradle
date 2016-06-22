@@ -17,6 +17,9 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        flatDir{
+            dirs '../../Utils/app/build/outputs/aar'
+        }
     }
 }
 

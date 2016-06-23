@@ -21,10 +21,6 @@ public class CategoryRepository
     private List<Category> cache = new ArrayList<>();
     private Callback.CategoriesLoaded callback;
 
-    private CategoryRepository()
-    {
-    }
-
     public void loadCategories(Callback.CategoriesLoaded callback)
     {
         if (Utils.hasElements(cache) && callback != null)
@@ -38,7 +34,7 @@ public class CategoryRepository
 
     private void onCategoriesLoaded(List<Category> categories)
     {
-        this.cache = categories;
+        cache = categories;
         if (callback != null)
             callback.onCategoriesLoaded(categories);
     }

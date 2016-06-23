@@ -2,12 +2,16 @@ package com.jueggs.podcaster.model;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class Channel
 {
     private String channelId;
     private String title;
     private String channelTitle;
+    private String subtitle;
+    private String feedLink;
     private String description;
     private String podLink;
     private String image;
@@ -17,4 +21,5 @@ public class Channel
     private String votes;
     private String subscribers;
     private String date;
+    private List<Episode> episodes;
 }

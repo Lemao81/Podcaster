@@ -5,8 +5,8 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class CategoryRoot
+public class ChannelRoot
 {
-    private List<Head> head;
-    private List<Channel> channels;
+    List<Head> head;
+    Channel channel;
 }

@@ -2,48 +2,47 @@ package com.jueggs.podcaster.data.repo;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import android.util.SparseArray;
 import com.jueggs.podcaster.data.PodcastContract;
 import com.jueggs.podcaster.data.PodcastService;
-import com.jueggs.podcaster.model.ChannelArrayRoot;
 import com.jueggs.podcaster.model.Channel;
+import com.jueggs.podcaster.model.ChannelArrayRoot;
+import com.jueggs.utils.Utils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.jueggs.utils.Utils.*;
 
-public class ChannelRepository
+public class ChartRepository
 {
-    private static ChannelRepository instance;
+    private static ChartRepository instance;
 
-    private SparseArray<List<Channel>> cache = new SparseArray<>();
+    private List<Channel> cache = new ArrayList<>();
     private Callback.ChannelsLoaded callback;
-    private int id;
 
-    public void loadChannels(int id, String language, Callback.ChannelsLoaded callback)
+    public void loadCharts(String language, Callback.ChannelsLoaded callback)
     {
-        if (hasElements(cache.get(id)) && callback != null)
-            callback.onChannelsLoaded(cache.get(id));
+        if (hasElements(cache) && callback != null)
+            callback.onChannelsLoaded(cache);
         else
         {
             this.callback = callback;
-            this.id = id;
-            new FetchService(this::onChannelsLoaded).execute(id, language);
+            new FetchService(this::onChannelsLoaded).execute(language);
         }
     }
 
     private void onChannelsLoaded(List<Channel> channels)
     {
-        cache.put(id, channels);
+        cache = channels;
         if (callback != null)
             callback.onChannelsLoaded(channels);
     }
 
-    public static ChannelRepository getInstance()
+    public static ChartRepository getInstance()
     {
         if (instance == null)
-            instance = new ChannelRepository();
+            instance = new ChartRepository();
         return instance;
     }
 
@@ -65,7 +64,7 @@ public class ChannelRepository
 
             try
             {
-                ChannelArrayRoot root = service.loadCategory((int) params[0], (String) params[1]).execute().body();
+                ChannelArrayRoot root = service.loadCharts((String) params[0]).execute().body();
                 return root.getChannels();
             }
             catch (IOException e)

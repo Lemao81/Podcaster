@@ -12,5 +12,6 @@
     <dimen name="space_xlarge">24dp</dimen>
     <dimen name="space_xxlarge">48dp</dimen>
 
+    <dimen name="channel_image_size">60dp</dimen>
     <dimen name="charts_image_size">80dp</dimen>
 </resources>

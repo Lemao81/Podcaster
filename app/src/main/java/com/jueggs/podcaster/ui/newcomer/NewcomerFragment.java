@@ -1,20 +1,85 @@
 package com.jueggs.podcaster.ui.newcomer;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioGroup;
+import android.widget.ToggleButton;
+import butterknife.Bind;
 import butterknife.ButterKnife;
+import com.jueggs.decorator.DividerDecoration;
+import com.jueggs.podcaster.App;
 import com.jueggs.podcaster.R;
+import com.jueggs.podcaster.data.PodcastContract;
+import com.jueggs.podcaster.data.repo.NewcomerRepository;
+import com.jueggs.podcaster.model.Channel;
+import com.jueggs.podcaster.ui.charts.ChartsAdapter;
+
+import java.util.List;
+
+import static com.jueggs.podcaster.data.PodcastContract.*;
 
 public class NewcomerFragment extends Fragment
 {
+    @Bind(R.id.toggleAudio) ToggleButton toggleAudio;
+    @Bind(R.id.toggleVideo) ToggleButton toggleVideo;
+    @Bind(R.id.recycler) RecyclerView recycler;
+    @Bind(R.id.radio) RadioGroup radio;
+
+    private NewcomerRepository repository = NewcomerRepository.getInstance();
+    private NewcomerAdapter adapter;
+    boolean audioChecked;
+    boolean videoChecked;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_newcomer, container, false);
         ButterKnife.bind(this, view);
+
+        recycler.setAdapter(adapter = new NewcomerAdapter(getContext()));
+        recycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        recycler.addItemDecoration(new DividerDecoration(getContext(), R.drawable.divider));
+
+        toggleAudio.setOnClickListener(this::onClick);
+        toggleVideo.setOnClickListener(this::onClick);
+
+        radio.setOnCheckedChangeListener(this::onRadioChanged);
+
         return view;
+    }
+
+    private void onRadioChanged(RadioGroup radio, int viewId)
+    {
+        for (int i = 0; i < radio.getChildCount(); i++)
+        {
+            ToggleButton button = (ToggleButton) radio.getChildAt(i);
+            button.setChecked(button.getId() == viewId);
+        }
+    }
+
+    private void onClick(View view)
+    {
+        radio.check(view.getId());
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
+
+        repository.loadNewcomer(App.LANGUAGE, CHANNEL_TYPE_AUDIO, this::onNewcomerLoaded);
+        toggleAudio.setChecked(true);
+        audioChecked = true;
+    }
+
+    private void onNewcomerLoaded(List<Channel> channels)
+    {
+        adapter.setChannels(channels);
     }
 }

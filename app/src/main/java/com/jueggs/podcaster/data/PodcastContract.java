@@ -1,6 +1,7 @@
 package com.jueggs.podcaster.data;
 
 import android.net.Uri;
+import android.util.SparseArray;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -22,8 +23,19 @@ public class PodcastContract
     public static final String LANG_DE = "de";
     public static final String LANG_EN = "en";
 
-    public static final String CHANNEL_TYPE_AUDIO = "1";
-    public static final String CHANNEL_TYPE_VIDEO = "2";
+    public static final String CHANNEL_TYPE_AUDIO_STRING = "1";
+    public static final String CHANNEL_TYPE_VIDEO_STRING = "2";
+    public static final int CHANNEL_TYPE_AUDIO = 1;
+    public static final int CHANNEL_TYPE_VIDEO = 2;
+    public static final SparseArray<String> CHANNEL_TYPES = new SparseArray<>(2);
+
+    public static final String DATE_PATTERN = "yyyy-MM-dd hh:mm:ss";
+
+    static
+    {
+        CHANNEL_TYPES.put(CHANNEL_TYPE_AUDIO, CHANNEL_TYPE_AUDIO_STRING);
+        CHANNEL_TYPES.put(CHANNEL_TYPE_VIDEO, CHANNEL_TYPE_VIDEO_STRING);
+    }
 
     public static Uri createCategoriesUri(String language)
     {

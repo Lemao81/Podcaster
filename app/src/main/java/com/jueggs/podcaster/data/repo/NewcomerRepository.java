@@ -2,6 +2,7 @@ package com.jueggs.podcaster.data.repo;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.util.SparseArray;
 import com.jueggs.podcaster.data.PodcastContract;
 import com.jueggs.podcaster.data.PodcastService;
 import com.jueggs.podcaster.model.Channel;
@@ -11,29 +12,32 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.jueggs.podcaster.data.PodcastContract.*;
 import static com.jueggs.utils.Utils.hasElements;
 
 public class NewcomerRepository
 {
     private static NewcomerRepository instance;
 
-    private List<Channel> cache;
+    private SparseArray<List<Channel>> cache = new SparseArray<>(CHANNEL_TYPES.size());
     private Callback.ChannelsLoaded callback;
+    private int type;
 
-    public void loadNewcomer(String language, Callback.ChannelsLoaded callback)
+    public void loadNewcomer(String language, int type, Callback.ChannelsLoaded callback)
     {
-        if (hasElements(cache) && callback != null)
-            callback.onChannelsLoaded(cache);
+        if (hasElements(cache.get(type)) && callback != null)
+            callback.onChannelsLoaded(cache.get(type));
         else
         {
             this.callback = callback;
-            new FetchService(this::onChannelsLoaded).execute(language);
+            this.type = type;
+            new FetchService(this::onChannelsLoaded).execute(language, CHANNEL_TYPES.get(type));
         }
     }
 
     private void onChannelsLoaded(List<Channel> channels)
     {
-        cache = channels;
+        cache.put(type, channels);
         if (callback != null)
             callback.onChannelsLoaded(channels);
     }
@@ -59,11 +63,11 @@ public class NewcomerRepository
         @Override
         protected List<Channel> doInBackground(Object... params)
         {
-            PodcastService service = PodcastContract.createPodcastService();
+            PodcastService service = createPodcastService();
 
             try
             {
-                ChannelArrayRoot root = service.loadNewcomer((String) params[0]).execute().body();
+                ChannelArrayRoot root = service.loadNewcomer((String) params[0], (String) params[1]).execute().body();
                 return root.getChannels();
             }
             catch (IOException e)

@@ -12,7 +12,14 @@
         <item quantity="one"><xliff:g id="count_subcategories_one">(%d subcategory)</xliff:g></item>
         <item quantity="other"><xliff:g id="count_subcategories_other">(%d subcategories)</xliff:g></item>
     </plurals>
+    <plurals name="count_subscribers_format">
+        <item quantity="one"><xliff:g id="count_subscribers_one">%d subscriber</xliff:g></item>
+        <item quantity="other"><xliff:g id="count_subscribers_other">%d subscribers</xliff:g></item>
+    </plurals>
 
-    <string name="charts_title_audio">Audio</string>
-    <string name="charts_title_video">Video</string>
+    <string name="title_audio">Audio</string>
+    <string name="title_video">Video</string>
+
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
 </resources>

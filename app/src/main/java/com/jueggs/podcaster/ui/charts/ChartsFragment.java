@@ -13,7 +13,6 @@ import butterknife.ButterKnife;
 import com.jueggs.decorator.DividerDecoration;
 import com.jueggs.podcaster.App;
 import com.jueggs.podcaster.R;
-import com.jueggs.podcaster.data.PodcastContract;
 import com.jueggs.podcaster.data.repo.ChartRepository;
 import com.jueggs.podcaster.model.Channel;
 
@@ -65,9 +64,9 @@ public class ChartsFragment extends Fragment
 
             for (Channel channel : channels)
             {
-                if (channel.getChannelType().equals(CHANNEL_TYPE_AUDIO))
+                if (channel.getChannelType().equals(CHANNEL_TYPE_AUDIO_STRING))
                     audios.add(channel);
-                else if (channel.getChannelType().equals(CHANNEL_TYPE_VIDEO))
+                else if (channel.getChannelType().equals(CHANNEL_TYPE_VIDEO_STRING))
                     videos.add(channel);
             }
             audioAdapter.setChannels(audios);

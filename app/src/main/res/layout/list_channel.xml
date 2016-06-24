@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="@dimen/space_normal">
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="@dimen/channel_image_size"
+        android:layout_height="@dimen/channel_image_size"
+        android:layout_gravity="center"
+        android:layout_marginEnd="@dimen/space_normal"
+        android:layout_marginRight="@dimen/space_normal"
+        tools:src="@drawable/channel_pic" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/space_normal"
+        android:layout_marginRight="@dimen/space_normal"
+        android:layout_weight="3"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/space_small"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold"
+            tools:text="Hack Your Business" />
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="3"
+            tools:text="Egal ob Designer, Entwickler, Onlineshop-Betreiber, Blogger oder Podcaster, als Webworker warten viele Herausforderungen auf dich. Erfahre, wie du die für dich passende Strategie entwickelst und die richtige Technik für dich und dein Projekt findest. Keine unrealistischen Versprechen, keine vermeintlich ultimative Lösung, sondern Informationen, mit denen du selber aktiv werden und dein Business voranbringen" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/space_small"
+            tools:text="5.8" />
+
+        <TextView
+            android:id="@+id/subscribers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/space_small"
+            android:ellipsize="middle"
+            android:maxLines="1"
+            tools:text="456 Abonnenten" />
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="2"
+            tools:text="Heute 17:39 Uhr" />
+
+    </LinearLayout>
+
+</LinearLayout>

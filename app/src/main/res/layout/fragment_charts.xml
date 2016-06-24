@@ -16,7 +16,7 @@
             android:layout_height="?android:listPreferredItemHeight"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/charts_title_audio"
+            android:text="@string/title_audio"
             android:textAppearance="?android:attr/textAppearanceLarge"
             tools:text="Audio" />
 
@@ -25,7 +25,7 @@
             android:layout_height="?android:listPreferredItemHeight"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/charts_title_video"
+            android:text="@string/title_video"
             android:textAppearance="?android:attr/textAppearanceLarge"
             tools:text="Video" />
 

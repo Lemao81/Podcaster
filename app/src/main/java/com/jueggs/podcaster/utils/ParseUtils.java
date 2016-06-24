@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import static com.jueggs.podcaster.data.PodcastContract.*;
@@ -35,10 +36,11 @@ public class ParseUtils
     private static List<Category> parseCategories(JSONObject categories) throws JSONException
     {
         List<Category> list = new ArrayList<>();
+        Iterator<String> iterator = categories.keys();
 
-        while (categories.keys().hasNext())
+        while (iterator.hasNext())
         {
-            String index = categories.keys().next();
+            String index = iterator.next();
             Category category = new Category();
 
             JSONObject json = categories.getJSONObject(index);

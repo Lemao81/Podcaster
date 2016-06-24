@@ -6,22 +6,21 @@ import com.jueggs.podcaster.data.PodcastContract;
 import com.jueggs.podcaster.data.PodcastService;
 import com.jueggs.podcaster.model.Channel;
 import com.jueggs.podcaster.model.ChannelArrayRoot;
-import com.jueggs.utils.Utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.jueggs.utils.Utils.*;
+import static com.jueggs.utils.Utils.hasElements;
 
-public class ChartRepository
+public class NewcomerRepository
 {
-    private static ChartRepository instance;
+    private static NewcomerRepository instance;
 
     private List<Channel> cache;
     private Callback.ChannelsLoaded callback;
 
-    public void loadCharts(String language, Callback.ChannelsLoaded callback)
+    public void loadNewcomer(String language, Callback.ChannelsLoaded callback)
     {
         if (hasElements(cache) && callback != null)
             callback.onChannelsLoaded(cache);
@@ -39,10 +38,10 @@ public class ChartRepository
             callback.onChannelsLoaded(channels);
     }
 
-    public static ChartRepository getInstance()
+    public static NewcomerRepository getInstance()
     {
         if (instance == null)
-            instance = new ChartRepository();
+            instance = new NewcomerRepository();
         return instance;
     }
 
@@ -64,7 +63,7 @@ public class ChartRepository
 
             try
             {
-                ChannelArrayRoot root = service.loadCharts((String) params[0]).execute().body();
+                ChannelArrayRoot root = service.loadNewcomer((String) params[0]).execute().body();
                 return root.getChannels();
             }
             catch (IOException e)

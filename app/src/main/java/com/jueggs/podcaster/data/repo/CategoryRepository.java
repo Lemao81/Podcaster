@@ -18,17 +18,17 @@ public class CategoryRepository
 {
     private static CategoryRepository instance;
 
-    private List<Category> cache = new ArrayList<>();
+    private List<Category> cache;
     private Callback.CategoriesLoaded callback;
 
-    public void loadCategories(Callback.CategoriesLoaded callback)
+    public void loadCategories(String language, Callback.CategoriesLoaded callback)
     {
         if (Utils.hasElements(cache) && callback != null)
             callback.onCategoriesLoaded(cache);
         else
         {
             this.callback = callback;
-            new FetchService(this::onCategoriesLoaded).execute();
+            new FetchService(this::onCategoriesLoaded).execute(language);
         }
     }
 
@@ -46,7 +46,7 @@ public class CategoryRepository
         return instance;
     }
 
-    private class FetchService extends AsyncTask<Void, Void, List<Category>>
+    private class FetchService extends AsyncTask<String, Void, List<Category>>
     {
         private Callback.CategoriesLoaded callback;
 
@@ -56,9 +56,9 @@ public class CategoryRepository
         }
 
         @Override
-        protected List<Category> doInBackground(Void... voids)
+        protected List<Category> doInBackground(String... param)
         {
-            String jsonString = getJsonDataStetho(createCategoriesUri());
+            String jsonString = getJsonDataStetho(createCategoriesUri(param[0]));
             return parseCategories(jsonString);
         }
 

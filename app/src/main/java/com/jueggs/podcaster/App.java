@@ -2,10 +2,12 @@ package com.jueggs.podcaster;
 
 import android.app.Application;
 import com.facebook.stetho.Stetho;
+import com.jueggs.podcaster.data.PodcastContract;
 
 public class App extends Application
 {
     private static App instance;
+    public static String LANGUAGE = PodcastContract.LANG_DE;
 
     private boolean twoPane;
 

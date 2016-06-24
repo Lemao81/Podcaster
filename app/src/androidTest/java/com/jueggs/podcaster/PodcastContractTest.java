@@ -13,7 +13,7 @@ public class PodcastContractTest
     public void createCategoriesUri()
     {
         //Act
-        String actual = PodcastContract.createCategoriesUri().toString();
+        String actual = PodcastContract.createCategoriesUri(App.LANGUAGE).toString();
 
         //Assert
         assertThat(actual, is(equalTo("https://api.podcast.de/categories.json")));

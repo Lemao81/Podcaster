@@ -22,6 +22,9 @@ public class PodcastContract
     public static final String LANG_DE = "de";
     public static final String LANG_EN = "en";
 
+    public static final String CHANNEL_TYPE_AUDIO = "1";
+    public static final String CHANNEL_TYPE_VIDEO = "2";
+
     public static Uri createCategoriesUri(String language)
     {
         return Uri.parse(BASE_URI).buildUpon().appendPath(PATH_CATEGORIES).appendQueryParameter(QRY_LANG, language).build();

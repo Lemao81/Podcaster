@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import com.jueggs.podcaster.App;
 import com.jueggs.podcaster.R;
 import com.jueggs.podcaster.data.PodcastContract;
 import com.jueggs.podcaster.data.repo.CategoryRepository;
@@ -41,7 +42,7 @@ public class CategoryFragment extends Fragment
     {
         super.onViewCreated(view, savedInstanceState);
         //TODO language from settings
-        repository.loadCategories(PodcastContract.LANG_EN, this::onCategoriesLoaded);
+        repository.loadCategories(App.LANGUAGE, this::onCategoriesLoaded);
     }
 
     private void onCategoriesLoaded(List<Category> categories)

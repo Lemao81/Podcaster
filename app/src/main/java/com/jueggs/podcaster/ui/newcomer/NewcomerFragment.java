@@ -15,10 +15,8 @@ import butterknife.ButterKnife;
 import com.jueggs.decorator.DividerDecoration;
 import com.jueggs.podcaster.App;
 import com.jueggs.podcaster.R;
-import com.jueggs.podcaster.data.PodcastContract;
 import com.jueggs.podcaster.data.repo.NewcomerRepository;
 import com.jueggs.podcaster.model.Channel;
-import com.jueggs.podcaster.ui.charts.ChartsAdapter;
 
 import java.util.List;
 
@@ -33,8 +31,6 @@ public class NewcomerFragment extends Fragment
 
     private NewcomerRepository repository = NewcomerRepository.getInstance();
     private NewcomerAdapter adapter;
-    boolean audioChecked;
-    boolean videoChecked;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -49,12 +45,12 @@ public class NewcomerFragment extends Fragment
         toggleAudio.setOnClickListener(this::onClick);
         toggleVideo.setOnClickListener(this::onClick);
 
-        radio.setOnCheckedChangeListener(this::onRadioChanged);
+        radio.setOnCheckedChangeListener(this::onRadioCheckedChanged);
 
         return view;
     }
 
-    private void onRadioChanged(RadioGroup radio, int viewId)
+    private void onRadioCheckedChanged(RadioGroup radio, int viewId)
     {
         for (int i = 0; i < radio.getChildCount(); i++)
         {
@@ -66,6 +62,11 @@ public class NewcomerFragment extends Fragment
     private void onClick(View view)
     {
         radio.check(view.getId());
+
+        if (view.getId() == R.id.toggleAudio)
+            repository.loadNewcomer(App.LANGUAGE, CHANNEL_TYPE_AUDIO, this::onNewcomerLoaded);
+        else
+            repository.loadNewcomer(App.LANGUAGE, CHANNEL_TYPE_VIDEO, this::onNewcomerLoaded);
     }
 
     @Override
@@ -74,8 +75,7 @@ public class NewcomerFragment extends Fragment
         super.onViewCreated(view, savedInstanceState);
 
         repository.loadNewcomer(App.LANGUAGE, CHANNEL_TYPE_AUDIO, this::onNewcomerLoaded);
-        toggleAudio.setChecked(true);
-        audioChecked = true;
+        radio.check(toggleAudio.getId());
     }
 
     private void onNewcomerLoaded(List<Channel> channels)

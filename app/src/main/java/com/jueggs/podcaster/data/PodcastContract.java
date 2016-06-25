@@ -2,9 +2,11 @@ package com.jueggs.podcaster.data;
 
 import android.net.Uri;
 import android.util.SparseArray;
+import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -25,6 +27,8 @@ public class PodcastContract
 
     public static final String CHANNEL_TYPE_AUDIO_STRING = "1";
     public static final String CHANNEL_TYPE_VIDEO_STRING = "2";
+    public static final String TYPE_AUDIO = "audio";
+    public static final String TYPE_VIDEO = "video";
     public static final int CHANNEL_TYPE_AUDIO = 1;
     public static final int CHANNEL_TYPE_VIDEO = 2;
     public static final SparseArray<String> CHANNEL_TYPES = new SparseArray<>(2);
@@ -33,8 +37,8 @@ public class PodcastContract
 
     static
     {
-        CHANNEL_TYPES.put(CHANNEL_TYPE_AUDIO, CHANNEL_TYPE_AUDIO_STRING);
-        CHANNEL_TYPES.put(CHANNEL_TYPE_VIDEO, CHANNEL_TYPE_VIDEO_STRING);
+        CHANNEL_TYPES.put(CHANNEL_TYPE_AUDIO, TYPE_AUDIO);
+        CHANNEL_TYPES.put(CHANNEL_TYPE_VIDEO, TYPE_VIDEO);
     }
 
     public static Uri createCategoriesUri(String language)
@@ -45,7 +49,8 @@ public class PodcastContract
     public static PodcastService createPodcastService()
     {
         Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(BASE_URI)
+        OkHttpClient client = new OkHttpClient.Builder().addNetworkInterceptor(new StethoInterceptor()).build();
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(BASE_URI).client(client)
                 .addConverterFactory(GsonConverterFactory.create(gson)).build();
         return retrofit.create(PodcastService.class);
     }

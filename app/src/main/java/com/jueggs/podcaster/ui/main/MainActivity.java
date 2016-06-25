@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        if(savedInstanceState==null)
+        if (savedInstanceState == null)
             App.getInstance().setTwoPane(container != null);
 
         if (App.getInstance().isTwoPane())

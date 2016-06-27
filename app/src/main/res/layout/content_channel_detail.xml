@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/space_normal">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="@dimen/image_size_normal"
+            android:layout_height="@dimen/image_size_normal"
+            tools:src="@drawable/channel_pic" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/space_normal"
+            android:layout_marginStart="@dimen/space_normal"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textStyle="bold"
+            tools:text="ARD Radio Tatort Podcast" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_normal"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_play_circle_outline_black_24dp" />
+
+        <ImageButton
+            android:id="@+id/favourize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/space_small"
+            android:layout_marginStart="@dimen/space_small"
+            android:src="@drawable/ic_favorite_border_black_24dp" />
+
+        <ImageButton
+            android:id="@+id/share"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/space_small"
+            android:layout_marginStart="@dimen/space_small"
+            android:src="@drawable/ic_share_black_24dp" />
+
+        <TextView
+            android:id="@+id/rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/space_normal"
+            android:layout_marginStart="@dimen/space_normal"
+            tools:text="4.323" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_normal"
+        tools:text="Beim Audio Podcast 'ARD - Radio Tatort' kommen vor allem Liebhaber spannender Unterhaltung auf ihre Kosten. Gratis und völlig legal gibt es hier Originalhörspiele zum Anhören oder auch als Download im MP3-Format. Jede der in sich abgeschlossenen Folgen des Radio Tatort dauert eine knappe Stunde. Wie man es von der Marke 'Tatort' gewohnt ist, bietet dieser Podcast der ARD Krimis auf hohem Niveau in professioneller Hörspielqualität. Bekannte Synchronsprecher leihen den Figuren ihre Stimme und sorgen so für angenehme Unterhaltung mit Gänsehaut-Feeling beim Radio Tatort. Jeden Monat gibt es bei diesem Podcast einen neuen Fall. Im Archiv finden sich darüber hinaus ausgewählte ältere Folgen der beliebten Hörspielreihe. Der ARD - Radio Tatort ist eine runde Sache für Krimi-Fans!" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_medium"
+        android:text="@string/detail_episode_title"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+</LinearLayout>

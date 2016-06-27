@@ -15,11 +15,13 @@ import com.jueggs.podcaster.App;
 import com.jueggs.podcaster.R;
 import com.jueggs.podcaster.data.repo.ChartRepository;
 import com.jueggs.podcaster.model.Channel;
+import com.jueggs.podcaster.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.jueggs.podcaster.data.PodcastContract.*;
+import static com.jueggs.podcaster.utils.Utils.*;
 
 public class ChartsFragment extends Fragment
 {
@@ -36,13 +38,8 @@ public class ChartsFragment extends Fragment
         View view = inflater.inflate(R.layout.fragment_charts, container, false);
         ButterKnife.bind(this, view);
 
-        recyclerAudio.setAdapter(audioAdapter = new ChartsAdapter(getContext()));
-        recyclerAudio.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerAudio.addItemDecoration(new DividerDecoration(getContext(), R.drawable.divider));
-
-        recyclerVideo.setAdapter(videoAdapter = new ChartsAdapter(getContext()));
-        recyclerVideo.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerVideo.addItemDecoration(new DividerDecoration(getContext(), R.drawable.divider));
+        equipeRecycler(getContext(), recyclerAudio, audioAdapter = new ChartsAdapter(getContext()));
+        equipeRecycler(getContext(), recyclerVideo, videoAdapter = new ChartsAdapter(getContext()));
 
         return view;
     }

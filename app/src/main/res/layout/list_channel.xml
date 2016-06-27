@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/image"
-        android:layout_width="@dimen/channel_image_size"
-        android:layout_height="@dimen/channel_image_size"
+        android:layout_width="@dimen/image_size_small"
+        android:layout_height="@dimen/image_size_small"
         android:layout_gravity="center"
         android:layout_marginEnd="@dimen/space_normal"
         android:layout_marginRight="@dimen/space_normal"
@@ -50,6 +50,15 @@
         android:layout_weight="1"
         android:gravity="center"
         android:orientation="vertical">
+
+        <!--<RatingBar-->
+            <!--android:isIndicator="true"-->
+            <!--android:numStars="5"-->
+            <!--android:stepSize="0.1"-->
+            <!--android:rating="5"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--style="@style/CustomRatingBar"/>-->
 
         <TextView
             android:id="@+id/rating"

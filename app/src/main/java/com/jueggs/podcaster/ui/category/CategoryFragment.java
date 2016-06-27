@@ -1,5 +1,6 @@
 package com.jueggs.podcaster.ui.category;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -21,10 +22,14 @@ import com.jueggs.podcaster.data.repo.CategoryRepository;
 import com.jueggs.podcaster.data.repo.ChannelRepository;
 import com.jueggs.podcaster.model.Category;
 import com.jueggs.podcaster.model.Channel;
+import com.jueggs.podcaster.ui.channeldetail.ChannelDetailActivity;
+import com.jueggs.podcaster.utils.Utils;
 
 import java.util.List;
 
-public class CategoryFragment extends Fragment implements Callback.NavigationLevelChanged
+import static com.jueggs.podcaster.utils.Utils.*;
+
+public class CategoryFragment extends Fragment implements Callback
 {
     @Bind(R.id.root) FrameLayout root;
     @Bind(R.id.recycler) RecyclerView recycler;
@@ -42,9 +47,7 @@ public class CategoryFragment extends Fragment implements Callback.NavigationLev
         View view = inflater.inflate(R.layout.fragment_categories, container, false);
         ButterKnife.bind(this, view);
 
-        recycler.setAdapter(adapter = new CategoryAdapter(getContext(), this));
-        recycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        recycler.addItemDecoration(new DividerDecoration(getContext(), R.drawable.divider));
+        equipeRecycler(getContext(), recycler, adapter = new CategoryAdapter(getContext(), getActivity().getSupportFragmentManager(), this));
 
         fab.setOnClickListener(this::onNavigateBack);
 

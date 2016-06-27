@@ -12,7 +12,7 @@ import com.jueggs.podcaster.R;
 import com.jueggs.podcaster.model.Channel;
 import com.jueggs.podcaster.utils.DateUtils;
 
-public class ChannelViewHolder extends RecyclerView.ViewHolder
+public class ChannelViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
 {
     @Bind(R.id.title) public TextView title;
     @Bind(R.id.image) public ImageView image;
@@ -40,5 +40,11 @@ public class ChannelViewHolder extends RecyclerView.ViewHolder
         date.setText(DateUtils.createDateString(context, channel.getDate()));
 
         Glide.with(context).load(channel.getImage()).placeholder(R.drawable.glide_placeholder).error(R.drawable.glide_error).into(image);
+    }
+
+    @Override
+    public void onClick(View v)
+    {
+
     }
 }

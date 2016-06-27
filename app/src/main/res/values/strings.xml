@@ -16,10 +16,17 @@
         <item quantity="one"><xliff:g id="count_subscribers_one">%d subscriber</xliff:g></item>
         <item quantity="other"><xliff:g id="count_subscribers_other">%d subscribers</xliff:g></item>
     </plurals>
+    <plurals name="count_votes_format">
+        <item quantity="one"><xliff:g id="count_votes_one">(%d vote)</xliff:g></item>
+        <item quantity="other"><xliff:g id="count_votes_other">(%d votes)</xliff:g></item>
+    </plurals>
 
     <string name="title_audio">Audio</string>
     <string name="title_video">Video</string>
 
     <string name="today">Today</string>
     <string name="yesterday">Yesterday</string>
+    <string name="title_activity_channel_detail">ChannelDetailActivity</string>
+
+    <string name="detail_episode_title">Episodes of the podcast:</string>
 </resources>

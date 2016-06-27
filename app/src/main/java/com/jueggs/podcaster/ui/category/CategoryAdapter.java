@@ -2,23 +2,27 @@ package com.jueggs.podcaster.ui.category;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import com.jueggs.podcaster.App;
+import com.bumptech.glide.Glide;
 import com.jueggs.podcaster.R;
 import com.jueggs.podcaster.model.Category;
 import com.jueggs.podcaster.model.Channel;
-import com.jueggs.podcaster.ui.viewholder.ChannelViewHolder;
+import com.jueggs.podcaster.utils.DateUtils;
+import com.jueggs.podcaster.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.jueggs.podcaster.utils.Utils.*;
 import static com.jueggs.utils.Utils.*;
 
 public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
@@ -30,15 +34,17 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private List<Channel> channels = new ArrayList<>();
 
     private Context context;
-    private Callback.NavigationLevelChanged navigationListener;
+    private FragmentManager fragmentManager;
+    private Callback callback;
     private int level;
     private LinkedList<List<Category>> parentCategories = new LinkedList<>();
     private LinkedList<List<Channel>> parentChannels = new LinkedList<>();
 
-    public CategoryAdapter(Context context, Callback.NavigationLevelChanged navigationListener)
+    public CategoryAdapter(Context context, FragmentManager fragmentManager, Callback callback)
     {
         this.context = context;
-        this.navigationListener = navigationListener;
+        this.fragmentManager = fragmentManager;
+        this.callback = callback;
     }
 
     @Override
@@ -83,6 +89,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ChannelViewHolder holder = (ChannelViewHolder) vh;
             Channel channel = channels.get(position - categories.size());
             holder.bindView(context, channel);
+            holder.itemView.setOnClickListener(holder);
         }
     }
 
@@ -115,7 +122,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public void navigateBack()
     {
-        navigationListener.onNavigationLevelChanged(--level);
+        callback.onNavigationLevelChanged(--level);
         setCategories(parentCategories.pollLast());
         setChannels(parentChannels.pollLast());
     }
@@ -138,8 +145,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             int position = getAdapterPosition();
             Category category = categories.get(position);
 
-            navigationListener.onCategorySelected(category);
-            navigationListener.onNavigationLevelChanged(++level);
+            callback.onCategorySelected(category);
+            callback.onNavigationLevelChanged(++level);
             parentCategories.add(categories);
             parentChannels.add(channels);
 
@@ -147,6 +154,43 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 setCategories(category.getSubCategories());
             else
                 setCategories(new ArrayList<>());
+        }
+    }
+
+    class ChannelViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
+    {
+        @Bind(R.id.title) public TextView title;
+        @Bind(R.id.image) public ImageView image;
+        @Bind(R.id.rating) public TextView rating;
+        @Bind(R.id.date) public TextView date;
+        @Bind(R.id.subscribers) public TextView subscribers;
+        @Bind(R.id.description) public TextView description;
+
+        public ChannelViewHolder(View itemView)
+        {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+
+        public void bindView(Context context, Channel channel)
+        {
+            title.setText(channel.getTitle());
+            description.setText(channel.getDescription());
+            rating.setText(channel.getRating());
+
+            int subscriberCount = Integer.parseInt(channel.getSubscribers());
+            String text = context.getResources().getQuantityString(R.plurals.count_subscribers_format, subscriberCount, subscriberCount);
+            subscribers.setText(text);
+
+            date.setText(DateUtils.createDateString(context, channel.getDate()));
+
+            Glide.with(context).load(channel.getImage()).placeholder(R.drawable.glide_placeholder).error(R.drawable.glide_error).into(image);
+        }
+
+        @Override
+        public void onClick(View v)
+        {
+            showChannelDetails(context, fragmentManager, channels.get(getAdapterPosition() - categories.size()));
         }
     }
 }

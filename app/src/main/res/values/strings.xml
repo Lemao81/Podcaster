@@ -29,4 +29,12 @@
     <string name="title_activity_channel_detail">ChannelDetailActivity</string>
 
     <string name="detail_episode_title">Episodes of the podcast:</string>
+
+    <string name="error_streaming_failed">Could not stream the given url</string>
+    <string name="error_media_player">An error occurred at the media player </string>
+    <string name="error_audio_focus">Could not retrieve audio focus - something else occupying audio?</string>
+
+    <string name="notification_ticker_text">ticker</string>
+    <string name="notification_title">podcast.de</string>
+    <string name="notification_text">text</string>
 </resources>

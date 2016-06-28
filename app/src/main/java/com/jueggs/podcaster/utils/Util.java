@@ -13,7 +13,7 @@ import com.jueggs.podcaster.ui.category.CategoryAdapter;
 import com.jueggs.podcaster.ui.channeldetail.ChannelDetailActivity;
 import com.jueggs.podcaster.ui.channeldetail.ChannelDetailFragment;
 
-public class Utils
+public class Util
 {
     public static void equipeRecycler(Context context, RecyclerView recycler, RecyclerView.Adapter<?> adapter)
     {

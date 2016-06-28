@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer name="master_fraction">5</integer>
-    <integer name="detail_fraction">7</integer>
+    <integer name="weight_master">5</integer>
+    <integer name="weight_detail">7</integer>
+    <integer name="episode_weight_first">5</integer>
+    <integer name="episode_weight_second">2</integer>
 </resources>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="episode_weight_first">4</integer>
+    <integer name="episode_weight_second">1</integer>
+</resources>

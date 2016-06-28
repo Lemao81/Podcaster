@@ -1,11 +1,9 @@
 package com.jueggs.podcaster.ui.category;
 
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.transition.Fade;
 import android.transition.TransitionManager;
@@ -15,25 +13,25 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import com.jueggs.decorator.DividerDecoration;
 import com.jueggs.podcaster.App;
 import com.jueggs.podcaster.R;
 import com.jueggs.podcaster.data.repo.CategoryRepository;
 import com.jueggs.podcaster.data.repo.ChannelRepository;
 import com.jueggs.podcaster.model.Category;
 import com.jueggs.podcaster.model.Channel;
-import com.jueggs.podcaster.ui.channeldetail.ChannelDetailActivity;
-import com.jueggs.podcaster.utils.Utils;
+import com.jueggs.utils.Utils;
 
 import java.util.List;
 
-import static com.jueggs.podcaster.utils.Utils.*;
+import static com.jueggs.podcaster.utils.Util.*;
+import static com.jueggs.utils.Utils.*;
 
 public class CategoryFragment extends Fragment implements Callback
 {
     @Bind(R.id.root) FrameLayout root;
     @Bind(R.id.recycler) RecyclerView recycler;
     @Bind(R.id.fab) FloatingActionButton fab;
+    @Bind(R.id.scroll) FloatingActionButton scroll;
 
     private CategoryRepository categoryRepository = CategoryRepository.getInstance();
     private ChannelRepository channelRepository = ChannelRepository.getInstance();
@@ -50,6 +48,7 @@ public class CategoryFragment extends Fragment implements Callback
         equipeRecycler(getContext(), recycler, adapter = new CategoryAdapter(getContext(), getActivity().getSupportFragmentManager(), this));
 
         fab.setOnClickListener(this::onNavigateBack);
+        scroll.setOnClickListener(this::onScroll);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
         {
@@ -65,6 +64,12 @@ public class CategoryFragment extends Fragment implements Callback
         adapter.navigateBack();
     }
 
+    private void onScroll(View view)
+    {
+        if (hasElements(adapter.getChannels()))
+            recycler.smoothScrollToPosition(adapter.getCategories().size());
+    }
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState)
     {
@@ -76,13 +81,21 @@ public class CategoryFragment extends Fragment implements Callback
     public void onNavigationLevelChanged(int level)
     {
         showFab(level != 0);
+        showScroll(hasElements(adapter.getChannels()));
     }
 
     private void showFab(boolean show)
     {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
             TransitionManager.beginDelayedTransition(root, show ? fadeIn : fadeOut);
-        fab.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
+        fab.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+    private void showScroll(boolean show)
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+            TransitionManager.beginDelayedTransition(root, show ? fadeIn : fadeOut);
+        scroll.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -99,5 +112,6 @@ public class CategoryFragment extends Fragment implements Callback
     private void onChannelsLoaded(List<Channel> channels)
     {
         adapter.setChannels(channels);
+        showScroll(hasElements(channels));
     }
 }

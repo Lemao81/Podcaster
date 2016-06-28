@@ -12,14 +12,14 @@
         android:orientation="horizontal">
 
         <fragment
-            android:layout_weight="@integer/master_fraction"
+            android:layout_weight="@integer/weight_master"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:name="com.jueggs.podcaster.ui.main.MainFragment"/>
 
         <FrameLayout
             android:id="@+id/container"
-            android:layout_weight="@integer/detail_fraction"
+            android:layout_weight="@integer/weight_detail"
             android:layout_width="0dp"
             android:layout_height="match_parent"/>
 

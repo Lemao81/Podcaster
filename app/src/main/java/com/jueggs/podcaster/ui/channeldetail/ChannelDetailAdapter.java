@@ -1,7 +1,10 @@
 package com.jueggs.podcaster.ui.channeldetail;
 
 import android.content.Context;
+import android.media.MediaPlayer;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,17 +24,22 @@ import java.util.List;
 
 public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 {
+    public static final String TAG = ChannelDetailAdapter.class.getSimpleName();
     public static final int VIEWTYPE_DETAILS = 1;
     public static final int VIEWTYPE_EPISODE = 2;
 
     private List<Episode> episodes = new ArrayList<>();
     private Channel channel;
     private Context context;
+    private Playback playback;
+    private boolean started;
+    private boolean playing;
 
-    public ChannelDetailAdapter(Context context, Channel channel)
+    public ChannelDetailAdapter(Context context, Channel channel, Playback playback)
     {
         this.context = context;
         this.channel = channel;
+        this.playback = playback;
     }
 
     @Override
@@ -42,7 +50,7 @@ public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
         switch (viewType)
         {
             case VIEWTYPE_DETAILS:
-                view = LayoutInflater.from(context).inflate(R.layout.content_channel_detail, parent, false);
+                view = LayoutInflater.from(context).inflate(R.layout.list_channel_detail, parent, false);
                 return new DetailsViewHolder(view);
             default:
                 view = LayoutInflater.from(context).inflate(R.layout.list_episode, parent, false);
@@ -55,7 +63,18 @@ public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
     {
         Episode episode = episodes.get(position);
 
-        if (vh instanceof EpisodeViewHolder)
+        if (vh instanceof DetailsViewHolder)
+        {
+            DetailsViewHolder holder = (DetailsViewHolder) vh;
+
+            holder.title.setText(channel.getTitle());
+            holder.rating.setText(channel.getRating());
+            holder.description.setText(channel.getDescription());
+            holder.stop.setOnClickListener(this::onStop);
+            Glide.with(context).load(channel.getImage()).placeholder(R.drawable.glide_placeholder)
+                    .error(R.drawable.glide_error).into(holder.image);
+        }
+        else if (vh instanceof EpisodeViewHolder)
         {
             EpisodeViewHolder holder = (EpisodeViewHolder) vh;
 
@@ -66,18 +85,46 @@ public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
             String text = context.getResources().getQuantityString(R.plurals.count_votes_format, count, count);
             holder.votes.setText(text);
             holder.date.setText(DateUtils.createDateString(context, episode.getDate()));
+            holder.play.setTag(episode.getMediaLink());
+            holder.play.setOnClickListener(this::onPlayPauseEpisode);
         }
-        else if (vh instanceof DetailsViewHolder)
+    }
+
+    private void onPlayPauseEpisode(View view)
+    {
+        if (!started)
         {
-            DetailsViewHolder holder = (DetailsViewHolder) vh;
-
-            holder.title.setText(channel.getTitle());
-            holder.rating.setText(channel.getRating());
-            holder.description.setText(channel.getDescription());
-            Glide.with(context).load(channel.getImage()).placeholder(R.drawable.glide_placeholder)
-                    .error(R.drawable.glide_error).into(holder.image);
+            if (!TextUtils.isEmpty((String) view.getTag()))
+            {
+                playback.onStartEpisode((String) view.getTag());
+                started = true;
+                playing = true;
+                showPlaySymbol((ImageButton) view, false);
+            }
         }
+        else if (started && playing)
+        {
+            playback.onPauseEpisode();
+            playing = false;
+            showPlaySymbol((ImageButton) view, true);
+        }
+        else if (started && !playing)
+        {
+            playback.onResumeEpisode();
+            playing = true;
+            showPlaySymbol((ImageButton) view, false);
+        }
+    }
 
+    private void showPlaySymbol(ImageButton button, boolean play)
+    {
+        button.setImageDrawable(play ? ContextCompat.getDrawable(context, R.drawable.ic_play_circle_outline_black_24dp) :
+                ContextCompat.getDrawable(context, R.drawable.ic_pause_circle_outline_black_24dp));
+    }
+
+    private void onStop(View view)
+    {
+        playback.onStopEpisode();
     }
 
     @Override
@@ -104,6 +151,24 @@ public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
     }
 
+    class DetailsViewHolder extends RecyclerView.ViewHolder
+    {
+        @Bind(R.id.play) ImageButton play;
+        @Bind(R.id.stop) ImageButton stop;
+        @Bind(R.id.favourize) ImageButton favourize;
+        @Bind(R.id.share) ImageButton share;
+        @Bind(R.id.image) ImageView image;
+        @Bind(R.id.title) TextView title;
+        @Bind(R.id.rating) TextView rating;
+        @Bind(R.id.description) TextView description;
+
+        public DetailsViewHolder(View itemView)
+        {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+    }
+
     class EpisodeViewHolder extends RecyclerView.ViewHolder
     {
         @Bind(R.id.title) TextView title;
@@ -111,25 +176,9 @@ public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
         @Bind(R.id.rating) TextView rating;
         @Bind(R.id.votes) TextView votes;
         @Bind(R.id.date) TextView date;
+        @Bind(R.id.play) ImageButton play;
 
         public EpisodeViewHolder(View itemView)
-        {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
-    }
-
-    class DetailsViewHolder extends RecyclerView.ViewHolder
-    {
-        @Bind(R.id.image) ImageView image;
-        @Bind(R.id.title) TextView title;
-        @Bind(R.id.play) ImageButton play;
-        @Bind(R.id.favourize) ImageButton favourize;
-        @Bind(R.id.share) ImageButton share;
-        @Bind(R.id.rating) TextView rating;
-        @Bind(R.id.description) TextView description;
-
-        public DetailsViewHolder(View itemView)
         {
             super(itemView);
             ButterKnife.bind(this, itemView);

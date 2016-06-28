@@ -16,13 +16,13 @@ import com.jueggs.podcaster.R;
 import com.jueggs.podcaster.model.Category;
 import com.jueggs.podcaster.model.Channel;
 import com.jueggs.podcaster.utils.DateUtils;
-import com.jueggs.podcaster.utils.Utils;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.jueggs.podcaster.utils.Utils.*;
+import static com.jueggs.podcaster.utils.Util.*;
 import static com.jueggs.utils.Utils.*;
 
 public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
@@ -30,7 +30,9 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public static final int VIEWTYPE_CATEGORY = 1;
     public static final int VIEWTYPE_CHANNEL = 2;
 
+    @Getter
     private List<Category> categories = new ArrayList<>();
+    @Getter
     private List<Channel> channels = new ArrayList<>();
 
     private Context context;
@@ -122,9 +124,9 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public void navigateBack()
     {
-        callback.onNavigationLevelChanged(--level);
         setCategories(parentCategories.pollLast());
         setChannels(parentChannels.pollLast());
+        callback.onNavigationLevelChanged(--level);
     }
 
     class CategoryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener

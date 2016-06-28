@@ -3,25 +3,22 @@ package com.jueggs.podcaster.ui.charts;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import com.jueggs.decorator.DividerDecoration;
 import com.jueggs.podcaster.App;
 import com.jueggs.podcaster.R;
 import com.jueggs.podcaster.data.repo.ChartRepository;
 import com.jueggs.podcaster.model.Channel;
-import com.jueggs.podcaster.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.jueggs.podcaster.data.PodcastContract.*;
-import static com.jueggs.podcaster.utils.Utils.*;
+import static com.jueggs.podcaster.utils.Util.*;
 
 public class ChartsFragment extends Fragment
 {

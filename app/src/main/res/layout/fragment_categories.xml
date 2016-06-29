@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout android:id="@+id/root"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <android.support.v7.widget.RecyclerView android:id="@+id/recycler"
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -15,29 +15,29 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|end"
-        android:layout_marginTop="@dimen/space_xlarge"
         android:layout_marginEnd="@dimen/space_xlarge"
         android:layout_marginRight="@dimen/space_xlarge"
+        android:layout_marginTop="@dimen/space_xlarge"
         android:orientation="vertical">
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_subdirectory_arrow_left"
-        app:fabSize="mini"
-        android:visibility="gone"
-        tools:visibility="visible" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/navBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_subdirectory_arrow_left"
+            android:visibility="gone"
+            app:fabSize="mini"
+            tools:visibility="visible" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/scroll"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_xlarge"
-        android:src="@drawable/ic_view_list_black_24dp"
-        app:fabSize="mini"
-        android:visibility="gone"
-        tools:visibility="visible" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/scroll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_xlarge"
+            android:src="@drawable/ic_view_list_black_24dp"
+            android:visibility="gone"
+            app:fabSize="mini"
+            tools:visibility="visible" />
     </LinearLayout>
 
 </FrameLayout>

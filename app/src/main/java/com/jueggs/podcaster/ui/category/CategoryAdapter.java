@@ -147,10 +147,10 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             int position = getAdapterPosition();
             Category category = categories.get(position);
 
-            callback.onCategorySelected(category);
-            callback.onNavigationLevelChanged(++level);
             parentCategories.add(categories);
             parentChannels.add(channels);
+            callback.onCategorySelected(category);
+            callback.onNavigationLevelChanged(++level);
 
             if (hasElements(category.getSubCategories()))
                 setCategories(category.getSubCategories());

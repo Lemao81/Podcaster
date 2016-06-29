@@ -3,13 +3,17 @@ package com.jueggs.podcaster.service;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.wifi.WifiManager;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 import com.jueggs.podcaster.R;
@@ -25,6 +29,10 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
     public static final int NOTIFICATION_ID = 1;
 
     public static final String EXTRA_URL = "com.jueggs.podcaster.EXTRA_URL";
+    public static final String EXTRA_TITLE = "com.jueggs.podcaster.EXTRA_TITLE";
+    public static final String EXTRA_POSITION = "com.jueggs.podcaster.EXTRA_POSITION";
+
+    public static final String ACTION_STOP = "com.jueggs.podcaster.ACTION_STOP";
 
     private MediaPlayer player;
     private WifiManager.WifiLock wifiLock;
@@ -41,12 +49,16 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
-        Toast.makeText(this, "Service started", Toast.LENGTH_SHORT).show();
         this.intent = intent;
 
         am = (AudioManager) getSystemService(AUDIO_SERVICE);
         int result = am.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
         initPlayer();
+
+        IntentFilter filter = new IntentFilter();
+        filter.addCategory(Intent.CATEGORY_DEFAULT);
+        filter.addAction(ACTION_STOP);
+        registerReceiver(actionReceiver, filter);
 
         if (result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
         {
@@ -102,10 +114,19 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
             stopSelf();
         }
 
-        PendingIntent pi = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
-        Notification notification = new Notification.Builder(this).setContentTitle(getString(R.string.notification_title))
-                .setContentText(getString(R.string.notification_text)).setContentIntent(pi)
-                .setTicker(getString(R.string.notification_ticker_text)).setSmallIcon(R.drawable.ic_subscriptions_black_24dp).build();
+        PendingIntent content = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent stop = PendingIntent.getBroadcast(this, 1, new Intent(ACTION_STOP), 0);
+
+        String title = intent.getStringExtra(EXTRA_TITLE);
+        String titleText = TextUtils.isEmpty(title) ? String.format("<%s>", getString(R.string.notification_no_title)) : title;
+        Notification notification = new Notification.Builder(this)
+                .setContentTitle(titleText)
+                .setContentText(String.format(getString(R.string.notification_episode_format), intent.getIntExtra(EXTRA_POSITION, 0) + 1))
+                .setContentIntent(content)
+                .setTicker(titleText)
+                .setSmallIcon(R.drawable.ic_notification)
+                .addAction(R.drawable.ic_stop_black, getString(R.string.notification_stop), stop)
+                .build();
         notification.flags |= Notification.FLAG_ONGOING_EVENT;
         startForeground(NOTIFICATION_ID, notification);
     }
@@ -168,7 +189,20 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
     {
         stopForeground(true);
         releasePlayer();
+        unregisterReceiver(actionReceiver);
     }
+
+    private BroadcastReceiver actionReceiver = new BroadcastReceiver()
+    {
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+            if (intent.getAction().equals(ACTION_STOP))
+            {
+                stop();
+            }
+        }
+    };
 
     @Override
     public IBinder onBind(Intent intent)

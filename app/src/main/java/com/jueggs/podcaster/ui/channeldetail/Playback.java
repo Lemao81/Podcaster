@@ -1,12 +1,8 @@
 package com.jueggs.podcaster.ui.channeldetail;
 
+import android.view.View;
+
 public interface Playback
 {
-    void onStartEpisode(String url);
-
-    void onPauseEpisode();
-
-    void onResumeEpisode();
-
-    void onStopEpisode();
+    void onPlayPauseEpisode(View view);
 }

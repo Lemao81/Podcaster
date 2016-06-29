@@ -1,7 +1,7 @@
 package com.jueggs.podcaster.ui.channeldetail;
 
 import android.content.Context;
-import android.media.MediaPlayer;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.jueggs.podcaster.R;
 import com.jueggs.podcaster.model.Channel;
 import com.jueggs.podcaster.model.Episode;
+import com.jueggs.podcaster.service.MediaService;
 import com.jueggs.podcaster.utils.DateUtils;
 
 import java.util.ArrayList;
@@ -24,7 +25,6 @@ import java.util.List;
 
 public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 {
-    public static final String TAG = ChannelDetailAdapter.class.getSimpleName();
     public static final int VIEWTYPE_DETAILS = 1;
     public static final int VIEWTYPE_EPISODE = 2;
 
@@ -32,8 +32,6 @@ public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
     private Channel channel;
     private Context context;
     private Playback playback;
-    private boolean started;
-    private boolean playing;
 
     public ChannelDetailAdapter(Context context, Channel channel, Playback playback)
     {
@@ -70,7 +68,6 @@ public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
             holder.title.setText(channel.getTitle());
             holder.rating.setText(channel.getRating());
             holder.description.setText(channel.getDescription());
-            holder.stop.setOnClickListener(this::onStop);
             Glide.with(context).load(channel.getImage()).placeholder(R.drawable.glide_placeholder)
                     .error(R.drawable.glide_error).into(holder.image);
         }
@@ -85,46 +82,26 @@ public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
             String text = context.getResources().getQuantityString(R.plurals.count_votes_format, count, count);
             holder.votes.setText(text);
             holder.date.setText(DateUtils.createDateString(context, episode.getDate()));
-            holder.play.setTag(episode.getMediaLink());
+
+            Bundle data = new Bundle();
+            data.putString(MediaService.EXTRA_URL, episode.getMediaLink());
+            data.putString(MediaService.EXTRA_TITLE, episode.getTitle());
+            data.putInt(MediaService.EXTRA_POSITION, position);
+            holder.play.setTag(data);
+
             holder.play.setOnClickListener(this::onPlayPauseEpisode);
         }
     }
 
     private void onPlayPauseEpisode(View view)
     {
-        if (!started)
-        {
-            if (!TextUtils.isEmpty((String) view.getTag()))
-            {
-                playback.onStartEpisode((String) view.getTag());
-                started = true;
-                playing = true;
-                showPlaySymbol((ImageButton) view, false);
-            }
-        }
-        else if (started && playing)
-        {
-            playback.onPauseEpisode();
-            playing = false;
-            showPlaySymbol((ImageButton) view, true);
-        }
-        else if (started && !playing)
-        {
-            playback.onResumeEpisode();
-            playing = true;
-            showPlaySymbol((ImageButton) view, false);
-        }
+        playback.onPlayPauseEpisode(view);
     }
 
-    private void showPlaySymbol(ImageButton button, boolean play)
+    public void showPlaySymbol(ImageButton button, boolean play)
     {
-        button.setImageDrawable(play ? ContextCompat.getDrawable(context, R.drawable.ic_play_circle_outline_black_24dp) :
-                ContextCompat.getDrawable(context, R.drawable.ic_pause_circle_outline_black_24dp));
-    }
-
-    private void onStop(View view)
-    {
-        playback.onStopEpisode();
+        button.setImageDrawable(play ? ContextCompat.getDrawable(context, R.drawable.ic_play_black) :
+                ContextCompat.getDrawable(context, R.drawable.ic_pause_black));
     }
 
     @Override
@@ -154,7 +131,6 @@ public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
     class DetailsViewHolder extends RecyclerView.ViewHolder
     {
         @Bind(R.id.play) ImageButton play;
-        @Bind(R.id.stop) ImageButton stop;
         @Bind(R.id.favourize) ImageButton favourize;
         @Bind(R.id.share) ImageButton share;
         @Bind(R.id.image) ImageView image;

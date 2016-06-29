@@ -19,18 +19,19 @@ import com.jueggs.podcaster.data.repo.CategoryRepository;
 import com.jueggs.podcaster.data.repo.ChannelRepository;
 import com.jueggs.podcaster.model.Category;
 import com.jueggs.podcaster.model.Channel;
-import com.jueggs.utils.Utils;
+import com.jueggs.utils.UIUtils;
 
 import java.util.List;
 
 import static com.jueggs.podcaster.utils.Util.*;
+import static com.jueggs.utils.UIUtils.*;
 import static com.jueggs.utils.Utils.*;
 
 public class CategoryFragment extends Fragment implements Callback
 {
     @Bind(R.id.root) FrameLayout root;
     @Bind(R.id.recycler) RecyclerView recycler;
-    @Bind(R.id.fab) FloatingActionButton fab;
+    @Bind(R.id.navBack) FloatingActionButton navBack;
     @Bind(R.id.scroll) FloatingActionButton scroll;
 
     private CategoryRepository categoryRepository = CategoryRepository.getInstance();
@@ -47,7 +48,7 @@ public class CategoryFragment extends Fragment implements Callback
 
         equipeRecycler(getContext(), recycler, adapter = new CategoryAdapter(getContext(), getActivity().getSupportFragmentManager(), this));
 
-        fab.setOnClickListener(this::onNavigateBack);
+        navBack.setOnClickListener(this::onNavigateBack);
         scroll.setOnClickListener(this::onScroll);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
@@ -80,22 +81,8 @@ public class CategoryFragment extends Fragment implements Callback
     @Override
     public void onNavigationLevelChanged(int level)
     {
-        showFab(level != 0);
-        showScroll(hasElements(adapter.getChannels()));
-    }
-
-    private void showFab(boolean show)
-    {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-            TransitionManager.beginDelayedTransition(root, show ? fadeIn : fadeOut);
-        fab.setVisibility(show ? View.VISIBLE : View.GONE);
-    }
-
-    private void showScroll(boolean show)
-    {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-            TransitionManager.beginDelayedTransition(root, show ? fadeIn : fadeOut);
-        scroll.setVisibility(show ? View.VISIBLE : View.GONE);
+        showViewWithFade(root, navBack, level != 0);
+        showViewWithFade(root, scroll, hasElements(adapter.getChannels()));
     }
 
     @Override
@@ -112,6 +99,6 @@ public class CategoryFragment extends Fragment implements Callback
     private void onChannelsLoaded(List<Channel> channels)
     {
         adapter.setChannels(channels);
-        showScroll(hasElements(channels));
+        showViewWithFade(root, scroll, hasElements(adapter.getChannels()));
     }
 }

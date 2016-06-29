@@ -34,7 +34,7 @@
     <string name="error_media_player">An error occurred at the media player </string>
     <string name="error_audio_focus">Could not retrieve audio focus - something else occupying audio?</string>
 
-    <string name="notification_ticker_text">ticker</string>
-    <string name="notification_title">podcast.de</string>
-    <string name="notification_text">text</string>
+    <string name="notification_no_title">no title</string>
+    <string name="notification_episode_format"><xliff:g id="notification_episode_format">Episode %d</xliff:g></string>
+    <string name="notification_stop">Stop</string>
 </resources>

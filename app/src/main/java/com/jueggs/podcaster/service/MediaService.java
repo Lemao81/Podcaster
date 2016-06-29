@@ -44,6 +44,11 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
     public void onCreate()
     {
         super.onCreate();
+
+        IntentFilter filter = new IntentFilter();
+        filter.addCategory(Intent.CATEGORY_DEFAULT);
+        filter.addAction(ACTION_STOP);
+        registerReceiver(actionReceiver, filter);
     }
 
     @Override
@@ -54,11 +59,6 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
         am = (AudioManager) getSystemService(AUDIO_SERVICE);
         int result = am.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
         initPlayer();
-
-        IntentFilter filter = new IntentFilter();
-        filter.addCategory(Intent.CATEGORY_DEFAULT);
-        filter.addAction(ACTION_STOP);
-        registerReceiver(actionReceiver, filter);
 
         if (result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
         {

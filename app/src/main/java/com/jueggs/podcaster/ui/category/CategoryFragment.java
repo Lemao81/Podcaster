@@ -4,6 +4,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.transition.Fade;
 import android.transition.TransitionManager;
@@ -68,7 +69,26 @@ public class CategoryFragment extends Fragment implements Callback
     private void onScroll(View view)
     {
         if (hasElements(adapter.getChannels()))
-            recycler.smoothScrollToPosition(adapter.getCategories().size());
+        {
+            LinearLayoutManager layoutManager = (LinearLayoutManager) recycler.getLayoutManager();
+            boolean scrollDown = layoutManager.findFirstVisibleItemPosition() < adapter.getCategories().size();
+            if (scrollDown)
+            {
+                int span = layoutManager.findLastVisibleItemPosition() - layoutManager.findFirstVisibleItemPosition();
+                int diff = span / 2;
+                recycler.smoothScrollToPosition(adapter.getCategories().size() + findOffset(diff));
+            }
+            else
+                recycler.smoothScrollToPosition(adapter.getCategories().size());
+        }
+    }
+
+    private int findOffset(int diff)
+    {
+        int size = adapter.getChannels().size();
+        while (diff >= size)
+            diff--;
+        return diff;
     }
 
     @Override

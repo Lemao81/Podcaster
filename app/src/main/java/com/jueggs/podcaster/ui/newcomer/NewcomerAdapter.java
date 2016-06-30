@@ -53,7 +53,7 @@ public class NewcomerAdapter extends RecyclerView.Adapter<NewcomerAdapter.Channe
         return channels.size();
     }
 
-    public void setChannels(List<Channel> channels)
+    public void onNewcomerLoaded(List<Channel> channels)
     {
         this.channels = channels;
         notifyDataSetChanged();

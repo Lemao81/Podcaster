@@ -8,7 +8,7 @@ import com.jueggs.podcaster.R;
 import com.jueggs.podcaster.ui.category.CategoryFragment;
 import com.jueggs.podcaster.ui.charts.ChartsFragment;
 import com.jueggs.podcaster.ui.newcomer.NewcomerFragment;
-import com.jueggs.podcaster.ui.playlist.PlaylistFragment;
+import com.jueggs.podcaster.ui.playlists.tab.PlaylistFragment;
 
 import java.util.ArrayList;
 import java.util.List;

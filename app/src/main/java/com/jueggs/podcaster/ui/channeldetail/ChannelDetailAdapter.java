@@ -19,6 +19,7 @@ import com.jueggs.podcaster.model.Channel;
 import com.jueggs.podcaster.model.Episode;
 import com.jueggs.podcaster.service.MediaService;
 import com.jueggs.podcaster.utils.DateUtils;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,7 @@ public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
     public static final int VIEWTYPE_DETAILS = 1;
     public static final int VIEWTYPE_EPISODE = 2;
 
+    @Getter
     private List<Episode> episodes = new ArrayList<>();
     private Channel channel;
     private Context context;
@@ -82,20 +84,8 @@ public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
             String text = context.getResources().getQuantityString(R.plurals.count_votes_format, count, count);
             holder.votes.setText(text);
             holder.date.setText(DateUtils.createDateString(context, episode.getDate()));
-
-            Bundle data = new Bundle();
-            data.putString(MediaService.EXTRA_URL, episode.getMediaLink());
-            data.putString(MediaService.EXTRA_TITLE, episode.getTitle());
-            data.putInt(MediaService.EXTRA_POSITION, position);
-            holder.play.setTag(data);
-
-            holder.play.setOnClickListener(this::onPlayPauseEpisode);
+            holder.play.setOnClickListener(playback::onPlayPauseEpisode);
         }
-    }
-
-    private void onPlayPauseEpisode(View view)
-    {
-        playback.onPlayPauseEpisode(view);
     }
 
     public void showPlaySymbol(ImageButton button, boolean play)
@@ -110,7 +100,7 @@ public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
         return episodes.size();
     }
 
-    public void setEpisodes(List<Episode> episodes)
+    public void onEpisodesLoaded(List<Episode> episodes)
     {
         this.episodes = episodes;
         notifyDataSetChanged();

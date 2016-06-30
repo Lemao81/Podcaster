@@ -110,6 +110,11 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return VIEWTYPE_CHANNEL;
     }
 
+    public void onCategoriesLoaded(List<Category> categories)
+    {
+        setCategories(categories);
+    }
+
     public void setCategories(List<Category> categories)
     {
         this.categories = categories;
@@ -122,7 +127,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyDataSetChanged();
     }
 
-    public void navigateBack()
+    public void onNavigateBack(View view)
     {
         setCategories(parentCategories.pollLast());
         setChannels(parentChannels.pollLast());

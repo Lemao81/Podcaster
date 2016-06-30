@@ -33,6 +33,20 @@
         </activity>
 
         <service android:name=".service.MediaService" />
+
+        <activity
+            android:name=".ui.playlists.manage.ManagePlaylistsActivity"
+            android:label="@string/title_activity_manage_playlists"
+            android:parentActivityName=".ui.main.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.jueggs.podcaster.ui.main.MainActivity" />
+        </activity>
+
+        <provider
+            android:authorities="com.jueggs.podcaster"
+            android:name=".data.db.generated.PlaylistsProvider" />
     </application>
 
 </manifest>

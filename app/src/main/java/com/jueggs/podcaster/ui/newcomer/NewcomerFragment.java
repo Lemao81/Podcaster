@@ -14,9 +14,6 @@ import butterknife.ButterKnife;
 import com.jueggs.podcaster.App;
 import com.jueggs.podcaster.R;
 import com.jueggs.podcaster.data.repo.NewcomerRepository;
-import com.jueggs.podcaster.model.Channel;
-
-import java.util.List;
 
 import static com.jueggs.podcaster.data.PodcastContract.*;
 import static com.jueggs.podcaster.utils.Util.*;
@@ -39,8 +36,8 @@ public class NewcomerFragment extends Fragment
 
         equipeRecycler(getContext(), recycler, adapter = new NewcomerAdapter(getContext(), getActivity().getSupportFragmentManager()));
 
-        toggleAudio.setOnClickListener(this::onClick);
-        toggleVideo.setOnClickListener(this::onClick);
+        toggleAudio.setOnClickListener(this::onToggleType);
+        toggleVideo.setOnClickListener(this::onToggleType);
 
         radio.setOnCheckedChangeListener(this::onRadioCheckedChanged);
 
@@ -56,14 +53,14 @@ public class NewcomerFragment extends Fragment
         }
     }
 
-    private void onClick(View view)
+    private void onToggleType(View view)
     {
         radio.check(view.getId());
 
         if (view.getId() == R.id.toggleAudio)
-            repository.loadNewcomer(App.LANGUAGE, CHANNEL_TYPE_AUDIO, this::onNewcomerLoaded);
+            repository.loadNewcomer(App.LANGUAGE, CHANNEL_TYPE_AUDIO, adapter::onNewcomerLoaded);
         else
-            repository.loadNewcomer(App.LANGUAGE, CHANNEL_TYPE_VIDEO, this::onNewcomerLoaded);
+            repository.loadNewcomer(App.LANGUAGE, CHANNEL_TYPE_VIDEO, adapter::onNewcomerLoaded);
     }
 
     @Override
@@ -71,12 +68,7 @@ public class NewcomerFragment extends Fragment
     {
         super.onViewCreated(view, savedInstanceState);
 
-        repository.loadNewcomer(App.LANGUAGE, CHANNEL_TYPE_AUDIO, this::onNewcomerLoaded);
+        repository.loadNewcomer(App.LANGUAGE, CHANNEL_TYPE_AUDIO, adapter::onNewcomerLoaded);
         radio.check(toggleAudio.getId());
-    }
-
-    private void onNewcomerLoaded(List<Channel> channels)
-    {
-        adapter.setChannels(channels);
     }
 }

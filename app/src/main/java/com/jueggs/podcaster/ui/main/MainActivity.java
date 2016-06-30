@@ -1,5 +1,6 @@
 package com.jueggs.podcaster.ui.main;
 
+import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.jueggs.podcaster.App;
 import com.jueggs.podcaster.R;
+import com.jueggs.podcaster.ui.playlists.manage.ManagePlaylistsActivity;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -39,7 +41,6 @@ public class MainActivity extends AppCompatActivity
         {
             if (savedInstanceState == null)
             {
-//                getSupportFragmentManager().beginTransaction().replace(R.id.container, );
             }
         }
         else
@@ -67,8 +68,20 @@ public class MainActivity extends AppCompatActivity
     {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings)
+        if (id == R.id.menu_settings)
             return true;
+        if (id == R.id.menu_playlists)
+        {
+            if (App.getInstance().isTwoPane())
+            {
+
+            }
+            else
+            {
+                startActivity(new Intent(this, ManagePlaylistsActivity.class));
+            }
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }

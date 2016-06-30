@@ -32,7 +32,7 @@ public class PlaylistsProvider
         @ContentUri(path = Path.CHANNEL, type = CONTENT_DIR_TYPE)
         public static final Uri BASE_URI = BASE_CONTENT_URI.buildUpon().appendPath(Path.CHANNEL).build();
 
-        @InexactContentUri(path = Path.CHANNEL + VAR_LETTERS, type = CONTENT_ITEM_TYPE, name = ChannelColumns.CHANNEL_ID,
+        @InexactContentUri(path = Path.CHANNEL + VAR_NUMBERS, type = CONTENT_ITEM_TYPE, name = ChannelColumns.CHANNEL_ID,
                 whereColumn = ChannelColumns.CHANNEL_ID, pathSegment = 1)
         public static Uri withChannelId(String channelId)
         {
@@ -55,18 +55,18 @@ public class PlaylistsProvider
         @ContentUri(path = Path.EPISODE, type = CONTENT_DIR_TYPE)
         public static final Uri BASE_URI = BASE_CONTENT_URI.buildUpon().appendPath(Path.EPISODE).build();
 
-        @InexactContentUri(path = Path.EPISODE + VAR_LETTERS, type = CONTENT_ITEM_TYPE, name = EpisodeColumns.SHOW_ID,
+        @InexactContentUri(path = Path.EPISODE + VAR_NUMBERS, type = CONTENT_ITEM_TYPE, name = EpisodeColumns.SHOW_ID,
                 whereColumn = EpisodeColumns.SHOW_ID, pathSegment = 1)
         public static Uri withShowId(String showId)
         {
             return BASE_URI.buildUpon().appendPath(showId).build();
         }
 
-        @InexactContentUri(path = Path.EPISODE + VAR_LETTERS, type = CONTENT_DIR_TYPE, name = EpisodeColumns.CHANNEL_ID,
+        @InexactContentUri(path = Path.EPISODE + Path.CHANNEL + VAR_NUMBERS, type = CONTENT_DIR_TYPE, name = EpisodeColumns.CHANNEL_ID,
                 whereColumn = EpisodeColumns.CHANNEL_ID, pathSegment = 1)
         public static Uri withChannelId(String channelId)
         {
-            return BASE_URI.buildUpon().appendPath(channelId).build();
+            return BASE_URI.buildUpon().appendPath(Path.CHANNEL).appendPath(channelId).build();
         }
     }
 
@@ -77,5 +77,12 @@ public class PlaylistsProvider
 
         @ContentUri(path = Path.PLAYLIST, type = CONTENT_DIR_TYPE)
         public static final Uri BASE_URI = BASE_CONTENT_URI.buildUpon().appendPath(Path.PLAYLIST).build();
+
+        @InexactContentUri(path = Path.PLAYLIST + VAR_LETTERS, type = CONTENT_ITEM_TYPE, name = PlaylistColumns.NAME,
+                whereColumn = PlaylistColumns.NAME, pathSegment = 1)
+        public static Uri withName(String name)
+        {
+            return BASE_URI.buildUpon().appendPath(name).build();
+        }
     }
 }

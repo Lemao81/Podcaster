@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.transition.Fade;
-import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,6 @@ import com.jueggs.podcaster.data.repo.CategoryRepository;
 import com.jueggs.podcaster.data.repo.ChannelRepository;
 import com.jueggs.podcaster.model.Category;
 import com.jueggs.podcaster.model.Channel;
-import com.jueggs.utils.UIUtils;
 
 import java.util.List;
 
@@ -49,7 +47,7 @@ public class CategoryFragment extends Fragment implements Callback
 
         equipeRecycler(getContext(), recycler, adapter = new CategoryAdapter(getContext(), getActivity().getSupportFragmentManager(), this));
 
-        navBack.setOnClickListener(this::onNavigateBack);
+        navBack.setOnClickListener(adapter::onNavigateBack);
         scroll.setOnClickListener(this::onScroll);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
@@ -59,11 +57,6 @@ public class CategoryFragment extends Fragment implements Callback
         }
 
         return view;
-    }
-
-    private void onNavigateBack(View view)
-    {
-        adapter.navigateBack();
     }
 
     private void onScroll(View view)
@@ -95,7 +88,7 @@ public class CategoryFragment extends Fragment implements Callback
     public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        categoryRepository.loadCategories(App.LANGUAGE, this::onCategoriesLoaded);
+        categoryRepository.loadCategories(App.LANGUAGE, adapter::onCategoriesLoaded);
     }
 
     @Override
@@ -109,11 +102,6 @@ public class CategoryFragment extends Fragment implements Callback
     public void onCategorySelected(Category category)
     {
         channelRepository.loadChannels(Integer.parseInt(category.getId()), App.LANGUAGE, this::onChannelsLoaded);
-    }
-
-    private void onCategoriesLoaded(List<Category> categories)
-    {
-        adapter.setCategories(categories);
     }
 
     private void onChannelsLoaded(List<Channel> channels)

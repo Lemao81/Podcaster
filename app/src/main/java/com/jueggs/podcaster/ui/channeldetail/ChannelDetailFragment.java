@@ -78,27 +78,22 @@ public class ChannelDetailFragment extends Fragment implements Playback
         fabPlayPause.setOnClickListener(this::onPlayPauseEpisode);
         fabStop.setOnClickListener(this::onStopEpisode);
 
-        repository.loadEpisodes(Integer.parseInt(channel.getChannelId()), App.LANGUAGE, this::onEpisodesLoaded);
+        repository.loadEpisodes(Integer.parseInt(channel.getChannelId()), App.LANGUAGE, adapter::onEpisodesLoaded);
 
         return view;
-    }
-
-    private void onEpisodesLoaded(List<Episode> episodes)
-    {
-        adapter.setEpisodes(episodes);
     }
 
     @Override
     public void onPlayPauseEpisode(View view)
     {
-        Bundle data = (Bundle) view.getTag();
         String url = null, title = null;
         int position = 0;
-        if (data != null)
+        if (!(view instanceof FloatingActionButton))
         {
-            url = data.getString(EXTRA_URL);
-            title = data.getString(EXTRA_TITLE);
-            position = data.getInt(EXTRA_POSITION);
+            position = recycler.getChildAdapterPosition((View) view.getParent().getParent().getParent());
+            Episode episode = adapter.getEpisodes().get(position);
+            url = episode.getMediaLink();
+            title = episode.getTitle();
         }
         if (!started && !TextUtils.isEmpty(url))
         {
@@ -109,12 +104,12 @@ public class ChannelDetailFragment extends Fragment implements Playback
         else if (started && playing)
         {
             pauseEpisode();
-            showPlaySymbol(view, true);
+            showPlaySymbol(currentEpisodePlayButton, true);
         }
         else if (started && !playing)
         {
             resumeEpisode();
-            showPlaySymbol(view, false);
+            showPlaySymbol(currentEpisodePlayButton, false);
         }
     }
 

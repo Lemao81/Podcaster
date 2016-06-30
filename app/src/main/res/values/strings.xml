@@ -1,6 +1,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">Podcaster</string>
-    <string name="action_settings">Settings</string>
+    <string name="menu_settings">Settings</string>
+    <string name="menu_playlists">Manage Playlists</string>
     <string name="section_format">Hello World from section: %1$d</string>
 
     <string name="title_categories">Category</string>
@@ -37,4 +38,17 @@
     <string name="notification_no_title">no title</string>
     <string name="notification_episode_format"><xliff:g id="notification_episode_format">Episode %d</xliff:g></string>
     <string name="notification_stop">Stop</string>
+    <string name="title_activity_manage_playlists">ManagePlaylistsActivity</string>
+
+    <string name="playlist_input_title_add">Add Playlist</string>
+    <string name="playlist_input_title_edit">Edit Playlist</string>
+    <string name="playlist_input_hint">Name</string>
+    <string name="playlist_input_ok">OK</string>
+    <string name="playlist_input_cancel">Cancel</string>
+    <string name="playlist_input_exists_format"><xliff:g id="playlist_input_exists">Playlist \'%s\' already exists</xliff:g></string>
+    <string name="playlist_input_empty">Please enter a name</string>
+    <string name="playlist_delete_yes">Yes</string>
+    <string name="playlist_delete_no">No</string>
+    <string name="playlist_delete_title">Delete Playlist</string>
+    <string name="playlist_delete_message_format"><xliff:g id="playlist_delete_message_format">Sure to delete playlist \'%s\'?</xliff:g></string>
 </resources>

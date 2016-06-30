@@ -1,4 +1,4 @@
-package com.jueggs.podcaster.ui.playlist;
+package com.jueggs.podcaster.ui.playlists.tab;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

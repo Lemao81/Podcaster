@@ -147,9 +147,10 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
                 player.stop();
             player.release();
             player = null;
-            if (wifiLock.isHeld())
+            if (wifiLock != null && wifiLock.isHeld())
                 wifiLock.release();
-            am.abandonAudioFocus(this);
+            if (am != null)
+                am.abandonAudioFocus(this);
         }
     }
 

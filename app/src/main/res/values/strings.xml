@@ -51,4 +51,5 @@
     <string name="playlist_delete_no">No</string>
     <string name="playlist_delete_title">Delete Playlist</string>
     <string name="playlist_delete_message_format"><xliff:g id="playlist_delete_message_format">Sure to delete playlist \'%s\'?</xliff:g></string>
+    <string name="playlist_selection_title">Select Playlist</string>
 </resources>

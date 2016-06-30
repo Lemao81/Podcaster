@@ -1,6 +1,7 @@
 package com.jueggs.podcaster.ui.channeldetail;
 
 import android.content.*;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -15,22 +16,26 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.jueggs.podcaster.App;
 import com.jueggs.podcaster.R;
+import com.jueggs.podcaster.data.db.PlaylistsProvider;
 import com.jueggs.podcaster.data.repo.EpisodeRepository;
 import com.jueggs.podcaster.model.Channel;
 import com.jueggs.podcaster.model.Episode;
 import com.jueggs.podcaster.service.MediaService;
+import com.jueggs.podcaster.utils.DaUtils;
 
 import java.util.List;
 
 import static com.jueggs.podcaster.service.MediaService.*;
+import static com.jueggs.podcaster.utils.DaUtils.*;
 import static com.jueggs.podcaster.utils.Util.*;
 import static com.jueggs.utils.UIUtils.*;
 
-public class ChannelDetailFragment extends Fragment implements Playback
+public class ChannelDetailFragment extends Fragment implements Callback
 {
     @Bind(R.id.recycler) RecyclerView recycler;
     @Bind(R.id.fabPlayPause) FloatingActionButton fabPlayPause;
@@ -38,6 +43,7 @@ public class ChannelDetailFragment extends Fragment implements Playback
     @Bind(R.id.console) LinearLayout console;
     @Bind(R.id.root) FrameLayout root;
 
+    private Context context;
     private Channel channel;
     private ChannelDetailAdapter adapter;
     private EpisodeRepository repository = EpisodeRepository.getInstance();
@@ -73,7 +79,8 @@ public class ChannelDetailFragment extends Fragment implements Playback
         View view = inflater.inflate(R.layout.fragment_channel_detail, container, false);
         ButterKnife.bind(this, view);
 
-        equipeRecycler(getContext(), recycler, adapter = new ChannelDetailAdapter(getContext(), channel, this));
+        context = getContext();
+        equipeRecycler(context, recycler, adapter = new ChannelDetailAdapter(context, channel, this));
 
         fabPlayPause.setOnClickListener(this::onPlayPauseEpisode);
         fabStop.setOnClickListener(this::onStopEpisode);
@@ -113,6 +120,22 @@ public class ChannelDetailFragment extends Fragment implements Playback
         }
     }
 
+    @Override
+    public void onFavourize(View view)
+    {
+        List<String> playlists = queryPlaylists(context);
+        showSelectionListDialog(context, root, R.string.playlist_selection_title, R.string.playlist_input_cancel, playlists,
+                this::onPlaylistSelected);
+    }
+
+    private void onPlaylistSelected(String playlist)
+    {
+        Uri result = context.getContentResolver().insert(PlaylistsProvider.Channel.withChannelIdAndPlaylist(channel.getChannelId(), playlist),
+                createChannelValues(channel, playlist));
+        if (result != null)
+            Toast.makeText(context, "Channel inserted", Toast.LENGTH_SHORT).show();
+    }
+
     private void onStopEpisode(View view)
     {
         stopEpisode();
@@ -120,7 +143,7 @@ public class ChannelDetailFragment extends Fragment implements Playback
 
     private void startEpisode(String url, String title, int position)
     {
-        getActivity().startService(new Intent(getContext(), MediaService.class).putExtra(EXTRA_URL, url)
+        getActivity().startService(new Intent(context, MediaService.class).putExtra(EXTRA_URL, url)
                 .putExtra(EXTRA_TITLE, title).putExtra(EXTRA_POSITION, position));
         started = playing = true;
         showViewWithFade(root, console, true);
@@ -152,8 +175,8 @@ public class ChannelDetailFragment extends Fragment implements Playback
     private void showPlaySymbol(View view, boolean play)
     {
         adapter.showPlaySymbol((ImageButton) view, play);
-        fabPlayPause.setImageDrawable(play ? ContextCompat.getDrawable(getContext(), R.drawable.ic_play_white) :
-                ContextCompat.getDrawable(getContext(), R.drawable.ic_pause_white));
+        fabPlayPause.setImageDrawable(play ? ContextCompat.getDrawable(context, R.drawable.ic_play_white) :
+                ContextCompat.getDrawable(context, R.drawable.ic_pause_white));
     }
 
     private ServiceConnection connection = new ServiceConnection()
@@ -181,7 +204,7 @@ public class ChannelDetailFragment extends Fragment implements Playback
             getActivity().unbindService(connection);
         bound = false;
 
-        getContext().unregisterReceiver(actionReceiver);
+        context.unregisterReceiver(actionReceiver);
     }
 
     private BroadcastReceiver actionReceiver = new BroadcastReceiver()

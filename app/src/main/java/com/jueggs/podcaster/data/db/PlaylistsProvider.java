@@ -45,6 +45,13 @@ public class PlaylistsProvider
         {
             return BASE_URI.buildUpon().appendPath(playlist).build();
         }
+
+        @InexactContentUri(path = Path.CHANNEL + VAR_NUMBERS + VAR_LETTERS, type = CONTENT_ITEM_TYPE, name = "channelId_playlist",
+                whereColumn = ChannelColumns.CHANNEL_ID, pathSegment = 1)
+        public static Uri withChannelIdAndPlaylist(String channelId, String playlist)
+        {
+            return BASE_URI.buildUpon().appendPath(channelId).appendPath(playlist).build();
+        }
     }
 
     @TableEndpoint(table = PlaylistsDb.EPISODE) public static class Episode

@@ -1,10 +1,8 @@
 package com.jueggs.podcaster.ui.channeldetail;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +15,8 @@ import com.bumptech.glide.Glide;
 import com.jueggs.podcaster.R;
 import com.jueggs.podcaster.model.Channel;
 import com.jueggs.podcaster.model.Episode;
-import com.jueggs.podcaster.service.MediaService;
 import com.jueggs.podcaster.utils.DateUtils;
+import com.jueggs.utils.UIUtils;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -33,13 +31,13 @@ public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
     private List<Episode> episodes = new ArrayList<>();
     private Channel channel;
     private Context context;
-    private Playback playback;
+    private Callback callback;
 
-    public ChannelDetailAdapter(Context context, Channel channel, Playback playback)
+    public ChannelDetailAdapter(Context context, Channel channel, Callback callback)
     {
         this.context = context;
         this.channel = channel;
-        this.playback = playback;
+        this.callback = callback;
     }
 
     @Override
@@ -70,6 +68,7 @@ public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
             holder.title.setText(channel.getTitle());
             holder.rating.setText(channel.getRating());
             holder.description.setText(channel.getDescription());
+            holder.favourize.setOnClickListener(callback::onFavourize);
             Glide.with(context).load(channel.getImage()).placeholder(R.drawable.glide_placeholder)
                     .error(R.drawable.glide_error).into(holder.image);
         }
@@ -84,7 +83,7 @@ public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
             String text = context.getResources().getQuantityString(R.plurals.count_votes_format, count, count);
             holder.votes.setText(text);
             holder.date.setText(DateUtils.createDateString(context, episode.getDate()));
-            holder.play.setOnClickListener(playback::onPlayPauseEpisode);
+            holder.play.setOnClickListener(callback::onPlayPauseEpisode);
         }
     }
 

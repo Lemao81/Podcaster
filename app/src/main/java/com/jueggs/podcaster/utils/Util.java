@@ -59,6 +59,7 @@ public class Util
                 result.add(cursor.getString(PlaylistColumns.ProjectionCompleteIndices.NAME));
             } while (cursor.moveToNext());
         }
+        cursor.close();
         return result;
     }
 

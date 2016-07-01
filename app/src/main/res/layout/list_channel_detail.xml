@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/space_small"
             android:layout_marginStart="@dimen/space_small"
-            android:src="@drawable/ic_favorite_border_black_24dp" />
+            android:src="@drawable/ic_favorite_border" />
 
         <ImageButton
             android:id="@+id/share"

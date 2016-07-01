@@ -43,7 +43,6 @@ public class ChannelDetailFragment extends Fragment implements Callback
     @Bind(R.id.console) LinearLayout console;
     @Bind(R.id.root) FrameLayout root;
 
-    private Context context;
     private Channel channel;
     private ChannelDetailAdapter adapter;
     private EpisodeRepository repository = EpisodeRepository.getInstance();
@@ -52,6 +51,7 @@ public class ChannelDetailFragment extends Fragment implements Callback
     private boolean started;
     private boolean playing;
     private View currentEpisodePlayButton;
+    private boolean favourized;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
@@ -59,6 +59,7 @@ public class ChannelDetailFragment extends Fragment implements Callback
         super.onCreate(savedInstanceState);
 
         channel = (Channel) getArguments().getSerializable(ChannelDetailActivity.EXTRA_CHANNEL);
+        favourized = countChannel(getContext(), channel) > 0;
     }
 
     @Override
@@ -79,8 +80,7 @@ public class ChannelDetailFragment extends Fragment implements Callback
         View view = inflater.inflate(R.layout.fragment_channel_detail, container, false);
         ButterKnife.bind(this, view);
 
-        context = getContext();
-        equipeRecycler(context, recycler, adapter = new ChannelDetailAdapter(context, channel, this));
+        equipeRecycler(getContext(), recycler, adapter = new ChannelDetailAdapter(getContext(), channel, this, favourized));
 
         fabPlayPause.setOnClickListener(this::onPlayPauseEpisode);
         fabStop.setOnClickListener(this::onStopEpisode);
@@ -123,17 +123,33 @@ public class ChannelDetailFragment extends Fragment implements Callback
     @Override
     public void onFavourize(View view)
     {
-        List<String> playlists = queryPlaylists(context);
-        showSelectionListDialog(context, root, R.string.playlist_selection_title, R.string.playlist_input_cancel, playlists,
-                this::onPlaylistSelected);
+        if (favourized)
+        {
+            int deleted = deleteChannel(getContext(), channel);
+            if (deleted > 0)
+            {
+                adapter.setFavourized(favourized = false);
+                adapter.notifyItemChanged(0);
+                shortToast(getContext(), R.string.msg_channel_deleted);
+            }
+        }
+        else
+        {
+            List<String> playlists = queryPlaylists(getContext());
+            showSelectionListDialog(getContext(), root, R.string.playlist_selection_title, R.string.playlist_input_cancel, playlists,
+                    this::onPlaylistSelected);
+        }
     }
 
     private void onPlaylistSelected(String playlist)
     {
-        Uri result = context.getContentResolver().insert(PlaylistsProvider.Channel.withChannelIdAndPlaylist(channel.getChannelId(), playlist),
-                createChannelValues(channel, playlist));
+        Uri result = insertChannel(getContext(), channel, playlist);
         if (result != null)
-            Toast.makeText(context, "Channel inserted", Toast.LENGTH_SHORT).show();
+        {
+            adapter.setFavourized(favourized = true);
+            adapter.notifyItemChanged(0);
+            shortToast(getContext(), R.string.msg_channel_added);
+        }
     }
 
     private void onStopEpisode(View view)
@@ -143,7 +159,7 @@ public class ChannelDetailFragment extends Fragment implements Callback
 
     private void startEpisode(String url, String title, int position)
     {
-        getActivity().startService(new Intent(context, MediaService.class).putExtra(EXTRA_URL, url)
+        getActivity().startService(new Intent(getContext(), MediaService.class).putExtra(EXTRA_URL, url)
                 .putExtra(EXTRA_TITLE, title).putExtra(EXTRA_POSITION, position));
         started = playing = true;
         showViewWithFade(root, console, true);
@@ -175,8 +191,8 @@ public class ChannelDetailFragment extends Fragment implements Callback
     private void showPlaySymbol(View view, boolean play)
     {
         adapter.showPlaySymbol((ImageButton) view, play);
-        fabPlayPause.setImageDrawable(play ? ContextCompat.getDrawable(context, R.drawable.ic_play_white) :
-                ContextCompat.getDrawable(context, R.drawable.ic_pause_white));
+        fabPlayPause.setImageDrawable(play ? ContextCompat.getDrawable(getContext(), R.drawable.ic_play_white) :
+                ContextCompat.getDrawable(getContext(), R.drawable.ic_pause_white));
     }
 
     private ServiceConnection connection = new ServiceConnection()
@@ -204,7 +220,7 @@ public class ChannelDetailFragment extends Fragment implements Callback
             getActivity().unbindService(connection);
         bound = false;
 
-        context.unregisterReceiver(actionReceiver);
+        getContext().unregisterReceiver(actionReceiver);
     }
 
     private BroadcastReceiver actionReceiver = new BroadcastReceiver()

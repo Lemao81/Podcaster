@@ -1,6 +1,7 @@
 package com.jueggs.podcaster.ui.channeldetail;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,7 +17,6 @@ import com.jueggs.podcaster.R;
 import com.jueggs.podcaster.model.Channel;
 import com.jueggs.podcaster.model.Episode;
 import com.jueggs.podcaster.utils.DateUtils;
-import com.jueggs.utils.UIUtils;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -32,12 +32,14 @@ public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
     private Channel channel;
     private Context context;
     private Callback callback;
+    private boolean favourized;
 
-    public ChannelDetailAdapter(Context context, Channel channel, Callback callback)
+    public ChannelDetailAdapter(Context context, Channel channel, Callback callback, boolean favourized)
     {
         this.context = context;
         this.channel = channel;
         this.callback = callback;
+        this.favourized = favourized;
     }
 
     @Override
@@ -69,6 +71,8 @@ public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
             holder.rating.setText(channel.getRating());
             holder.description.setText(channel.getDescription());
             holder.favourize.setOnClickListener(callback::onFavourize);
+            Drawable icon = ContextCompat.getDrawable(context, favourized ? R.drawable.ic_favorite_filled : R.drawable.ic_favorite_border);
+            holder.favourize.setImageDrawable(icon);
             Glide.with(context).load(channel.getImage()).placeholder(R.drawable.glide_placeholder)
                     .error(R.drawable.glide_error).into(holder.image);
         }
@@ -103,6 +107,11 @@ public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
     {
         this.episodes = episodes;
         notifyDataSetChanged();
+    }
+
+    public void setFavourized(boolean favourized)
+    {
+        this.favourized = favourized;
     }
 
     @Override

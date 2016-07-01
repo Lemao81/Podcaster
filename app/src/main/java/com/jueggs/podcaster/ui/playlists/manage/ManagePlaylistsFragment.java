@@ -33,7 +33,6 @@ public class ManagePlaylistsFragment extends Fragment implements Callback
     private ManagePlaylistsAdapter adapter;
     private String toUpdateDelete;
     private int position;
-    private Context context;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -41,21 +40,19 @@ public class ManagePlaylistsFragment extends Fragment implements Callback
         View view = inflater.inflate(R.layout.fragment_manage_playlists, container, false);
         ButterKnife.bind(this, view);
 
-        context = getContext();
-        equipeRecycler(getContext(), recycler, adapter = new ManagePlaylistsAdapter(context, this));
+        equipeRecycler(getContext(), recycler, adapter = new ManagePlaylistsAdapter(getContext(), this));
         fab.setOnClickListener(this::onAddPlaylist);
 
-        List<String> playlists = queryPlaylists(context);
+        List<String> playlists = queryPlaylists(getContext());
         if (playlists != null)
             adapter.setPlaylists(playlists);
 
         return view;
     }
 
-
     private void onAddPlaylist(View view)
     {
-        showSimpleOneFieldInputDialog(context, root, null, R.string.playlist_input_title_add, R.string.playlist_input_hint,
+        showSimpleOneFieldInputDialog(getContext(), root, null, R.string.playlist_input_title_add, R.string.playlist_input_hint,
                 R.string.playlist_input_ok, R.string.playlist_input_cancel, this::processAddInput);
     }
 
@@ -68,15 +65,15 @@ public class ManagePlaylistsFragment extends Fragment implements Callback
     private boolean isInputValid(String input)
     {
         boolean valid = true;
-        List<String> playlists = queryPlaylists(context);
+        List<String> playlists = queryPlaylists(getContext());
         if (hasElements(playlists) && playlists.contains(input))
         {
-            Toast.makeText(context, String.format(getString(R.string.playlist_input_exists_format), input), Toast.LENGTH_SHORT).show();
+            shortToast(getContext(), String.format(getString(R.string.playlist_input_exists_format), input));
             valid = false;
         }
         else if (isEmpty(input))
         {
-            Toast.makeText(context, R.string.playlist_input_empty, Toast.LENGTH_SHORT).show();
+            shortToast(getContext(), R.string.playlist_input_empty);
             valid = false;
         }
         return valid;
@@ -84,11 +81,12 @@ public class ManagePlaylistsFragment extends Fragment implements Callback
 
     private void doInsert(String input)
     {
-        Uri result = insertPlaylist(context, input);
+        Uri result = insertPlaylist(getContext(), input);
         if (result != null)
         {
             adapter.getPlaylists().add(0, input);
             adapter.notifyItemInserted(0);
+            shortToast(getContext(), R.string.msg_playlist_added);
         }
     }
 
@@ -97,7 +95,7 @@ public class ManagePlaylistsFragment extends Fragment implements Callback
     {
         position = recycler.getChildAdapterPosition((View) view.getParent().getParent());
         toUpdateDelete = adapter.getPlaylists().get(position);
-        showSimpleOneFieldInputDialog(context, root, toUpdateDelete, R.string.playlist_input_title_edit,
+        showSimpleOneFieldInputDialog(getContext(), root, toUpdateDelete, R.string.playlist_input_title_edit,
                 R.string.playlist_input_hint, R.string.playlist_input_ok, R.string.playlist_input_cancel, this::processEditInput);
     }
 
@@ -109,11 +107,12 @@ public class ManagePlaylistsFragment extends Fragment implements Callback
 
     private void doUpdate(String input)
     {
-        int updated = updatePlaylist(context, toUpdateDelete, input);
+        int updated = updatePlaylist(getContext(), toUpdateDelete, input);
         if (updated > 0)
         {
             adapter.getPlaylists().set(position, input);
             adapter.notifyItemChanged(position);
+            shortToast(getContext(), R.string.msg_playlist_updated);
         }
     }
 
@@ -123,17 +122,18 @@ public class ManagePlaylistsFragment extends Fragment implements Callback
         position = recycler.getChildAdapterPosition((View) view.getParent().getParent());
         toUpdateDelete = adapter.getPlaylists().get(position);
         String message = String.format(getString(R.string.playlist_delete_message_format), toUpdateDelete);
-        showConfirmationDialog(context, R.string.playlist_delete_title, message, R.string.playlist_delete_yes,
+        showConfirmationDialog(getContext(), R.string.playlist_delete_title, message, R.string.playlist_delete_yes,
                 R.string.playlist_delete_no, this::doDelete);
     }
 
     private void doDelete()
     {
-        int deleted = deletePlaylist(context, toUpdateDelete);
+        int deleted = deletePlaylist(getContext(), toUpdateDelete);
         if (deleted > 0)
         {
             adapter.getPlaylists().remove(position);
             adapter.notifyItemRemoved(position);
+            shortToast(getContext(), R.string.msg_playlist_deleted);
         }
     }
 }

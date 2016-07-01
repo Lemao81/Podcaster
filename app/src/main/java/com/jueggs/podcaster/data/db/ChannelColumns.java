@@ -1,12 +1,7 @@
 package com.jueggs.podcaster.data.db;
 
-import com.jueggs.podcaster.model.Episode;
 import net.simonvt.schematic.annotation.*;
 
-import java.util.List;
-
-import static com.jueggs.podcaster.data.db.PlaylistsDb.CHANNEL;
-import static com.jueggs.podcaster.data.db.PlaylistsDb.PLAYLIST;
 import static net.simonvt.schematic.annotation.ConflictResolutionType.*;
 import static net.simonvt.schematic.annotation.DataType.Type.*;
 

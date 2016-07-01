@@ -52,4 +52,10 @@
     <string name="playlist_delete_title">Delete Playlist</string>
     <string name="playlist_delete_message_format"><xliff:g id="playlist_delete_message_format">Sure to delete playlist \'%s\'?</xliff:g></string>
     <string name="playlist_selection_title">Select Playlist</string>
+
+    <string name="msg_playlist_updated">Playlist changed</string>
+    <string name="msg_playlist_added">Playlist added</string>
+    <string name="msg_playlist_deleted">Playlist removed</string>
+    <string name="msg_channel_added">Podcast added</string>
+    <string name="msg_channel_deleted">Podcast removed</string>
 </resources>

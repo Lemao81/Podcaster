@@ -18,8 +18,11 @@ import android.util.Log;
 import android.widget.Toast;
 import com.jueggs.podcaster.R;
 import com.jueggs.podcaster.ui.main.MainActivity;
+import com.jueggs.utils.UIUtils;
 
 import java.io.IOException;
+
+import static com.jueggs.utils.UIUtils.*;
 
 public class MediaService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener,
         AudioManager.OnAudioFocusChangeListener
@@ -62,7 +65,7 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
 
         if (result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
         {
-            showMessage(R.string.error_audio_focus);
+            shortToast(this, R.string.error_audio_focus);
             stopSelf();
         }
         return super.onStartCommand(intent, flags, startId);
@@ -109,7 +112,7 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
         catch (IOException e)
         {
             Log.e(TAG, e.getMessage());
-            showMessage(R.string.error_streaming_failed);
+            shortToast(this, R.string.error_streaming_failed);
             releasePlayer();
             stopSelf();
         }
@@ -176,13 +179,8 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra)
     {
-        showMessage(R.string.error_media_player);
+        shortToast(this, R.string.error_media_player);
         return false;
-    }
-
-    private void showMessage(int stringId)
-    {
-        Toast.makeText(this, getString(stringId), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -199,9 +197,7 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
         public void onReceive(Context context, Intent intent)
         {
             if (intent.getAction().equals(ACTION_STOP))
-            {
                 stop();
-            }
         }
     };
 

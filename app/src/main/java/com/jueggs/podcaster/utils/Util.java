@@ -25,6 +25,7 @@ import net.simonvt.schematic.annotation.Unique;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.jueggs.podcaster.data.db.ChannelColumns.ProjectionCompleteIndices.*;
 import static net.simonvt.schematic.annotation.ConflictResolutionType.REPLACE;
 import static net.simonvt.schematic.annotation.DataType.Type.TEXT;
 
@@ -59,8 +60,36 @@ public class Util
                 result.add(cursor.getString(PlaylistColumns.ProjectionCompleteIndices.NAME));
             } while (cursor.moveToNext());
         }
-        cursor.close();
         return result;
+    }
+
+    public static List<Channel> transformCursorToChannels(Cursor cursor)
+    {
+        List<Channel> channels = null;
+        if (cursor.moveToFirst())
+        {
+            channels = new ArrayList<>();
+            do
+            {
+                Channel channel = new Channel();
+                channel.setChannelId(cursor.getString(CHANNEL_ID));
+                channel.setTitle(cursor.getString(TITLE));
+                channel.setChannelTitle(cursor.getString(CHANNEL_TITLE));
+                channel.setSubtitle(cursor.getString(SUBTITLE));
+                channel.setFeedLink(cursor.getString(FEED_LINK));
+                channel.setDescription(cursor.getString(DESCRIPTION));
+                channel.setPodLink(cursor.getString(POD_LINK));
+                channel.setImage(cursor.getString(IMAGE));
+                channel.setChannelType(cursor.getString(CHANNEL_TYPE));
+                channel.setCopyright(cursor.getString(COPYRIGHT));
+                channel.setRating(cursor.getString(RATING));
+                channel.setVotes(cursor.getString(VOTES));
+                channel.setSubscribers(cursor.getString(SUBSCRIBERS));
+                channel.setDate(cursor.getString(DATE));
+                channels.add(channel);
+            } while (cursor.moveToNext());
+        }
+        return channels;
     }
 
     public static ContentValues createPlaylistValues(String name)
@@ -70,7 +99,7 @@ public class Util
         return values;
     }
 
-    public static ContentValues createChannelValues(Channel channel,String playlist)
+    public static ContentValues createChannelValues(Channel channel, String playlist)
     {
         ContentValues values = new ContentValues();
         values.put(ChannelColumns.CHANNEL_ID, channel.getChannelId());

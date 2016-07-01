@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.jueggs.podcaster.utils.DateUtils.*;
 import static com.jueggs.podcaster.utils.Util.*;
 import static com.jueggs.utils.Utils.*;
 
@@ -189,7 +190,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             String text = context.getResources().getQuantityString(R.plurals.count_subscribers_format, subscriberCount, subscriberCount);
             subscribers.setText(text);
 
-            date.setText(DateUtils.createDateString(context, channel.getDate()));
+            date.setText(createDateString(context, channel.getDate()));
 
             Glide.with(context).load(channel.getImage()).placeholder(R.drawable.glide_placeholder).error(R.drawable.glide_error).into(image);
         }

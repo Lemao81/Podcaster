@@ -52,6 +52,8 @@
     <string name="playlist_delete_title">Delete Playlist</string>
     <string name="playlist_delete_message_format"><xliff:g id="playlist_delete_message_format">Sure to delete playlist \'%s\'?</xliff:g></string>
     <string name="playlist_selection_title">Select Playlist</string>
+    <string name="playlist_no_playlists">You need to create a playlist first</string>
+    <string name="playlist_no_channels">No podcasts attached yet</string>
 
     <string name="msg_playlist_updated">Playlist changed</string>
     <string name="msg_playlist_added">Playlist added</string>

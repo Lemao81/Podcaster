@@ -27,6 +27,7 @@ import com.jueggs.podcaster.model.Channel;
 import com.jueggs.podcaster.model.Episode;
 import com.jueggs.podcaster.service.MediaService;
 import com.jueggs.podcaster.utils.DaUtils;
+import com.jueggs.utils.Utils;
 
 import java.util.List;
 
@@ -34,6 +35,7 @@ import static com.jueggs.podcaster.service.MediaService.*;
 import static com.jueggs.podcaster.utils.DaUtils.*;
 import static com.jueggs.podcaster.utils.Util.*;
 import static com.jueggs.utils.UIUtils.*;
+import static com.jueggs.utils.Utils.*;
 
 public class ChannelDetailFragment extends Fragment implements Callback
 {
@@ -136,8 +138,11 @@ public class ChannelDetailFragment extends Fragment implements Callback
         else
         {
             List<String> playlists = queryPlaylists(getContext());
-            showSelectionListDialog(getContext(), root, R.string.playlist_selection_title, R.string.playlist_input_cancel, playlists,
-                    this::onPlaylistSelected);
+            if (hasElements(playlists))
+                showSelectionListDialog(getContext(), root, R.string.playlist_selection_title, R.string.playlist_input_cancel, playlists,
+                        this::onPlaylistSelected);
+            else
+                shortToast(getContext(), R.string.playlist_no_playlists);
         }
     }
 

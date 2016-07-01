@@ -23,4 +23,43 @@ public interface ChannelColumns
     @DataType(TEXT) String VOTES = "votes";
     @DataType(TEXT) String SUBSCRIBERS = "subscribers";
     @DataType(TEXT) String DATE = "date";
+
+    String[] PROJECTION_COMPLETE = {
+            _ID,
+            CHANNEL_ID,
+            PLAYLIST,
+            TITLE,
+            CHANNEL_TITLE,
+            SUBTITLE,
+            FEED_LINK,
+            DESCRIPTION,
+            POD_LINK,
+            IMAGE,
+            CHANNEL_TYPE,
+            COPYRIGHT,
+            RATING,
+            VOTES,
+            SUBSCRIBERS,
+            DATE,
+    };
+
+    interface ProjectionCompleteIndices
+    {
+        int _ID = 0;
+        int CHANNEL_ID = 1;
+        int PLAYLIST = 2;
+        int TITLE = 3;
+        int CHANNEL_TITLE = 4;
+        int SUBTITLE = 5;
+        int FEED_LINK = 6;
+        int DESCRIPTION = 7;
+        int POD_LINK = 8;
+        int IMAGE = 9;
+        int CHANNEL_TYPE = 10;
+        int COPYRIGHT = 11;
+        int RATING = 12;
+        int VOTES = 13;
+        int SUBSCRIBERS = 14;
+        int DATE = 15;
+    }
 }

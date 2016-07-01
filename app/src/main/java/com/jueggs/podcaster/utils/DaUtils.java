@@ -10,16 +10,16 @@ import com.jueggs.podcaster.model.Channel;
 
 import java.util.List;
 
-import static com.jueggs.podcaster.utils.Util.createChannelValues;
-import static com.jueggs.podcaster.utils.Util.createPlaylistValues;
-import static com.jueggs.podcaster.utils.Util.transformCursorToPlaylists;
+import static com.jueggs.podcaster.utils.Util.*;
 
 public class DaUtils
 {
     public static List<String> queryPlaylists(Context context)
     {
         Cursor cursor = context.getContentResolver().query(PlaylistsProvider.Playlist.BASE_URI, null, null, null, null);
-        return transformCursorToPlaylists(cursor);
+        List<String> result = transformCursorToPlaylists(cursor);
+        if (cursor != null) cursor.close();
+        return result;
     }
 
     public static int countChannel(Context context, Channel channel)
@@ -55,5 +55,14 @@ public class DaUtils
     public static int deleteChannel(Context context, Channel channel)
     {
         return context.getContentResolver().delete(PlaylistsProvider.Channel.withChannelId(channel.getChannelId()), null, null);
+    }
+
+    public static List<Channel> queryChannel(Context context, String playlist)
+    {
+        Cursor cursor = context.getContentResolver().query(PlaylistsProvider.Channel.withPlaylist(playlist), ChannelColumns.PROJECTION_COMPLETE,
+                null, null, null);
+        List<Channel> result = transformCursorToChannels(cursor);
+        if(cursor!=null) cursor.close();
+        return result;
     }
 }

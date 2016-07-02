@@ -63,18 +63,18 @@ public class PlaylistFragment extends Fragment
         if (hasElements(channels))
         {
             adapter.setChannels(channels);
+            showViewWithFade(root, navBack, true);
             showViewWithFade(root, list, false);
             showViewWithFade(root, recycler, true);
-            showViewWithFade(root, navBack, true);
         }
         else
-            UIUtils.shortToast(getContext(), R.string.playlist_no_channels);
+            shortToast(getContext(), R.string.playlist_no_channels);
     }
 
     private void onNavigateBack(View view)
     {
+        showViewWithFade(root, navBack, false);
         showViewWithFade(root, list, true);
         showViewWithFade(root, recycler, false);
-        showViewWithFade(root, navBack, false);
     }
 }

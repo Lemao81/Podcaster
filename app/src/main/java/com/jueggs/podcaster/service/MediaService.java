@@ -10,15 +10,12 @@ import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.wifi.WifiManager;
-import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 import com.jueggs.podcaster.R;
 import com.jueggs.podcaster.ui.main.MainActivity;
-import com.jueggs.utils.UIUtils;
 
 import java.io.IOException;
 
@@ -33,15 +30,26 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
 
     public static final String EXTRA_URL = "com.jueggs.podcaster.EXTRA_URL";
     public static final String EXTRA_TITLE = "com.jueggs.podcaster.EXTRA_TITLE";
+    public static final String EXTRA_IMAGE = "com.jueggs.podcaster.EXTRA_IMAGE";
     public static final String EXTRA_POSITION = "com.jueggs.podcaster.EXTRA_POSITION";
 
+    public static final String ACTION_PLAY_PAUSE = "com.jueggs.podcaster.ACTION_PLAY_PAUSE";
     public static final String ACTION_STOP = "com.jueggs.podcaster.ACTION_STOP";
+    public static final String ACTION_PREV = "com.jueggs.podcaster.ACTION_PREV";
+    public static final String ACTION_NEXT = "com.jueggs.podcaster.ACTION_NEXT";
+
+    public static final String ACTION_STARTED = "com.jueggs.podcaster.ACTION_STARTED";
+    public static final String ACTION_PAUSED = "com.jueggs.podcaster.ACTION_PAUSED";
+    public static final String ACTION_RESUMED = "com.jueggs.podcaster.ACTION_RESUMED";
+    public static final String ACTION_STOPPED = "com.jueggs.podcaster.ACTION_STOPPED";
 
     private MediaPlayer player;
     private WifiManager.WifiLock wifiLock;
     private AudioManager am;
     private Intent intent;
-    private LocalBinder binder = new LocalBinder();
+    private String image;
+    private String titleText;
+//    private LocalBinder binder = new LocalBinder();
 
     @Override
     public void onCreate()
@@ -50,6 +58,7 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
 
         IntentFilter filter = new IntentFilter();
         filter.addCategory(Intent.CATEGORY_DEFAULT);
+        filter.addAction(ACTION_PLAY_PAUSE);
         filter.addAction(ACTION_STOP);
         registerReceiver(actionReceiver, filter);
     }
@@ -121,7 +130,8 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
         PendingIntent stop = PendingIntent.getBroadcast(this, 1, new Intent(ACTION_STOP), 0);
 
         String title = intent.getStringExtra(EXTRA_TITLE);
-        String titleText = TextUtils.isEmpty(title) ? String.format("<%s>", getString(R.string.notification_no_title)) : title;
+        image = intent.getStringExtra(EXTRA_IMAGE);
+        titleText = TextUtils.isEmpty(title) ? String.format("<%s>", getString(R.string.no_title)) : title;
         Notification notification = new Notification.Builder(this)
                 .setContentTitle(titleText)
                 .setContentText(String.format(getString(R.string.notification_episode_format), intent.getIntExtra(EXTRA_POSITION, 0) + 1))
@@ -140,6 +150,7 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
         player.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
         wifiLock = ((WifiManager) getSystemService(WIFI_SERVICE)).createWifiLock(WifiManager.WIFI_MODE_FULL, TAG_WIFILOCK);
         player.start();
+        sendBroadcast(new Intent(ACTION_STARTED).putExtra(EXTRA_TITLE, titleText).putExtra(EXTRA_IMAGE, image));
     }
 
     private void releasePlayer()
@@ -157,25 +168,6 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
         }
     }
 
-    public void pause()
-    {
-        if (player != null && player.isPlaying())
-            player.pause();
-    }
-
-    public void resume()
-    {
-        if (player != null && !player.isPlaying())
-            player.start();
-    }
-
-    public void stop()
-    {
-        releasePlayer();
-        stopForeground(true);
-        stopSelf();
-    }
-
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra)
     {
@@ -188,6 +180,7 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
     {
         stopForeground(true);
         releasePlayer();
+        sendBroadcast(new Intent(ACTION_STOPPED));
         unregisterReceiver(actionReceiver);
     }
 
@@ -196,22 +189,43 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
         @Override
         public void onReceive(Context context, Intent intent)
         {
-            if (intent.getAction().equals(ACTION_STOP))
-                stop();
+            switch (intent.getAction())
+            {
+                case ACTION_PLAY_PAUSE:
+                    if (player != null)
+                    {
+                        if (player.isPlaying())
+                        {
+                            player.pause();
+                            sendBroadcast(new Intent(ACTION_PAUSED));
+                        }
+                        else
+                        {
+                            player.start();
+                            sendBroadcast(new Intent(ACTION_RESUMED));
+                        }
+                    }
+                    break;
+                case ACTION_STOP:
+                    releasePlayer();
+                    stopForeground(true);
+                    stopSelf();
+                    break;
+            }
         }
     };
 
     @Override
     public IBinder onBind(Intent intent)
     {
-        return binder;
+        return null;
     }
 
-    public class LocalBinder extends Binder
-    {
-        public MediaService getService()
-        {
-            return MediaService.this;
-        }
-    }
+//    public class LocalBinder extends Binder
+//    {
+//        public MediaService getService()
+//        {
+//            return MediaService.this;
+//        }
+//    }
 }

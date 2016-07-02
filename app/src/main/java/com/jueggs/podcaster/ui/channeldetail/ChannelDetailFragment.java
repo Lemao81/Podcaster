@@ -3,7 +3,6 @@ package com.jueggs.podcaster.ui.channeldetail;
 import android.content.*;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -16,18 +15,14 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.jueggs.podcaster.App;
 import com.jueggs.podcaster.R;
-import com.jueggs.podcaster.data.db.PlaylistsProvider;
 import com.jueggs.podcaster.data.repo.EpisodeRepository;
 import com.jueggs.podcaster.model.Channel;
 import com.jueggs.podcaster.model.Episode;
 import com.jueggs.podcaster.service.MediaService;
-import com.jueggs.podcaster.utils.DaUtils;
-import com.jueggs.utils.Utils;
 
 import java.util.List;
 
@@ -48,11 +43,8 @@ public class ChannelDetailFragment extends Fragment implements Callback
     private Channel channel;
     private ChannelDetailAdapter adapter;
     private EpisodeRepository repository = EpisodeRepository.getInstance();
-    private boolean bound;
-    private MediaService mediaService;
     private boolean started;
-    private boolean playing;
-    private View currentEpisodePlayButton;
+    private View playButton;
     private boolean favourized;
 
     @Override
@@ -68,11 +60,13 @@ public class ChannelDetailFragment extends Fragment implements Callback
     public void onStart()
     {
         super.onStart();
-        getActivity().bindService(new Intent(getContext(), MediaService.class), connection, Context.BIND_AUTO_CREATE);
 
         IntentFilter filter = new IntentFilter();
         filter.addCategory(Intent.CATEGORY_DEFAULT);
-        filter.addAction(ACTION_STOP);
+        filter.addAction(ACTION_STARTED);
+        filter.addAction(ACTION_PAUSED);
+        filter.addAction(ACTION_RESUMED);
+        filter.addAction(ACTION_STOPPED);
         getContext().registerReceiver(actionReceiver, filter);
     }
 
@@ -95,31 +89,24 @@ public class ChannelDetailFragment extends Fragment implements Callback
     @Override
     public void onPlayPauseEpisode(View view)
     {
-        String url = null, title = null;
-        int position = 0;
-        if (!(view instanceof FloatingActionButton))
+        if (view.getId() == R.id.playpause && !started)
         {
-            position = recycler.getChildAdapterPosition((View) view.getParent().getParent().getParent());
+            int position = recycler.getChildAdapterPosition((View) view.getParent().getParent().getParent());
             Episode episode = adapter.getEpisodes().get(position);
-            url = episode.getMediaLink();
-            title = episode.getTitle();
+            String url = episode.getMediaLink();
+
+            if (!TextUtils.isEmpty(url))
+            {
+                playButton = view;
+                getActivity().startService(new Intent(getContext(), MediaService.class)
+                        .putExtra(EXTRA_URL, url)
+                        .putExtra(EXTRA_IMAGE, channel.getImage())
+                        .putExtra(EXTRA_TITLE, episode.getTitle())
+                        .putExtra(EXTRA_POSITION, position));
+            }
         }
-        if (!started && !TextUtils.isEmpty(url))
-        {
-            startEpisode(url, title, position);
-            showPlaySymbol(view, false);
-            currentEpisodePlayButton = view;
-        }
-        else if (started && playing)
-        {
-            pauseEpisode();
-            showPlaySymbol(currentEpisodePlayButton, true);
-        }
-        else if (started && !playing)
-        {
-            resumeEpisode();
-            showPlaySymbol(currentEpisodePlayButton, false);
-        }
+        else
+            getContext().sendBroadcast(new Intent(MediaService.ACTION_PLAY_PAUSE));
     }
 
     @Override
@@ -159,38 +146,7 @@ public class ChannelDetailFragment extends Fragment implements Callback
 
     private void onStopEpisode(View view)
     {
-        stopEpisode();
-    }
-
-    private void startEpisode(String url, String title, int position)
-    {
-        getActivity().startService(new Intent(getContext(), MediaService.class).putExtra(EXTRA_URL, url)
-                .putExtra(EXTRA_TITLE, title).putExtra(EXTRA_POSITION, position));
-        started = playing = true;
-        showViewWithFade(root, console, true);
-    }
-
-    private void pauseEpisode()
-    {
-        if (mediaService != null)
-            mediaService.pause();
-        playing = false;
-    }
-
-    private void resumeEpisode()
-    {
-        if (mediaService != null)
-            mediaService.resume();
-        playing = true;
-    }
-
-    private void stopEpisode()
-    {
-        if (mediaService != null)
-            mediaService.stop();
-        started = playing = false;
-        showViewWithFade(root, console, false);
-        showPlaySymbol(currentEpisodePlayButton, true);
+        getContext().sendBroadcast(new Intent(MediaService.ACTION_STOP));
     }
 
     private void showPlaySymbol(View view, boolean play)
@@ -200,31 +156,10 @@ public class ChannelDetailFragment extends Fragment implements Callback
                 ContextCompat.getDrawable(getContext(), R.drawable.ic_pause_white));
     }
 
-    private ServiceConnection connection = new ServiceConnection()
-    {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service)
-        {
-            mediaService = ((MediaService.LocalBinder) service).getService();
-            bound = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name)
-        {
-            mediaService = null;
-            bound = false;
-        }
-    };
-
     @Override
     public void onStop()
     {
         super.onStop();
-        if (bound)
-            getActivity().unbindService(connection);
-        bound = false;
-
         getContext().unregisterReceiver(actionReceiver);
     }
 
@@ -233,9 +168,24 @@ public class ChannelDetailFragment extends Fragment implements Callback
         @Override
         public void onReceive(Context context, Intent intent)
         {
-            if (intent.getAction().equals(ACTION_STOP))
+            switch (intent.getAction())
             {
-                stopEpisode();
+                case ACTION_STARTED:
+                    started = true;
+                    showViewWithFade(root, console, true);
+                    showPlaySymbol(playButton, false);
+                    break;
+                case ACTION_PAUSED:
+                    showPlaySymbol(playButton, true);
+                    break;
+                case ACTION_RESUMED:
+                    showPlaySymbol(playButton, false);
+                    break;
+                case ACTION_STOPPED:
+                    started = false;
+                    showViewWithFade(root, console, false);
+                    showPlaySymbol(playButton, true);
+                    break;
             }
         }
     };

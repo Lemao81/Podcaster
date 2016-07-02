@@ -1,6 +1,7 @@
 package com.jueggs.podcaster.ui.charts;
 
 import android.content.Context;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import butterknife.ButterKnife;
 import com.bumptech.glide.Glide;
 import com.jueggs.podcaster.R;
 import com.jueggs.podcaster.model.Channel;
+import com.jueggs.podcaster.utils.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,10 +22,12 @@ public class ChartsAdapter extends RecyclerView.Adapter<ChartsAdapter.ViewHolder
 {
     private List<Channel> channels = new ArrayList<>();
     private Context context;
+    private FragmentManager fragmentManager;
 
-    public ChartsAdapter(Context context)
+    public ChartsAdapter(Context context, FragmentManager fragmentManager)
     {
         this.context = context;
+        this.fragmentManager = fragmentManager;
     }
 
     @Override
@@ -39,6 +43,7 @@ public class ChartsAdapter extends RecyclerView.Adapter<ChartsAdapter.ViewHolder
         Channel channel = channels.get(position);
         holder.ranking.setText(String.valueOf(position + 1));
         holder.title.setText(channel.getTitle());
+        holder.itemView.setOnClickListener(holder);
 
         Glide.with(context).load(channel.getImage()).placeholder(R.drawable.glide_placeholder).error(R.drawable.glide_error).into(holder.image);
     }
@@ -55,7 +60,7 @@ public class ChartsAdapter extends RecyclerView.Adapter<ChartsAdapter.ViewHolder
         notifyDataSetChanged();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
     {
         @Bind(R.id.ranking) TextView ranking;
         @Bind(R.id.title) TextView title;
@@ -65,6 +70,12 @@ public class ChartsAdapter extends RecyclerView.Adapter<ChartsAdapter.ViewHolder
         {
             super(itemView);
             ButterKnife.bind(this, itemView);
+        }
+
+        @Override
+        public void onClick(View v)
+        {
+            Util.showChannelDetails(context, fragmentManager, channels.get(getAdapterPosition()));
         }
     }
 }

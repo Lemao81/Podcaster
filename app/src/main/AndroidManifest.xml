@@ -45,8 +45,22 @@
         </activity>
 
         <provider
-            android:authorities="com.jueggs.podcaster"
-            android:name=".data.db.generated.PlaylistsProvider" />
+            android:name=".data.db.generated.PlaylistsProvider"
+            android:authorities="com.jueggs.podcaster" />
+
+        <receiver android:name=".widget.WidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.jueggs.podcaster.ACTION_STARTED" />
+                <action android:name="com.jueggs.podcaster.ACTION_PAUSED" />
+                <action android:name="com.jueggs.podcaster.ACTION_RESUMED" />
+                <action android:name="com.jueggs.podcaster.ACTION_STOPPED" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_provider_info" />
+        </receiver>
     </application>
 
 </manifest>

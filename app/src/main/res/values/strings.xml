@@ -35,7 +35,7 @@
     <string name="error_media_player">An error occurred at the media player </string>
     <string name="error_audio_focus">Could not retrieve audio focus - something else occupying audio?</string>
 
-    <string name="notification_no_title">no title</string>
+    <string name="no_title">no title</string>
     <string name="notification_episode_format"><xliff:g id="notification_episode_format">Episode %d</xliff:g></string>
     <string name="notification_stop">Stop</string>
     <string name="title_activity_manage_playlists">ManagePlaylistsActivity</string>
@@ -60,4 +60,6 @@
     <string name="msg_playlist_deleted">Playlist removed</string>
     <string name="msg_channel_added">Podcast added</string>
     <string name="msg_channel_deleted">Podcast removed</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>

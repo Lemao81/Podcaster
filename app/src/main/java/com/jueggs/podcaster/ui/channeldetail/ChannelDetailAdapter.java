@@ -128,7 +128,7 @@ public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     class DetailsViewHolder extends RecyclerView.ViewHolder
     {
-        @Bind(R.id.play) ImageButton play;
+        @Bind(R.id.playpause) ImageButton play;
         @Bind(R.id.favourize) ImageButton favourize;
         @Bind(R.id.share) ImageButton share;
         @Bind(R.id.image) ImageView image;
@@ -150,7 +150,7 @@ public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
         @Bind(R.id.rating) TextView rating;
         @Bind(R.id.votes) TextView votes;
         @Bind(R.id.date) TextView date;
-        @Bind(R.id.play) ImageButton play;
+        @Bind(R.id.playpause) ImageButton play;
 
         public EpisodeViewHolder(View itemView)
         {

@@ -1,0 +1,78 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryTransparent">
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_gravity="center_vertical"
+        android:layout_width="@dimen/image_size_widget"
+        android:layout_height="@dimen/image_size_widget"
+        tools:src="@drawable/channel_pic" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_marginLeft="@dimen/space_small"
+        android:layout_marginStart="@dimen/space_small"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/title"
+            android:textColor="@android:color/black"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            tools:text="Folge 29: Das Schlüsselwort static" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/previous"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/ic_widget_previous" />
+
+            <ImageButton
+                android:id="@+id/playpause"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/space_small"
+                android:layout_marginStart="@dimen/space_small"
+                android:layout_weight="1"
+                android:src="@drawable/ic_widget_play" />
+
+            <ImageButton
+                android:id="@+id/stop"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/space_small"
+                android:layout_marginStart="@dimen/space_small"
+                android:layout_weight="1"
+                android:src="@drawable/ic_widget_stop" />
+
+            <ImageButton
+                android:id="@+id/next"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/space_small"
+                android:layout_marginLeft="@dimen/space_small"
+                android:layout_marginRight="@dimen/space_small"
+                android:layout_marginStart="@dimen/space_small"
+                android:layout_weight="1"
+                android:src="@drawable/ic_widget_next" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>

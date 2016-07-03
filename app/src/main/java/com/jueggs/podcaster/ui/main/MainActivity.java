@@ -12,9 +12,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.jueggs.podcaster.App;
+import com.jueggs.podcaster.FlavorConfig;
 import com.jueggs.podcaster.R;
 import com.jueggs.podcaster.ui.playlists.manage.ManagePlaylistsActivity;
 

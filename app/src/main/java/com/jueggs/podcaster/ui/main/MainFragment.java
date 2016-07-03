@@ -9,17 +9,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import com.jueggs.podcaster.FlavorConfig;
 import com.jueggs.podcaster.R;
 
 public class MainFragment extends Fragment
 {
-//    @Nullable @Bind(R.id.toolbar) Toolbar toolbar;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
-//        ButterKnife.bind(this, view);
+        FlavorConfig.initializeMobileAds(getContext().getApplicationContext().getApplicationContext(), view);
         return view;
     }
 }

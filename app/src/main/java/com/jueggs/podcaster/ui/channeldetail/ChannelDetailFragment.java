@@ -24,6 +24,7 @@ import com.jueggs.podcaster.model.Channel;
 import com.jueggs.podcaster.model.Episode;
 import com.jueggs.podcaster.service.MediaService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.jueggs.podcaster.service.MediaService.*;
@@ -54,12 +55,6 @@ public class ChannelDetailFragment extends Fragment implements Callback
 
         channel = (Channel) getArguments().getSerializable(ChannelDetailActivity.EXTRA_CHANNEL);
         favourized = countChannel(getContext(), channel) > 0;
-    }
-
-    @Override
-    public void onStart()
-    {
-        super.onStart();
 
         IntentFilter filter = new IntentFilter();
         filter.addCategory(Intent.CATEGORY_DEFAULT);
@@ -68,6 +63,12 @@ public class ChannelDetailFragment extends Fragment implements Callback
         filter.addAction(ACTION_RESUMED);
         filter.addAction(ACTION_STOPPED);
         getContext().registerReceiver(actionReceiver, filter);
+    }
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
     }
 
     @Override
@@ -81,7 +82,7 @@ public class ChannelDetailFragment extends Fragment implements Callback
         fabPlayPause.setOnClickListener(this::onPlayPauseEpisode);
         fabStop.setOnClickListener(this::onStopEpisode);
 
-        repository.loadEpisodes(Integer.parseInt(channel.getChannelId()), App.LANGUAGE, adapter::onEpisodesLoaded);
+        repository.loadEpisodes(Integer.parseInt(channel.getChannelId()), App.LANGUAGE, this::onEpisodesLoaded);
 
         return view;
     }
@@ -91,22 +92,25 @@ public class ChannelDetailFragment extends Fragment implements Callback
     {
         if (view.getId() == R.id.playpause && !started)
         {
-            int position = recycler.getChildAdapterPosition((View) view.getParent().getParent().getParent());
-            Episode episode = adapter.getEpisodes().get(position);
-            String url = episode.getMediaLink();
+            int position = recycler.getChildAdapterPosition((View) view.getParent().getParent().getParent()) - 1;
 
-            if (!TextUtils.isEmpty(url))
+            if (!TextUtils.isEmpty(adapter.getEpisodes().get(position).getMediaLink()))
             {
                 playButton = view;
                 getActivity().startService(new Intent(getContext(), MediaService.class)
-                        .putExtra(EXTRA_URL, url)
-                        .putExtra(EXTRA_IMAGE, channel.getImage())
-                        .putExtra(EXTRA_TITLE, episode.getTitle())
-                        .putExtra(EXTRA_POSITION, position));
+                        .putExtra(EXTRA_EPISODES, (ArrayList<Episode>) channel.getEpisodes())
+                        .putExtra(EXTRA_POSITION, position)
+                        .putExtra(EXTRA_IMAGE, channel.getImage()));
             }
         }
         else
             getContext().sendBroadcast(new Intent(MediaService.ACTION_PLAY_PAUSE));
+    }
+
+    private void onEpisodesLoaded(List<Episode> episodes)
+    {
+        channel.setEpisodes(episodes);
+        adapter.setEpisodes(episodes);
     }
 
     @Override
@@ -160,7 +164,13 @@ public class ChannelDetailFragment extends Fragment implements Callback
     public void onStop()
     {
         super.onStop();
+    }
+
+    @Override
+    public void onDestroy()
+    {
         getContext().unregisterReceiver(actionReceiver);
+        super.onDestroy();
     }
 
     private BroadcastReceiver actionReceiver = new BroadcastReceiver()

@@ -2,8 +2,10 @@ package com.jueggs.podcaster.model;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class Episode
+public class Episode implements Serializable
 {
     private String showId;
     private String title;

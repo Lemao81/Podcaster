@@ -26,7 +26,6 @@ public class WidgetProvider extends AppWidgetProvider
     public static final String WIDGET_TITLE = "widget_title";
     public static final String ENABLE_METH = "setEnabled";
 
-    private String title;
     private String image;
 
     @Override
@@ -111,6 +110,7 @@ public class WidgetProvider extends AppWidgetProvider
         }
         else
         {
+            views.setTextViewText(R.id.title, "");
             setEnabled(views, false, R.id.playpause, R.id.stop, R.id.previous, R.id.next);
             views.setImageViewResource(R.id.image, R.drawable.glide_placeholder);
         }

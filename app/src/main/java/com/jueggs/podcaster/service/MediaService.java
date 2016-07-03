@@ -15,9 +15,12 @@ import android.os.PowerManager;
 import android.text.TextUtils;
 import android.util.Log;
 import com.jueggs.podcaster.R;
+import com.jueggs.podcaster.model.Episode;
 import com.jueggs.podcaster.ui.main.MainActivity;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.jueggs.utils.UIUtils.*;
 
@@ -28,10 +31,10 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
     public static final String TAG_WIFILOCK = "com.jueggs.podcaster.TAG_WIFILOCK";
     public static final int NOTIFICATION_ID = 1;
 
-    public static final String EXTRA_URL = "com.jueggs.podcaster.EXTRA_URL";
     public static final String EXTRA_TITLE = "com.jueggs.podcaster.EXTRA_TITLE";
     public static final String EXTRA_IMAGE = "com.jueggs.podcaster.EXTRA_IMAGE";
     public static final String EXTRA_POSITION = "com.jueggs.podcaster.EXTRA_POSITION";
+    public static final String EXTRA_EPISODES = "com.jueggs.podcaster.EXTRA_EPISODES";
 
     public static final String ACTION_PLAY_PAUSE = "com.jueggs.podcaster.ACTION_PLAY_PAUSE";
     public static final String ACTION_STOP = "com.jueggs.podcaster.ACTION_STOP";
@@ -46,10 +49,10 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
     private MediaPlayer player;
     private WifiManager.WifiLock wifiLock;
     private AudioManager am;
-    private Intent intent;
     private String image;
-    private String titleText;
-//    private LocalBinder binder = new LocalBinder();
+    private List<Episode> episodes;
+    private int position;
+    private Episode playing;
 
     @Override
     public void onCreate()
@@ -60,24 +63,62 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
         filter.addCategory(Intent.CATEGORY_DEFAULT);
         filter.addAction(ACTION_PLAY_PAUSE);
         filter.addAction(ACTION_STOP);
+        filter.addAction(ACTION_PREV);
+        filter.addAction(ACTION_NEXT);
         registerReceiver(actionReceiver, filter);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
-        this.intent = intent;
+        episodes = (ArrayList<Episode>) intent.getSerializableExtra(EXTRA_EPISODES);
+        position = intent.getIntExtra(EXTRA_POSITION, 0);
+        image = intent.getStringExtra(EXTRA_IMAGE);
+        playing = episodes.get(position);
 
         am = (AudioManager) getSystemService(AUDIO_SERVICE);
         int result = am.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-        initPlayer();
-
         if (result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
         {
             shortToast(this, R.string.error_audio_focus);
             stopSelf();
         }
+
+        initPlayer();
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    private void initPlayer()
+    {
+        player = new MediaPlayer();
+        try
+        {
+            player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            player.setDataSource(playing.getMediaLink());
+            player.setOnPreparedListener(this);
+            player.prepareAsync();
+        }
+        catch (IOException e)
+        {
+            Log.e(TAG, e.getMessage());
+            shortToast(this, R.string.error_streaming_failed);
+            releasePlayer();
+            stopSelf();
+        }
+
+        PendingIntent content = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent stop = PendingIntent.getBroadcast(this, 1, new Intent(ACTION_STOP), 0);
+
+        Notification notification = new Notification.Builder(this)
+                .setContentTitle(getTitleText())
+                .setContentText(String.format(getString(R.string.notification_episode_format), position + 1))
+                .setContentIntent(content)
+                .setTicker(getTitleText())
+                .setSmallIcon(R.drawable.ic_notification)
+                .addAction(R.drawable.ic_stop_black, getString(R.string.notification_stop), stop)
+                .build();
+        notification.flags |= Notification.FLAG_ONGOING_EVENT;
+        startForeground(NOTIFICATION_ID, notification);
     }
 
     @Override
@@ -107,50 +148,37 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
         }
     }
 
-    private void initPlayer()
-    {
-        player = new MediaPlayer();
-        String url = intent.getStringExtra(EXTRA_URL);
-        try
-        {
-            player.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            player.setDataSource(url);
-            player.setOnPreparedListener(this);
-            player.prepareAsync();
-        }
-        catch (IOException e)
-        {
-            Log.e(TAG, e.getMessage());
-            shortToast(this, R.string.error_streaming_failed);
-            releasePlayer();
-            stopSelf();
-        }
-
-        PendingIntent content = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
-        PendingIntent stop = PendingIntent.getBroadcast(this, 1, new Intent(ACTION_STOP), 0);
-
-        String title = intent.getStringExtra(EXTRA_TITLE);
-        image = intent.getStringExtra(EXTRA_IMAGE);
-        titleText = TextUtils.isEmpty(title) ? String.format("<%s>", getString(R.string.no_title)) : title;
-        Notification notification = new Notification.Builder(this)
-                .setContentTitle(titleText)
-                .setContentText(String.format(getString(R.string.notification_episode_format), intent.getIntExtra(EXTRA_POSITION, 0) + 1))
-                .setContentIntent(content)
-                .setTicker(titleText)
-                .setSmallIcon(R.drawable.ic_notification)
-                .addAction(R.drawable.ic_stop_black, getString(R.string.notification_stop), stop)
-                .build();
-        notification.flags |= Notification.FLAG_ONGOING_EVENT;
-        startForeground(NOTIFICATION_ID, notification);
-    }
-
     @Override
     public void onPrepared(MediaPlayer mp)
     {
         player.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
         wifiLock = ((WifiManager) getSystemService(WIFI_SERVICE)).createWifiLock(WifiManager.WIFI_MODE_FULL, TAG_WIFILOCK);
         player.start();
-        sendBroadcast(new Intent(ACTION_STARTED).putExtra(EXTRA_TITLE, titleText).putExtra(EXTRA_IMAGE, image));
+        sendBroadcast(new Intent(ACTION_STARTED).putExtra(EXTRA_TITLE, getTitleText()).putExtra(EXTRA_IMAGE, image));
+    }
+
+    private String getTitleText()
+    {
+        return TextUtils.isEmpty(playing.getTitle()) ? String.format("<%s>", getString(R.string.no_title)) : playing.getTitle();
+    }
+
+    private void playNext()
+    {
+        if (player != null)
+        {
+            if (player.isPlaying())
+                player.stop();
+            player.reset();
+            try
+            {
+                player.setDataSource(playing.getMediaLink());
+                player.prepareAsync();
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void releasePlayer()
@@ -211,6 +239,20 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
                     stopForeground(true);
                     stopSelf();
                     break;
+                case ACTION_PREV:
+                    if (position > 0)
+                    {
+                        playing = episodes.get(--position);
+                        playNext();
+                    }
+                    break;
+                case ACTION_NEXT:
+                    if (position < episodes.size() - 1)
+                    {
+                        playing = episodes.get(++position);
+                        playNext();
+                    }
+                    break;
             }
         }
     };
@@ -220,12 +262,4 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
     {
         return null;
     }
-
-//    public class LocalBinder extends Binder
-//    {
-//        public MediaService getService()
-//        {
-//            return MediaService.this;
-//        }
-//    }
 }

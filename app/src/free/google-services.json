@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "428975645363",
+    "firebase_url": "https://podcaster-bac2b.firebaseio.com",
+    "project_id": "podcaster-bac2b",
+    "storage_bucket": "podcaster-bac2b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:428975645363:android:f7bfc261a8b28123",
+        "android_client_info": {
+          "package_name": "com.jueggs.podcaster.free"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "428975645363-tmd1fhk3qvgplikhh7536dvr6cinank0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jueggs.podcaster.free",
+            "certificate_hash": "86386C959ADE1BC6474B0B12A55BFE05103E6EF7"
+          }
+        },
+        {
+          "client_id": "428975645363-i9bfnoaq7mnbg4aulch74thnq2i6fms8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTLCBUcrJ4_oyN_JDCmJFB3eyQtt8G-_s"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "428975645363-i9bfnoaq7mnbg4aulch74thnq2i6fms8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

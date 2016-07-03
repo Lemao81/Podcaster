@@ -61,8 +61,6 @@ public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder vh, int position)
     {
-        Episode episode = episodes.get(position);
-
         if (vh instanceof DetailsViewHolder)
         {
             DetailsViewHolder holder = (DetailsViewHolder) vh;
@@ -79,6 +77,7 @@ public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
         else if (vh instanceof EpisodeViewHolder)
         {
             EpisodeViewHolder holder = (EpisodeViewHolder) vh;
+            Episode episode = episodes.get(position - 1);
 
             holder.title.setText(episode.getTitle());
             holder.subtitle.setText(episode.getDescription() != null ? episode.getDescription() : "");
@@ -100,10 +99,10 @@ public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public int getItemCount()
     {
-        return episodes.size();
+        return episodes.size() + 1;
     }
 
-    public void onEpisodesLoaded(List<Episode> episodes)
+    public void setEpisodes(List<Episode> episodes)
     {
         this.episodes = episodes;
         notifyDataSetChanged();

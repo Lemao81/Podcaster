@@ -4,7 +4,9 @@
     <color name="colorPrimaryDark">#F57C00</color>
     <color name="colorAccent">#0091EA</color>
 
+    <color name="colorPrimaryBrightTransparent">#aaffaa11</color>
     <color name="colorPrimaryTransparent">#aaff9900</color>
+    <color name="colorPrimaryDarkTransparent">#aaF57C00</color>
     <color name="bg_charts">#f7f4ed</color>
     <color name="bg_charts_ranking">#E0E0E0</color>
 </resources>

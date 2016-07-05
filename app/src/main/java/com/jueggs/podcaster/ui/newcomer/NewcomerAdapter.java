@@ -1,5 +1,6 @@
 package com.jueggs.podcaster.ui.newcomer;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
@@ -92,7 +93,7 @@ public class NewcomerAdapter extends RecyclerView.Adapter<NewcomerAdapter.Channe
         @Override
         public void onClick(View v)
         {
-            showChannelDetails(context, fragmentManager, channels.get(getAdapterPosition()));
+            showChannelDetails((Activity) context, fragmentManager, channels.get(getAdapterPosition()), image);
         }
     }
 }

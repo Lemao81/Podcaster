@@ -25,6 +25,8 @@ public class ChannelDetailActivity extends AppCompatActivity
         setContentView(R.layout.activity_channel_detail);
         ButterKnife.bind(this);
 
+        supportPostponeEnterTransition();
+
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);

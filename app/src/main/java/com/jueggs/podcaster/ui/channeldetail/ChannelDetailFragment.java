@@ -17,6 +17,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import com.google.android.gms.analytics.HitBuilders;
 import com.jueggs.podcaster.App;
 import com.jueggs.podcaster.R;
 import com.jueggs.podcaster.data.repo.EpisodeRepository;
@@ -88,6 +89,13 @@ public class ChannelDetailFragment extends Fragment implements Callback
     }
 
     @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
+        recycler.post(() -> getActivity().supportStartPostponedEnterTransition());
+    }
+
+    @Override
     public void onPlayPauseEpisode(View view)
     {
         if (view.getId() == R.id.playpause && !started)
@@ -101,6 +109,10 @@ public class ChannelDetailFragment extends Fragment implements Callback
                         .putExtra(EXTRA_EPISODES, (ArrayList<Episode>) channel.getEpisodes())
                         .putExtra(EXTRA_POSITION, position)
                         .putExtra(EXTRA_IMAGE, channel.getImage()));
+                App.getInstance().getTracker().send(new HitBuilders.EventBuilder()
+                        .setCategory(App.TRACK_CAT_CHANNEL)
+                        .setAction(App.TRACK_ACTION_PLAYED)
+                        .setLabel(channel.getChannelId()).build());
             }
         }
         else

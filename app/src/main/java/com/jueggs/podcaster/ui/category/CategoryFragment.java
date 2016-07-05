@@ -45,7 +45,7 @@ public class CategoryFragment extends Fragment implements Callback
         View view = inflater.inflate(R.layout.fragment_categories, container, false);
         ButterKnife.bind(this, view);
 
-        equipeRecycler(getContext(), recycler, adapter = new CategoryAdapter(getContext(), getActivity().getSupportFragmentManager(), this));
+        equipeRecycler(getContext(), recycler, adapter = new CategoryAdapter(getActivity(), getActivity().getSupportFragmentManager(), this));
 
         navBack.setOnClickListener(adapter::onNavigateBack);
         scroll.setOnClickListener(this::onScroll);

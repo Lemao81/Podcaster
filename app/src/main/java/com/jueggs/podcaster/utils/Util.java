@@ -1,12 +1,16 @@
 package com.jueggs.podcaster.utils;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import com.jueggs.decorator.DividerDecoration;
 import com.jueggs.podcaster.App;
 import com.jueggs.podcaster.R;
@@ -38,14 +42,16 @@ public class Util
         recycler.addItemDecoration(new DividerDecoration(context, R.drawable.divider));
     }
 
-    public static void showChannelDetails(Context context, FragmentManager fm, Channel channel)
+    public static void showChannelDetails(Activity context, FragmentManager fm, Channel channel, View sharedView)
     {
         if (App.getInstance().isTwoPane())
             fm.beginTransaction().replace(R.id.container, ChannelDetailFragment.createInstance(channel)).commit();
         else
         {
             Intent intent = new Intent(context, ChannelDetailActivity.class).putExtra(ChannelDetailActivity.EXTRA_CHANNEL, channel);
-            context.startActivity(intent);
+            ActivityOptionsCompat opts = ActivityOptionsCompat
+                    .makeSceneTransitionAnimation(context, sharedView, context.getString(R.string.transition_channel_img));
+            context.startActivity(intent, opts.toBundle());
         }
     }
 

@@ -1,5 +1,6 @@
 package com.jueggs.podcaster.ui.category;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.v4.app.FragmentManager;
@@ -198,7 +199,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         @Override
         public void onClick(View v)
         {
-            showChannelDetails(context, fragmentManager, channels.get(getAdapterPosition() - categories.size()));
+            showChannelDetails((Activity) context, fragmentManager, channels.get(getAdapterPosition() - categories.size()), image);
         }
     }
 }

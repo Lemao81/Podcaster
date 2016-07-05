@@ -34,7 +34,7 @@ public class NewcomerFragment extends Fragment
         View view = inflater.inflate(R.layout.fragment_newcomer, container, false);
         ButterKnife.bind(this, view);
 
-        equipeRecycler(getContext(), recycler, adapter = new NewcomerAdapter(getContext(), getActivity().getSupportFragmentManager()));
+        equipeRecycler(getContext(), recycler, adapter = new NewcomerAdapter(getActivity(), getActivity().getSupportFragmentManager()));
 
         toggleAudio.setOnClickListener(this::onToggleType);
         toggleVideo.setOnClickListener(this::onToggleType);

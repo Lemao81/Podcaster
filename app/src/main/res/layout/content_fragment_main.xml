@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/appbar_padding_top">
 
-        <include layout="@layout/toolbar_active" />
+        <include layout="@layout/toolbar_optional" />
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tabs"

@@ -35,8 +35,8 @@ public class ChartsFragment extends Fragment
         View view = inflater.inflate(R.layout.fragment_charts, container, false);
         ButterKnife.bind(this, view);
 
-        equipeRecycler(getContext(), recyclerAudio, audioAdapter = new ChartsAdapter(getContext(), getActivity().getSupportFragmentManager()));
-        equipeRecycler(getContext(), recyclerVideo, videoAdapter = new ChartsAdapter(getContext(), getActivity().getSupportFragmentManager()));
+        equipeRecycler(getContext(), recyclerAudio, audioAdapter = new ChartsAdapter(getActivity(), getActivity().getSupportFragmentManager()));
+        equipeRecycler(getContext(), recyclerVideo, videoAdapter = new ChartsAdapter(getActivity(), getActivity().getSupportFragmentManager()));
 
         return view;
     }

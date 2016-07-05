@@ -1,5 +1,6 @@
 package com.jueggs.podcaster.ui.charts;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +18,8 @@ import com.jueggs.podcaster.utils.Util;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.jueggs.podcaster.utils.Util.*;
 
 public class ChartsAdapter extends RecyclerView.Adapter<ChartsAdapter.ViewHolder>
 {
@@ -75,7 +78,7 @@ public class ChartsAdapter extends RecyclerView.Adapter<ChartsAdapter.ViewHolder
         @Override
         public void onClick(View v)
         {
-            Util.showChannelDetails(context, fragmentManager, channels.get(getAdapterPosition()));
+            showChannelDetails((Activity) context, fragmentManager, channels.get(getAdapterPosition()), image);
         }
     }
 }

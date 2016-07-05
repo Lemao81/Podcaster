@@ -16,6 +16,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.jueggs.podcaster.App;
 import com.jueggs.podcaster.FlavorConfig;
 import com.jueggs.podcaster.R;
@@ -36,6 +38,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        App.getInstance().startTracking();
 
         if (savedInstanceState == null)
             App.getInstance().setTwoPane(container != null);

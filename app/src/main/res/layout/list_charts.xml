@@ -42,6 +42,7 @@
                 android:layout_width="@dimen/image_size_normal"
                 android:layout_height="@dimen/image_size_normal"
                 android:layout_gravity="center"
+                android:transitionName="@string/transition_channel_img"
                 tools:src="@drawable/channel_pic" />
         </FrameLayout>
 

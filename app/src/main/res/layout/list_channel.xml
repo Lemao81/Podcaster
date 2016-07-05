@@ -13,6 +13,7 @@
         android:layout_gravity="center"
         android:layout_marginEnd="@dimen/space_normal"
         android:layout_marginRight="@dimen/space_normal"
+        android:transitionName="@string/transition_channel_img"
         tools:src="@drawable/channel_pic" />
 
     <LinearLayout

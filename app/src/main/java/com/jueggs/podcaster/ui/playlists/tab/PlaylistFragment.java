@@ -51,7 +51,7 @@ public class PlaylistFragment extends Fragment
 
         navBack.setOnClickListener(this::onNavigateBack);
 
-        equipeRecycler(getContext(), recycler, adapter = new PlaylistAdapter(getContext(), getActivity().getSupportFragmentManager()));
+        equipeRecycler(getContext(), recycler, adapter = new PlaylistAdapter(getActivity(), getActivity().getSupportFragmentManager()));
 
         return view;
     }

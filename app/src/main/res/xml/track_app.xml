@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <string name="ga_trackingId">UA-80273310-1</string>
+    <bool name="ga_autoActivityTracking">true</bool>
+
+    <screenName name="com.jueggs.podcaster.ui.main.MainActivity">Main Screen</screenName>
+    <screenName name="com.jueggs.podcaster.ui.channeldetail.ChannelDetailActivity">Show Channel Detail</screenName>
+    <screenName name="com.jueggs.podcaster.ui.playlists.manage.ManagePlaylistsActivity">Manage Playlists</screenName>
+</resources>

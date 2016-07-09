@@ -66,4 +66,13 @@
     <string name="add_widget">Add widget</string>
 
     <string name="transition_channel_img">transition_channel_img</string>
+
+    <string name="package_name">com.jueggs.podcaster</string>
+    <string name="account_name">podcaster_account</string>
+
+    <string name="pref_enable_notification">enable_notification</string>
+    <string name="pref_last_notification">last_notification</string>
+
+    <string name="notification_title">Newest Podcasts</string>
+    <string name="notification_content">See audio + video newcomer at podcast.de</string>
 </resources>

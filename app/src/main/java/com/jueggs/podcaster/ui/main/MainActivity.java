@@ -1,13 +1,17 @@
 package com.jueggs.podcaster.ui.main;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -21,11 +25,20 @@ import com.google.android.gms.analytics.Tracker;
 import com.jueggs.podcaster.App;
 import com.jueggs.podcaster.FlavorConfig;
 import com.jueggs.podcaster.R;
+import com.jueggs.podcaster.sync.SyncAdapter;
 import com.jueggs.podcaster.ui.playlists.manage.ManagePlaylistsActivity;
 
 public class MainActivity extends AppCompatActivity
 {
+    public static final String TAG = MainActivity.class.getSimpleName();
+    public static final String EXTRA_TAB = "com.jueggs.podcaster.EXTRA_TAB";
+    public static final int TAB_CATEGORY = 0;
+    public static final int TAB_CHARTS = 1;
+    public static final int TAB_NEWCOMER = 2;
+    public static final int TAB_PLAYLISTS = 3;
+
     private ViewPagerAdapter pagerAdapter;
+    private Account account;
 
     @Bind(R.id.viewPager) ViewPager viewPager;
     @Bind(R.id.tabs) TabLayout tabs;
@@ -41,7 +54,11 @@ public class MainActivity extends AppCompatActivity
         App.getInstance().startTracking();
 
         if (savedInstanceState == null)
+        {
             App.getInstance().setTwoPane(container != null);
+            createAccount();
+            getContentResolver().addPeriodicSync(account, getString(R.string.package_name), Bundle.EMPTY, SyncAdapter.SYNC_INTERVAL);
+        }
 
         if (App.getInstance().isTwoPane())
         {
@@ -60,6 +77,15 @@ public class MainActivity extends AppCompatActivity
         pagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), this);
         viewPager.setAdapter(pagerAdapter);
         tabs.setupWithViewPager(viewPager);
+        //TODO add page selection
+    }
+
+    private void createAccount()
+    {
+        account = new Account(getString(R.string.account_name), getString(R.string.package_name));
+        AccountManager am = (AccountManager) getSystemService(ACCOUNT_SERVICE);
+        if (!am.addAccountExplicitly(account, null, null))
+            Log.e(TAG, "could not add account for sync adapter");
     }
 
     @Override
@@ -84,7 +110,8 @@ public class MainActivity extends AppCompatActivity
             }
             else
             {
-                startActivity(new Intent(this, ManagePlaylistsActivity.class));
+                startActivity(new Intent(this, ManagePlaylistsActivity.class),
+                        ActivityOptionsCompat.makeSceneTransitionAnimation(this).toBundle());
             }
             return true;
         }

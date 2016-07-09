@@ -13,11 +13,13 @@ import com.jueggs.podcaster.ui.playlists.tab.PlaylistFragment;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.jueggs.podcaster.ui.main.MainActivity.*;
+
 public class ViewPagerAdapter extends FragmentPagerAdapter
 {
-    public List<String> titles=new ArrayList<>();
+    public List<String> titles = new ArrayList<>();
 
-    public ViewPagerAdapter(FragmentManager fm,Context context)
+    public ViewPagerAdapter(FragmentManager fm, Context context)
     {
         super(fm);
         titles.add(context.getString(R.string.title_categories));
@@ -31,13 +33,13 @@ public class ViewPagerAdapter extends FragmentPagerAdapter
     {
         switch (position)
         {
-            case 0:
+            case TAB_CATEGORY:
                 return new CategoryFragment();
-            case 1:
+            case TAB_CHARTS:
                 return new ChartsFragment();
-            case 2:
+            case TAB_NEWCOMER:
                 return new NewcomerFragment();
-            case 3:
+            case TAB_PLAYLISTS:
                 return new PlaylistFragment();
             default:
                 return new CategoryFragment();

@@ -22,5 +22,8 @@ public interface PodcastService
     Call<ChannelArrayRoot> loadSearch(@Query("q") String query);
 
     @GET("directory.json")
-    Call<ChannelArrayRoot> loadNewcomer(@Query("lang") String language, @Query("type") String type);
+    Call<ChannelArrayRoot> loadNewcomerWithType(@Query("lang") String language, @Query("type") String type);
+
+    @GET("directory.json")
+    Call<ChannelArrayRoot> loadNewcomer(@Query("lang") String language);
 }

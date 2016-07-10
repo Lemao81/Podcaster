@@ -1,30 +1,43 @@
 package com.jueggs.podcaster.data.repo;
 
+import android.content.Context;
 import android.os.AsyncTask;
-import com.jueggs.podcaster.data.PodcastContract;
+import android.util.Log;
+import com.jueggs.podcaster.helper.NetworkValidator;
+import com.jueggs.podcaster.helper.Result;
 import com.jueggs.podcaster.model.Category;
-import com.jueggs.podcaster.utils.ParseUtils;
-import com.jueggs.utils.NetUtils;
 import com.jueggs.utils.Utils;
+import org.json.JSONException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.jueggs.podcaster.data.PodcastContract.*;
 import static com.jueggs.podcaster.utils.ParseUtils.*;
+import static com.jueggs.podcaster.utils.Util.*;
 import static com.jueggs.utils.NetUtils.*;
 
 public class CategoryRepository
 {
+    public static final String TAG = CategoryRepository.class.getSimpleName();
+
     private static CategoryRepository instance;
 
     private List<Category> cache;
     private Callback.CategoriesLoaded callback;
+    private Context context;
+
+    public CategoryRepository(Context context)
+    {
+        this.context = context;
+    }
 
     public void loadCategories(String language, Callback.CategoriesLoaded callback)
     {
         if (Utils.hasElements(cache) && callback != null)
+        {
+            writeNetworkState(context, Result.SUCCESS);
             callback.onCategoriesLoaded(cache);
+        }
         else
         {
             this.callback = callback;
@@ -39,10 +52,10 @@ public class CategoryRepository
             callback.onCategoriesLoaded(categories);
     }
 
-    public static CategoryRepository getInstance()
+    public static CategoryRepository getInstance(Context context)
     {
         if (instance == null)
-            instance = new CategoryRepository();
+            instance = new CategoryRepository(context);
         return instance;
     }
 
@@ -58,8 +71,25 @@ public class CategoryRepository
         @Override
         protected List<Category> doInBackground(String... param)
         {
-            String jsonString = getJsonDataStetho(createCategoriesUri(param[0]));
-            return parseCategories(jsonString);
+            String language = param[0];
+            String jsonString = getJsonDataStetho(createCategoriesUri(language));
+
+            int result = new NetworkValidator(context).validate(jsonString);
+            if (result == Result.SUCCESS)
+                try
+                {
+                    List<Category> categories = parseCategories(jsonString);
+                    writeNetworkState(context, Result.SUCCESS);
+                    return categories;
+                }
+                catch (JSONException e)
+                {
+                    Log.e(TAG, e.getMessage());
+                    writeNetworkState(context, Result.INVALID_DATA);
+                    return null;
+                }
+            writeNetworkState(context, result);
+            return null;
         }
 
         @Override

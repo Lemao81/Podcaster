@@ -11,14 +11,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.jueggs.podcaster.App;
 import com.jueggs.podcaster.R;
 import com.jueggs.podcaster.data.repo.CategoryRepository;
 import com.jueggs.podcaster.data.repo.ChannelRepository;
+import com.jueggs.podcaster.helper.Result;
 import com.jueggs.podcaster.model.Category;
 import com.jueggs.podcaster.model.Channel;
+import com.jueggs.podcaster.utils.Util;
 
 import java.util.List;
 
@@ -32,12 +37,11 @@ public class CategoryFragment extends Fragment implements Callback
     @Bind(R.id.recycler) RecyclerView recycler;
     @Bind(R.id.navBack) FloatingActionButton navBack;
     @Bind(R.id.scroll) FloatingActionButton scroll;
+    @Bind(R.id.empty) LinearLayout empty;
 
-    private CategoryRepository categoryRepository = CategoryRepository.getInstance();
-    private ChannelRepository channelRepository = ChannelRepository.getInstance();
+    private CategoryRepository categoryRepository;
+    private ChannelRepository channelRepository;
     private CategoryAdapter adapter;
-    private Fade fadeIn;
-    private Fade fadeOut;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -46,15 +50,11 @@ public class CategoryFragment extends Fragment implements Callback
         ButterKnife.bind(this, view);
 
         equipeRecycler(getContext(), recycler, adapter = new CategoryAdapter(getActivity(), getActivity().getSupportFragmentManager(), this));
+        categoryRepository = CategoryRepository.getInstance(getContext());
+        channelRepository = ChannelRepository.getInstance(getContext());
 
         navBack.setOnClickListener(adapter::onNavigateBack);
         scroll.setOnClickListener(this::onScroll);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-        {
-            fadeIn = new Fade(Fade.IN);
-            fadeOut = new Fade(Fade.OUT);
-        }
 
         return view;
     }
@@ -88,7 +88,31 @@ public class CategoryFragment extends Fragment implements Callback
     public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        categoryRepository.loadCategories(App.LANGUAGE, adapter::onCategoriesLoaded);
+        categoryRepository.loadCategories(App.LANGUAGE, this::onCategoriesLoaded);
+    }
+
+    public void onCategoriesLoaded(List<Category> categories)
+    {
+        int state = readNetworkState(getContext());
+        switch (state)
+        {
+            case Result.SUCCESS:
+                empty.setVisibility(View.GONE);
+                adapter.setCategories(categories);
+                break;
+            case Result.NO_NETWORK:
+                showEmptyView(getContext(), empty, R.string.empty_no_network, R.drawable.ic_wifi_off);
+                break;
+            case Result.SERVER_DOWN:
+                showEmptyView(getContext(), empty, R.string.empty_server_down, R.drawable.ic_server_down);
+                break;
+            case Result.INVALID_DATA:
+                showEmptyView(getContext(), empty, R.string.empty_invalid_data, R.drawable.ic_invalid_data);
+                break;
+            case Result.UNKNOWN:
+                showEmptyView(getContext(), empty, R.string.empty_unknown, R.drawable.ic_unknown_problem);
+                break;
+        }
     }
 
     @Override

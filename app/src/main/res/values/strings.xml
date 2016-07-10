@@ -72,7 +72,14 @@
 
     <string name="pref_enable_notification">enable_notification</string>
     <string name="pref_last_notification">last_notification</string>
+    <string name="pref_network_state">network_state</string>
 
     <string name="notification_title">Newest Podcasts</string>
-    <string name="notification_content">See audio + video newcomer at podcast.de</string>
+    <string name="notification_content">Audio + video newcomer</string>
+    <string name="notification_ticker">New podcasts at podcast.de</string>
+
+    <string name="empty_no_network">Data could not be loaded, please turn on network connection</string>
+    <string name="empty_server_down">Data could not be loaded, server seems to be unavailable</string>
+    <string name="empty_invalid_data">Invalid data retrieved </string>
+    <string name="empty_unknown">Data could not be loaded, an unknown problem occurred</string>
 </resources>

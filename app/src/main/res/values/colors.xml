@@ -9,4 +9,5 @@
     <color name="colorPrimaryDarkTransparent">#aaF57C00</color>
     <color name="bg_charts">#f7f4ed</color>
     <color name="bg_charts_ranking">#E0E0E0</color>
+    <color name="empty_bg">#E0E0E0</color>
 </resources>

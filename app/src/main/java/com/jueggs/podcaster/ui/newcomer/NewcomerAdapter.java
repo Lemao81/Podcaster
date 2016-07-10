@@ -56,8 +56,11 @@ public class NewcomerAdapter extends RecyclerView.Adapter<NewcomerAdapter.Channe
 
     public void onNewcomerLoaded(List<Channel> channels)
     {
-        this.channels = channels;
-        notifyDataSetChanged();
+        if (channels != null)
+        {
+            this.channels = channels;
+            notifyDataSetChanged();
+        }
     }
 
     class ChannelViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener

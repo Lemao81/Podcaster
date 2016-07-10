@@ -18,19 +18,11 @@ public class ParseUtils
 {
     public static final String TAG = ParseUtils.class.getSimpleName();
 
-    public static List<Category> parseCategories(String jsonString)
+    public static List<Category> parseCategories(String jsonString) throws JSONException
     {
-        try
-        {
             JSONObject root = new JSONObject(jsonString);
             JSONObject categories = root.getJSONObject(PROP_CATEGORIES);
             return parseCategories(categories);
-        }
-        catch (JSONException e)
-        {
-            Log.e(TAG, e.getMessage());
-            return null;
-        }
     }
 
     private static List<Category> parseCategories(JSONObject categories) throws JSONException

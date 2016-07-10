@@ -5,18 +5,24 @@ import android.app.ActivityOptions;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import com.jueggs.decorator.DividerDecoration;
 import com.jueggs.podcaster.App;
 import com.jueggs.podcaster.R;
 import com.jueggs.podcaster.data.db.ChannelColumns;
 import com.jueggs.podcaster.data.db.PlaylistColumns;
 import com.jueggs.podcaster.data.db.PlaylistsDb;
+import com.jueggs.podcaster.helper.Result;
 import com.jueggs.podcaster.model.Channel;
 import com.jueggs.podcaster.ui.category.CategoryAdapter;
 import com.jueggs.podcaster.ui.channeldetail.ChannelDetailActivity;
@@ -124,5 +130,24 @@ public class Util
         values.put(ChannelColumns.SUBSCRIBERS, channel.getSubscribers());
         values.put(ChannelColumns.DATE, channel.getDate());
         return values;
+    }
+
+    public static void writeNetworkState(Context context, int state)
+    {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        prefs.edit().putInt(context.getString(R.string.pref_network_state), state).commit();
+    }
+
+    public static int readNetworkState(Context context)
+    {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getInt(context.getString(R.string.pref_network_state), Result.UNKNOWN);
+    }
+
+    public static void showEmptyView(Context context, View container, int textId, int imageId)
+    {
+        ((TextView) container.findViewById(R.id.emptyText)).setText(textId);
+        ((ImageView) container.findViewById(R.id.emptyImage)).setImageDrawable(ContextCompat.getDrawable(context, imageId));
+        container.setVisibility(View.VISIBLE);
     }
 }

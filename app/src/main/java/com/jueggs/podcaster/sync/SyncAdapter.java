@@ -56,7 +56,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter
 
                 String dateNew;
                 if (hasElements(root.getChannels()))
-                    dateNew = root.getChannels().get(0).getDate();
+                    dateNew = root.getChannels().get(0).getDate().substring(0, 10);
                 else
                     return;
 
@@ -65,13 +65,16 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter
 
                 for (Channel channel : root.getChannels())
                 {
-                    if (!channel.getDate().equals(dateNew))
+                    if (!channel.getDate().substring(0, 10).equals(dateNew))
                         continue;
                     if (channel.getChannelType().equals(PodcastContract.CHANNEL_TYPE_AUDIO_STRING))
                         audios.add(channel);
                     else if (channel.getChannelType().equals(PodcastContract.CHANNEL_TYPE_VIDEO_STRING))
                         videos.add(channel);
                 }
+
+                if (!hasElements(audios) && !hasElements(videos))
+                    return;
 
                 String title = getContext().getString(R.string.notification_title);
                 String content = getContext().getString(R.string.notification_content);
@@ -100,6 +103,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter
                         .setLargeIcon(largeIcon)
                         .setContentTitle(title)
                         .setContentText(content)
+                        .setTicker(getContext().getString(R.string.notification_ticker))
                         .setContentIntent(contentPi)
                         .setAutoCancel(true)
                         .setStyle(style);

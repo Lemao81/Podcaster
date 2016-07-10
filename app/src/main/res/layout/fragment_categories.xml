@@ -40,4 +40,6 @@
             tools:visibility="visible" />
     </LinearLayout>
 
+    <include layout="@layout/empty" />
+
 </FrameLayout>

@@ -16,12 +16,11 @@ import com.bumptech.glide.Glide;
 import com.jueggs.podcaster.R;
 import com.jueggs.podcaster.model.Category;
 import com.jueggs.podcaster.model.Channel;
-import com.jueggs.podcaster.utils.DateUtils;
 import lombok.Getter;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Stack;
 
 import static com.jueggs.podcaster.utils.DateUtils.*;
 import static com.jueggs.podcaster.utils.Util.*;
@@ -41,8 +40,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private FragmentManager fragmentManager;
     private Callback callback;
     private int level;
-    private LinkedList<List<Category>> parentCategories = new LinkedList<>();
-    private LinkedList<List<Channel>> parentChannels = new LinkedList<>();
+    private Stack<List<Category>> categoryStack = new Stack<>();
+    private Stack<List<Channel>> channelStack = new Stack<>();
 
     public CategoryAdapter(Context context, FragmentManager fragmentManager, Callback callback)
     {
@@ -126,8 +125,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public void onNavigateBack(View view)
     {
-        setCategories(parentCategories.pollLast());
-        setChannels(parentChannels.pollLast());
+        setCategories(categoryStack.pop());
+        setChannels(channelStack.pop());
         callback.onNavigationLevelChanged(--level);
     }
 
@@ -149,8 +148,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             int position = getAdapterPosition();
             Category category = categories.get(position);
 
-            parentCategories.add(categories);
-            parentChannels.add(channels);
+            categoryStack.push(categories);
+            channelStack.push(channels);
             callback.onCategorySelected(category);
             callback.onNavigationLevelChanged(++level);
 

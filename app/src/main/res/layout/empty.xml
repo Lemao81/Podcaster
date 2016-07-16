@@ -7,6 +7,7 @@
     android:gravity="center"
     android:visibility="gone"
     android:weightSum="3"
+    android:background="@color/scrim_background"
     tools:visibility="visible">
 
     <LinearLayout
@@ -21,8 +22,8 @@
             android:id="@+id/emptyText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:layout_gravity="center"
+            android:gravity="center"
             android:textAppearance="?android:attr/textAppearanceMedium"
             tools:text="Data could not be loaded, please turn on network connection" />
 

@@ -72,14 +72,23 @@ public class ChannelRepository
         protected List<Channel> doInBackground(Object... params)
         {
             PodcastService service = PodcastContract.createPodcastService();
+            int id = (int) params[0];
+            String language = (String) params[1];
 
             try
             {
-                int id = (int) params[0];
-                String language = (String) params[1];
                 ChannelArrayRoot root = service.loadCategory(id, language).execute().body();
-                writeNetworkState(context, Result.SUCCESS);
-                return root.getChannels();
+
+                if (root.getHead() != null)
+                {
+                    writeNetworkState(context, Result.SUCCESS);
+                    return root.getChannels();
+                }
+                else
+                {
+                    writeNetworkState(context, Result.INVALID_DATA);
+                    return null;
+                }
             }
             catch (IOException e)
             {

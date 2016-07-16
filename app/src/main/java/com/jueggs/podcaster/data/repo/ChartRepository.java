@@ -1,9 +1,12 @@
 package com.jueggs.podcaster.data.repo;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import com.jueggs.podcaster.data.PodcastContract;
 import com.jueggs.podcaster.data.PodcastService;
+import com.jueggs.podcaster.helper.NetworkValidator;
+import com.jueggs.podcaster.helper.Result;
 import com.jueggs.podcaster.model.Channel;
 import com.jueggs.podcaster.model.ChannelArrayRoot;
 import com.jueggs.utils.Utils;
@@ -12,6 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.jueggs.podcaster.utils.Util.writeNetworkState;
 import static com.jueggs.utils.Utils.*;
 
 public class ChartRepository
@@ -19,7 +23,13 @@ public class ChartRepository
     private static ChartRepository instance;
 
     private List<Channel> cache;
+    private Context context;
     private Callback.ChannelsLoaded callback;
+
+    public ChartRepository(Context context)
+    {
+        this.context = context;
+    }
 
     public void loadCharts(String language, Callback.ChannelsLoaded callback)
     {
@@ -39,10 +49,10 @@ public class ChartRepository
             callback.onChannelsLoaded(channels);
     }
 
-    public static ChartRepository getInstance()
+    public static ChartRepository getInstance(Context context)
     {
         if (instance == null)
-            instance = new ChartRepository();
+            instance = new ChartRepository(context);
         return instance;
     }
 
@@ -61,15 +71,28 @@ public class ChartRepository
         protected List<Channel> doInBackground(Object... params)
         {
             PodcastService service = PodcastContract.createPodcastService();
+            String language = (String) params[0];
 
             try
             {
-                ChannelArrayRoot root = service.loadCharts((String) params[0]).execute().body();
-                return root.getChannels();
+                ChannelArrayRoot root = service.loadCharts(language).execute().body();
+
+                if (root.getHead() != null)
+                {
+                    writeNetworkState(context, Result.SUCCESS);
+                    return root.getChannels();
+                }
+                else
+                {
+                    writeNetworkState(context, Result.INVALID_DATA);
+                    return null;
+                }
             }
             catch (IOException e)
             {
                 Log.e(TAG, e.getMessage());
+                int result = new NetworkValidator(context).validate(e);
+                writeNetworkState(context, result);
                 return null;
             }
         }

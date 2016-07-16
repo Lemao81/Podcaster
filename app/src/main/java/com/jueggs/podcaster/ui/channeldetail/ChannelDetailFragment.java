@@ -21,6 +21,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.jueggs.podcaster.App;
 import com.jueggs.podcaster.R;
 import com.jueggs.podcaster.data.repo.EpisodeRepository;
+import com.jueggs.podcaster.helper.Result;
 import com.jueggs.podcaster.model.Channel;
 import com.jueggs.podcaster.model.Episode;
 import com.jueggs.podcaster.service.MediaService;
@@ -41,10 +42,11 @@ public class ChannelDetailFragment extends Fragment implements Callback
     @Bind(R.id.fabStop) FloatingActionButton fabStop;
     @Bind(R.id.console) LinearLayout console;
     @Bind(R.id.root) FrameLayout root;
+    @Bind(R.id.empty) LinearLayout empty;
 
     private Channel channel;
     private ChannelDetailAdapter adapter;
-    private EpisodeRepository repository = EpisodeRepository.getInstance();
+    private EpisodeRepository repository;
     private boolean started;
     private View playButton;
     private boolean favourized;
@@ -56,6 +58,8 @@ public class ChannelDetailFragment extends Fragment implements Callback
 
         channel = (Channel) getArguments().getSerializable(ChannelDetailActivity.EXTRA_CHANNEL);
         favourized = countChannel(getContext(), channel) > 0;
+
+        repository = EpisodeRepository.getInstance(getContext());
 
         IntentFilter filter = new IntentFilter();
         filter.addCategory(Intent.CATEGORY_DEFAULT);
@@ -121,8 +125,27 @@ public class ChannelDetailFragment extends Fragment implements Callback
 
     private void onEpisodesLoaded(List<Episode> episodes)
     {
-        channel.setEpisodes(episodes);
-        adapter.setEpisodes(episodes);
+        int state = readNetworkState(getContext());
+        switch (state)
+        {
+            case Result.SUCCESS:
+                empty.setVisibility(View.GONE);
+                channel.setEpisodes(episodes);
+                adapter.setEpisodes(episodes);
+                break;
+            case Result.NO_NETWORK:
+                showEmptyView(getContext(), empty, R.string.empty_no_network, R.drawable.ic_wifi_off);
+                break;
+            case Result.SERVER_DOWN:
+                showEmptyView(getContext(), empty, R.string.empty_server_down, R.drawable.ic_server_down);
+                break;
+            case Result.INVALID_DATA:
+                showEmptyView(getContext(), empty, R.string.empty_invalid_data, R.drawable.ic_invalid_data);
+                break;
+            case Result.UNKNOWN:
+                showEmptyView(getContext(), empty, R.string.empty_unknown, R.drawable.ic_unknown_problem);
+                break;
+        }
     }
 
     @Override

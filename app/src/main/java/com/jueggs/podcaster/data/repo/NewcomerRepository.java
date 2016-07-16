@@ -1,9 +1,12 @@
 package com.jueggs.podcaster.data.repo;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.util.SparseArray;
 import com.jueggs.podcaster.data.PodcastService;
+import com.jueggs.podcaster.helper.NetworkValidator;
+import com.jueggs.podcaster.helper.Result;
 import com.jueggs.podcaster.model.Channel;
 import com.jueggs.podcaster.model.ChannelArrayRoot;
 
@@ -11,6 +14,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static com.jueggs.podcaster.data.PodcastContract.*;
+import static com.jueggs.podcaster.utils.Util.writeNetworkState;
 import static com.jueggs.utils.Utils.hasElements;
 
 public class NewcomerRepository
@@ -19,7 +23,13 @@ public class NewcomerRepository
 
     private SparseArray<List<Channel>> cache = new SparseArray<>(CHANNEL_TYPES.size());
     private Callback.ChannelsLoaded callback;
+    private Context context;
     private int type;
+
+    public NewcomerRepository(Context context)
+    {
+        this.context = context;
+    }
 
     public void loadNewcomer(String language, int type, Callback.ChannelsLoaded callback)
     {
@@ -40,10 +50,10 @@ public class NewcomerRepository
             callback.onChannelsLoaded(channels);
     }
 
-    public static NewcomerRepository getInstance()
+    public static NewcomerRepository getInstance(Context context)
     {
         if (instance == null)
-            instance = new NewcomerRepository();
+            instance = new NewcomerRepository(context);
         return instance;
     }
 
@@ -62,15 +72,29 @@ public class NewcomerRepository
         protected List<Channel> doInBackground(Object... params)
         {
             PodcastService service = createPodcastService();
+            String language = (String) params[0];
+            String type = (String) params[1];
 
             try
             {
-                ChannelArrayRoot root = service.loadNewcomerWithType((String) params[0], (String) params[1]).execute().body();
-                return root.getChannels();
+                ChannelArrayRoot root = service.loadNewcomerWithType(language, type).execute().body();
+
+                if (root.getHead() != null)
+                {
+                    writeNetworkState(context, Result.SUCCESS);
+                    return root.getChannels();
+                }
+                else
+                {
+                    writeNetworkState(context, Result.INVALID_DATA);
+                    return null;
+                }
             }
             catch (IOException e)
             {
                 Log.e(TAG, e.getMessage());
+                int result = new NetworkValidator(context).validate(e);
+                writeNetworkState(context, result);
                 return null;
             }
         }

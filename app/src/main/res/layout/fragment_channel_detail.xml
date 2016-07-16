@@ -39,4 +39,6 @@
             app:fabSize="mini" />
     </LinearLayout>
 
+    <include layout="@layout/empty" />
+
 </FrameLayout>

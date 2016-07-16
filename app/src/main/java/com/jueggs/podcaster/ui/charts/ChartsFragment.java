@@ -7,11 +7,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.jueggs.podcaster.App;
 import com.jueggs.podcaster.R;
 import com.jueggs.podcaster.data.repo.ChartRepository;
+import com.jueggs.podcaster.helper.Result;
 import com.jueggs.podcaster.model.Channel;
 
 import java.util.ArrayList;
@@ -24,8 +26,9 @@ public class ChartsFragment extends Fragment
 {
     @Bind(R.id.recyclerAudio) RecyclerView recyclerAudio;
     @Bind(R.id.recyclerVideo) RecyclerView recyclerVideo;
+    @Bind(R.id.empty) LinearLayout empty;
 
-    private ChartRepository repository = ChartRepository.getInstance();
+    private ChartRepository repository;
     private ChartsAdapter audioAdapter;
     private ChartsAdapter videoAdapter;
 
@@ -37,6 +40,8 @@ public class ChartsFragment extends Fragment
 
         equipeRecycler(getContext(), recyclerAudio, audioAdapter = new ChartsAdapter(getActivity(), getActivity().getSupportFragmentManager()));
         equipeRecycler(getContext(), recyclerVideo, videoAdapter = new ChartsAdapter(getActivity(), getActivity().getSupportFragmentManager()));
+
+        repository = ChartRepository.getInstance(getContext());
 
         return view;
     }
@@ -50,6 +55,30 @@ public class ChartsFragment extends Fragment
     }
 
     private void onChartsLoaded(List<Channel> channels)
+    {
+        int state = readNetworkState(getContext());
+        switch (state)
+        {
+            case Result.SUCCESS:
+                empty.setVisibility(View.GONE);
+                allocateChannels(channels);
+                break;
+            case Result.NO_NETWORK:
+                showEmptyView(getContext(), empty, R.string.empty_no_network, R.drawable.ic_wifi_off);
+                break;
+            case Result.SERVER_DOWN:
+                showEmptyView(getContext(), empty, R.string.empty_server_down, R.drawable.ic_server_down);
+                break;
+            case Result.INVALID_DATA:
+                showEmptyView(getContext(), empty, R.string.empty_invalid_data, R.drawable.ic_invalid_data);
+                break;
+            case Result.UNKNOWN:
+                showEmptyView(getContext(), empty, R.string.empty_unknown, R.drawable.ic_unknown_problem);
+                break;
+        }
+    }
+
+    private void allocateChannels(List<Channel> channels)
     {
         if (channels != null)
         {

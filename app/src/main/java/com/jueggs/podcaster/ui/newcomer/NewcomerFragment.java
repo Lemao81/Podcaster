@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.ToggleButton;
 import butterknife.Bind;
@@ -14,6 +15,10 @@ import butterknife.ButterKnife;
 import com.jueggs.podcaster.App;
 import com.jueggs.podcaster.R;
 import com.jueggs.podcaster.data.repo.NewcomerRepository;
+import com.jueggs.podcaster.helper.Result;
+import com.jueggs.podcaster.model.Channel;
+
+import java.util.List;
 
 import static com.jueggs.podcaster.data.PodcastContract.*;
 import static com.jueggs.podcaster.utils.Util.*;
@@ -24,8 +29,9 @@ public class NewcomerFragment extends Fragment
     @Bind(R.id.toggleVideo) ToggleButton toggleVideo;
     @Bind(R.id.recycler) RecyclerView recycler;
     @Bind(R.id.radio) RadioGroup radio;
+    @Bind(R.id.empty) LinearLayout empty;
 
-    private NewcomerRepository repository = NewcomerRepository.getInstance();
+    private NewcomerRepository repository;
     private NewcomerAdapter adapter;
 
     @Override
@@ -35,6 +41,7 @@ public class NewcomerFragment extends Fragment
         ButterKnife.bind(this, view);
 
         equipeRecycler(getContext(), recycler, adapter = new NewcomerAdapter(getActivity(), getActivity().getSupportFragmentManager()));
+        repository = NewcomerRepository.getInstance(getContext());
 
         toggleAudio.setOnClickListener(this::onToggleType);
         toggleVideo.setOnClickListener(this::onToggleType);
@@ -58,9 +65,9 @@ public class NewcomerFragment extends Fragment
         radio.check(view.getId());
 
         if (view.getId() == R.id.toggleAudio)
-            repository.loadNewcomer(App.LANGUAGE, CHANNEL_TYPE_AUDIO, adapter::onNewcomerLoaded);
+            repository.loadNewcomer(App.LANGUAGE, CHANNEL_TYPE_AUDIO, this::onNewcomerLoaded);
         else
-            repository.loadNewcomer(App.LANGUAGE, CHANNEL_TYPE_VIDEO, adapter::onNewcomerLoaded);
+            repository.loadNewcomer(App.LANGUAGE, CHANNEL_TYPE_VIDEO, this::onNewcomerLoaded);
     }
 
     @Override
@@ -68,7 +75,31 @@ public class NewcomerFragment extends Fragment
     {
         super.onViewCreated(view, savedInstanceState);
 
-        repository.loadNewcomer(App.LANGUAGE, CHANNEL_TYPE_AUDIO, adapter::onNewcomerLoaded);
+        repository.loadNewcomer(App.LANGUAGE, CHANNEL_TYPE_AUDIO, this::onNewcomerLoaded);
         radio.check(toggleAudio.getId());
+    }
+
+    public void onNewcomerLoaded(List<Channel> channels)
+    {
+        int state = readNetworkState(getContext());
+        switch (state)
+        {
+            case Result.SUCCESS:
+                empty.setVisibility(View.GONE);
+                adapter.setChannels(channels);
+                break;
+            case Result.NO_NETWORK:
+                showEmptyView(getContext(), empty, R.string.empty_no_network, R.drawable.ic_wifi_off);
+                break;
+            case Result.SERVER_DOWN:
+                showEmptyView(getContext(), empty, R.string.empty_server_down, R.drawable.ic_server_down);
+                break;
+            case Result.INVALID_DATA:
+                showEmptyView(getContext(), empty, R.string.empty_invalid_data, R.drawable.ic_invalid_data);
+                break;
+            case Result.UNKNOWN:
+                showEmptyView(getContext(), empty, R.string.empty_unknown, R.drawable.ic_unknown_problem);
+                break;
+        }
     }
 }

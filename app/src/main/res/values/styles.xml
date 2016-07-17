@@ -13,6 +13,7 @@
 
     <style name="Main" parent="AppTheme.NoActionBar" />
     <style name="ManagePlaylists" parent="AppTheme.NoActionBar" />
+    <style name="Video" parent="AppTheme.NoActionBar" />
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 

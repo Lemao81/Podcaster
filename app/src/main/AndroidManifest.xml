@@ -71,16 +71,17 @@
         </receiver>
 
         <!-- sync adapter -->
-        <service android:name=".sync.SyncService"
+        <service
+            android:name=".sync.SyncService"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.content.SyncAdapter" />
             </intent-filter>
+
             <meta-data
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/syncadapter" />
         </service>
-
         <service
             android:name=".sync.AuthenticatorService"
             android:enabled="true"
@@ -88,18 +89,21 @@
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
+
             <meta-data
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator" />
         </service>
 
-        <!--data services-->
+        <!-- data services -->
         <service android:name=".data.repo.category.CategoryFetchService" />
         <service android:name=".data.repo.channel.ChannelFetchService" />
         <service android:name=".data.repo.chart.ChartFetchService" />
         <service android:name=".data.repo.newcomer.NewcomerFetchService" />
         <service android:name=".data.repo.episode.EpisodeFetchService" />
 
+        <activity android:name=".ui.video.VideoActivity"
+            android:theme="@style/Video"/>
     </application>
 
 </manifest>

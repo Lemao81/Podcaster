@@ -20,11 +20,13 @@ import butterknife.ButterKnife;
 import com.google.android.gms.analytics.HitBuilders;
 import com.jueggs.podcaster.App;
 import com.jueggs.podcaster.R;
+import com.jueggs.podcaster.data.PodcastContract;
 import com.jueggs.podcaster.data.repo.episode.EpisodeRepository;
 import com.jueggs.podcaster.helper.Result;
 import com.jueggs.podcaster.model.Channel;
 import com.jueggs.podcaster.model.Episode;
 import com.jueggs.podcaster.service.MediaService;
+import com.jueggs.podcaster.ui.video.VideoActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -129,10 +131,17 @@ public class ChannelDetailFragment extends Fragment implements Callback
             if (!TextUtils.isEmpty(url))
             {
                 playingPosition = position;
-                getActivity().startService(new Intent(getContext(), MediaService.class)
-                        .putExtra(EXTRA_EPISODES, (ArrayList<Episode>) channel.getEpisodes())
-                        .putExtra(EXTRA_POSITION, position)
-                        .putExtra(EXTRA_IMAGE, channel.getImage()));
+                if (channel.getChannelType().equals(PodcastContract.CHANNEL_TYPE_AUDIO_STRING))
+                {
+                    getActivity().startService(new Intent(getContext(), MediaService.class)
+                            .putExtra(EXTRA_EPISODES, (ArrayList<Episode>) channel.getEpisodes())
+                            .putExtra(EXTRA_POSITION, position)
+                            .putExtra(EXTRA_IMAGE, channel.getImage()));
+                }
+                else if (channel.getChannelType().equals(PodcastContract.CHANNEL_TYPE_VIDEO_STRING))
+                {
+                    getContext().startActivity(new Intent(getContext(), VideoActivity.class).putExtra(VideoActivity.EXTRA_URI, url));
+                }
                 App.getInstance().getTracker().send(new HitBuilders.EventBuilder()
                         .setCategory(App.TRACK_CAT_CHANNEL)
                         .setAction(App.TRACK_ACTION_PLAYED)

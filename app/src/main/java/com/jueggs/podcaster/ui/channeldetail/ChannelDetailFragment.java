@@ -20,7 +20,7 @@ import butterknife.ButterKnife;
 import com.google.android.gms.analytics.HitBuilders;
 import com.jueggs.podcaster.App;
 import com.jueggs.podcaster.R;
-import com.jueggs.podcaster.data.repo.EpisodeRepository;
+import com.jueggs.podcaster.data.repo.episode.EpisodeRepository;
 import com.jueggs.podcaster.helper.Result;
 import com.jueggs.podcaster.model.Channel;
 import com.jueggs.podcaster.model.Episode;

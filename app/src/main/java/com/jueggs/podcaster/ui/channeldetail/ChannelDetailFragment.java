@@ -1,7 +1,6 @@
 package com.jueggs.podcaster.ui.channeldetail;
 
 import android.content.*;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -38,6 +37,12 @@ import static com.jueggs.utils.Utils.*;
 
 public class ChannelDetailFragment extends Fragment implements Callback
 {
+    public static final String STATE_CURRENT_EPISODES = "state.current.episodes";
+    public static final String STATE_FAVOURIZED = "state.favourized";
+    public static final String STATE_PLAYING_POSITION = "state.playing.position";
+    public static final String STATE_PLAYING = "state.playing";
+    public static final String STATE_STARTED = "state.started";
+
     @Bind(R.id.recycler) RecyclerView recycler;
     @Bind(R.id.fabPlayPause) FloatingActionButton fabPlayPause;
     @Bind(R.id.fabStop) FloatingActionButton fabStop;
@@ -49,9 +54,10 @@ public class ChannelDetailFragment extends Fragment implements Callback
     private ChannelDetailAdapter adapter;
     private EpisodeRepository repository;
     private boolean started;
-    private ImageButton playButton;
     private boolean favourized;
     private int playingPosition;
+    private boolean playing;
+    private List<Episode> currentEpisodes;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
@@ -59,7 +65,17 @@ public class ChannelDetailFragment extends Fragment implements Callback
         super.onCreate(savedInstanceState);
 
         channel = (Channel) getArguments().getSerializable(ChannelDetailActivity.EXTRA_CHANNEL);
-        favourized = countChannel(getContext(), channel) > 0;
+
+        if (savedInstanceState == null)
+            favourized = countChannel(getContext(), channel) > 0;
+        else
+        {
+            favourized = savedInstanceState.getBoolean(STATE_FAVOURIZED);
+            currentEpisodes = (List<Episode>) savedInstanceState.getSerializable(STATE_CURRENT_EPISODES);
+            playingPosition = savedInstanceState.getInt(STATE_PLAYING_POSITION);
+            playing = savedInstanceState.getBoolean(STATE_PLAYING);
+            started = savedInstanceState.getBoolean(STATE_STARTED);
+        }
 
         repository = EpisodeRepository.getInstance(getContext());
 
@@ -83,8 +99,6 @@ public class ChannelDetailFragment extends Fragment implements Callback
         fabPlayPause.setOnClickListener(this::onPlayPauseByFab);
         fabStop.setOnClickListener(this::onStopEpisode);
 
-        repository.loadEpisodes(Integer.parseInt(channel.getChannelId()), App.LANGUAGE, this::onEpisodesLoaded);
-
         return view;
     }
 
@@ -92,6 +106,17 @@ public class ChannelDetailFragment extends Fragment implements Callback
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+
+        if (savedInstanceState == null)
+            repository.loadEpisodes(Integer.parseInt(channel.getChannelId()), App.LANGUAGE, this::onEpisodesLoaded);
+        else
+        {
+            channel.setEpisodes(currentEpisodes);
+            adapter.setEpisodes(currentEpisodes);
+            showPlaySymbol(playing);
+            showViewWithFade(root, console, started);
+        }
+
         recycler.post(() -> getActivity().supportStartPostponedEnterTransition());
     }
 
@@ -103,7 +128,6 @@ public class ChannelDetailFragment extends Fragment implements Callback
             String url = adapter.getEpisodes().get(position).getMediaLink();
             if (!TextUtils.isEmpty(url))
             {
-                playButton = button;
                 playingPosition = position;
                 getActivity().startService(new Intent(getContext(), MediaService.class)
                         .putExtra(EXTRA_EPISODES, (ArrayList<Episode>) channel.getEpisodes())
@@ -133,6 +157,7 @@ public class ChannelDetailFragment extends Fragment implements Callback
                 empty.setVisibility(View.GONE);
                 channel.setEpisodes(episodes);
                 adapter.setEpisodes(episodes);
+                currentEpisodes = episodes;
                 break;
             case Result.NO_NETWORK:
                 showEmptyView(getContext(), empty, R.string.empty_no_network, R.drawable.ic_wifi_off);
@@ -190,6 +215,16 @@ public class ChannelDetailFragment extends Fragment implements Callback
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState)
+    {
+        outState.putBoolean(STATE_FAVOURIZED, favourized);
+        outState.putSerializable(STATE_CURRENT_EPISODES, (ArrayList) currentEpisodes);
+        outState.putInt(STATE_PLAYING_POSITION, playingPosition);
+        outState.putBoolean(STATE_PLAYING, playing);
+        outState.putBoolean(STATE_STARTED, started);
+    }
+
+    @Override
     public void onDestroy()
     {
         getContext().unregisterReceiver(actionReceiver);
@@ -205,31 +240,33 @@ public class ChannelDetailFragment extends Fragment implements Callback
             {
                 case ACTION_STARTED:
                     started = true;
+                    playing = true;
                     showViewWithFade(root, console, true);
-                    showPlaySymbol(false);
+                    showPlaySymbol(playing);
                     break;
                 case ACTION_PAUSED:
-                    showPlaySymbol(true);
+                    playing = false;
+                    showPlaySymbol(playing);
                     break;
                 case ACTION_RESUMED:
-                    showPlaySymbol(false);
+                    playing = true;
+                    showPlaySymbol(playing);
                     break;
                 case ACTION_STOPPED:
                     started = false;
+                    playing = false;
                     showViewWithFade(root, console, false);
-                    showPlaySymbol(true);
+                    showPlaySymbol(playing);
                     break;
             }
         }
     };
 
-    private void showPlaySymbol(boolean play)
+    private void showPlaySymbol(boolean playing)
     {
-        Drawable drawable = play ? ContextCompat.getDrawable(getContext(), R.drawable.ic_play_black) :
-                ContextCompat.getDrawable(getContext(), R.drawable.ic_pause_black);
-        adapter.setPlayButtonDrawable(playingPosition,drawable);
-        fabPlayPause.setImageDrawable(play ? ContextCompat.getDrawable(getContext(), R.drawable.ic_play_white) :
-                ContextCompat.getDrawable(getContext(), R.drawable.ic_pause_white));
+        adapter.setPlayButtonPositionAndDrawable(playingPosition, playing);
+        fabPlayPause.setImageDrawable(playing ? ContextCompat.getDrawable(getContext(), R.drawable.ic_pause_white) :
+                ContextCompat.getDrawable(getContext(), R.drawable.ic_play_white));
     }
 
     public static ChannelDetailFragment createInstance(Channel channel)

@@ -116,10 +116,11 @@ public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
         this.favourized = favourized;
     }
 
-    public void setPlayButtonDrawable(int position, Drawable drawable)
+    public void setPlayButtonPositionAndDrawable(int position, boolean playing)
     {
         this.playingPosition = position;
-        this.playingDrawable = drawable;
+        this.playingDrawable = playing ? ContextCompat.getDrawable(context, R.drawable.ic_pause_black) :
+                ContextCompat.getDrawable(context, R.drawable.ic_play_black);
         notifyItemChanged(position);
     }
 

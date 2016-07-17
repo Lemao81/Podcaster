@@ -1,6 +1,7 @@
 package com.jueggs.podcaster.ui.channeldetail;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -17,10 +18,13 @@ import com.jueggs.podcaster.R;
 import com.jueggs.podcaster.model.Channel;
 import com.jueggs.podcaster.model.Episode;
 import com.jueggs.podcaster.utils.DateUtils;
+import com.jueggs.utils.Utils;
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.jueggs.utils.Utils.*;
 
 public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 {
@@ -74,6 +78,7 @@ public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
             holder.rating.setText(channel.getRating());
             holder.description.setText(channel.getDescription());
             holder.favourize.setOnClickListener(callback::onFavourize);
+            holder.share.setOnClickListener(this::onShare);
             Drawable icon = ContextCompat.getDrawable(context, favourized ? R.drawable.ic_favorite_filled : R.drawable.ic_favorite_border);
             holder.favourize.setImageDrawable(icon);
             Glide.with(context).load(channel.getImage()).placeholder(R.drawable.glide_placeholder)
@@ -97,6 +102,12 @@ public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
             else
                 holder.play.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_play_black));
         }
+    }
+
+    private void onShare(View view)
+    {
+        Intent shareIntent = createTextShareIntent(channel.getPodLink());
+        context.startActivity(Intent.createChooser(shareIntent, context.getString(R.string.share_title)));
     }
 
     @Override

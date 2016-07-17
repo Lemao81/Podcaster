@@ -97,4 +97,6 @@
     <string name="description_delete_playlist">Delete playlist</string>
     <string name="description_previous_episode">Previous episode</string>
     <string name="description_next_episode">Next episode</string>
+
+    <string name="share_title">Send to</string>
 </resources>

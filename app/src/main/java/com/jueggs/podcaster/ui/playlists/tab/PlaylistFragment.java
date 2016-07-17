@@ -32,6 +32,7 @@ import static com.jueggs.utils.Utils.*;
 public class PlaylistFragment extends Fragment
 {
     public static final String STATE_CURRENT_CHANNELS = "state.current.channels";
+    public static final String STATE_CURRENT_PLAYLISTS = "state.current.playlists";
     public static final String STATE_CHANNELS_SHOWN = "state.channels.shown";
 
     @Bind(R.id.root) FrameLayout root;
@@ -52,6 +53,7 @@ public class PlaylistFragment extends Fragment
         if (savedInstanceState != null)
         {
             currentChannels = (List<Channel>) savedInstanceState.getSerializable(STATE_CURRENT_CHANNELS);
+            playlists = (List<String>) savedInstanceState.getSerializable(STATE_CURRENT_PLAYLISTS);
             channelsShown = savedInstanceState.getBoolean(STATE_CHANNELS_SHOWN);
         }
     }
@@ -62,7 +64,9 @@ public class PlaylistFragment extends Fragment
         View view = inflater.inflate(R.layout.fragment_playlist, container, false);
         ButterKnife.bind(this, view);
 
-        playlists = queryPlaylists(getContext());
+        if (savedInstanceState == null)
+            playlists = queryPlaylists(getContext());
+
         list.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1,
                 playlists != null ? playlists : new ArrayList()));
         list.setOnItemClickListener(this::onItemClick);
@@ -119,6 +123,7 @@ public class PlaylistFragment extends Fragment
     public void onSaveInstanceState(Bundle outState)
     {
         outState.putSerializable(STATE_CURRENT_CHANNELS, (ArrayList) currentChannels);
+        outState.putSerializable(STATE_CURRENT_PLAYLISTS, (ArrayList) playlists);
         outState.putBoolean(STATE_CHANNELS_SHOWN, channelsShown);
     }
 }

@@ -82,4 +82,19 @@
     <string name="empty_server_down">Data could not be loaded, server seems to be unavailable</string>
     <string name="empty_invalid_data">Invalid data retrieved </string>
     <string name="empty_unknown">Data could not be loaded, an unknown problem occurred</string>
+
+    <string name="description_navigate_back">Navigate back</string>
+    <string name="description_goto_first_channel">Go to first channel</string>
+    <string name="description_play_pause">Play or pause episode</string>
+    <string name="description_stop">Stop</string>
+    <string name="description_add_playlist">Add playlist</string>
+    <string name="description_newcomer_audio">Audio newcomer</string>
+    <string name="description_newcomer_video">Video newcomer</string>
+    <string name="description_play_pause_podcast">Play or pause podcast</string>
+    <string name="description_favourize">Favourize</string>
+    <string name="description_share">Share</string>
+    <string name="description_edit_playlist">Edit playlist</string>
+    <string name="description_delete_playlist">Delete playlist</string>
+    <string name="description_previous_episode">Previous episode</string>
+    <string name="description_next_episode">Next episode</string>
 </resources>

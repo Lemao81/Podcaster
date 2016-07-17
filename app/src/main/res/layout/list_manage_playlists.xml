@@ -30,6 +30,7 @@
             android:id="@+id/edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/description_edit_playlist"
             android:src="@drawable/ic_edit_black" />
 
         <ImageButton
@@ -38,6 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/space_normal"
             android:layout_marginStart="@dimen/space_normal"
+            android:contentDescription="@string/description_delete_playlist"
             android:src="@drawable/ic_remove_black" />
     </LinearLayout>
 

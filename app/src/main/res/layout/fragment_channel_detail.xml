@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout android:id="@+id/root"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -12,6 +12,7 @@
         android:layout_height="match_parent" />
 
     <LinearLayout
+        android:id="@+id/console"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|end"
@@ -19,7 +20,6 @@
         android:layout_marginRight="@dimen/fab_margin"
         android:layout_marginTop="@dimen/fab_margin"
         android:orientation="vertical"
-        android:id="@+id/console"
         android:visibility="gone"
         tools:visibility="visible">
 
@@ -27,6 +27,7 @@
             android:id="@+id/fabPlayPause"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/description_play_pause"
             android:src="@drawable/ic_pause_white"
             app:fabSize="mini" />
 
@@ -35,6 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/fab_margin"
+            android:contentDescription="@string/description_stop"
             android:src="@drawable/ic_stop_white"
             app:fabSize="mini" />
     </LinearLayout>

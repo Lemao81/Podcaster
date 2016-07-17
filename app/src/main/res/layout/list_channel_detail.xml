@@ -41,6 +41,7 @@
             android:id="@+id/playpause"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/description_play_pause_podcast"
             android:src="@drawable/ic_play_black" />
 
         <ImageButton
@@ -49,6 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/space_small"
             android:layout_marginStart="@dimen/space_small"
+            android:contentDescription="@string/description_favourize"
             android:src="@drawable/ic_favorite_border" />
 
         <ImageButton
@@ -57,6 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/space_small"
             android:layout_marginStart="@dimen/space_small"
+            android:contentDescription="@string/description_share"
             android:src="@drawable/ic_share_black_24dp" />
 
         <TextView

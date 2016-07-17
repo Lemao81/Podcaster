@@ -39,6 +39,7 @@
 
             <ImageButton
                 android:id="@+id/previous"
+                android:contentDescription="@string/description_previous_episode"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -48,6 +49,7 @@
                 android:id="@+id/playpause"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:contentDescription="@string/description_play_pause"
                 android:layout_weight="1"
                 android:src="@drawable/ic_widget_play" />
 
@@ -55,6 +57,7 @@
                 android:id="@+id/stop"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:contentDescription="@string/description_stop"
                 android:layout_weight="1"
                 android:src="@drawable/ic_widget_stop" />
 
@@ -62,6 +65,7 @@
                 android:id="@+id/next"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:contentDescription="@string/description_next_episode"
                 android:layout_marginEnd="@dimen/space_small"
                 android:layout_marginRight="@dimen/space_small"
                 android:layout_weight="1"

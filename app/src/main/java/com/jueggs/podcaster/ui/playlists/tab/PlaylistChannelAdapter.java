@@ -21,13 +21,13 @@ import java.util.List;
 import static com.jueggs.podcaster.utils.DateUtils.*;
 import static com.jueggs.podcaster.utils.Util.showChannelDetails;
 
-public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ChannelViewHolder>
+public class PlaylistChannelAdapter extends RecyclerView.Adapter<PlaylistChannelAdapter.ChannelViewHolder>
 {
     private Context context;
     private List<Channel> channels = new ArrayList<>();
     private FragmentManager fragmentManager;
 
-    public PlaylistAdapter(Context context, FragmentManager fragmentManager)
+    public PlaylistChannelAdapter(Context context, FragmentManager fragmentManager)
     {
         this.context = context;
         this.fragmentManager = fragmentManager;

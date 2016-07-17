@@ -34,7 +34,10 @@ public class NewcomerRepository
     public void loadNewcomer(String language, int type, Callback.ChannelsLoaded callback)
     {
         if (hasElements(cache.get(type)) && callback != null)
+        {
+            writeNetworkState(context, Result.SUCCESS);
             callback.onChannelsLoaded(cache.get(type));
+        }
         else
         {
             this.callback = callback;

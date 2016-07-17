@@ -15,6 +15,7 @@ import static com.jueggs.podcaster.data.PodcastContract.*;
 import static com.jueggs.podcaster.utils.ParseUtils.*;
 import static com.jueggs.podcaster.utils.Util.*;
 import static com.jueggs.utils.NetUtils.*;
+import static com.jueggs.utils.Utils.*;
 
 public class CategoryRepository
 {
@@ -33,7 +34,7 @@ public class CategoryRepository
 
     public void loadCategories(String language, Callback.CategoriesLoaded callback)
     {
-        if (Utils.hasElements(cache) && callback != null)
+        if (hasElements(cache) && callback != null)
         {
             writeNetworkState(context, Result.SUCCESS);
             callback.onCategoriesLoaded(cache);

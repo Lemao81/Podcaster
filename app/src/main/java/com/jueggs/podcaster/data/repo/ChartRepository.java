@@ -34,7 +34,10 @@ public class ChartRepository
     public void loadCharts(String language, Callback.ChannelsLoaded callback)
     {
         if (hasElements(cache) && callback != null)
+        {
+            writeNetworkState(context, Result.SUCCESS);
             callback.onChannelsLoaded(cache);
+        }
         else
         {
             this.callback = callback;

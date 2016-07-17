@@ -39,9 +39,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private Context context;
     private FragmentManager fragmentManager;
     private Callback callback;
-    private int level;
-    private Stack<List<Category>> categoryStack = new Stack<>();
-    private Stack<List<Channel>> channelStack = new Stack<>();
 
     public CategoryAdapter(Context context, FragmentManager fragmentManager, Callback callback)
     {
@@ -123,13 +120,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyDataSetChanged();
     }
 
-    public void onNavigateBack(View view)
-    {
-        setCategories(categoryStack.pop());
-        setChannels(channelStack.pop());
-        callback.onNavigationLevelChanged(--level);
-    }
-
     class CategoryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
     {
         @Bind(android.R.id.text1) TextView category;
@@ -148,15 +138,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             int position = getAdapterPosition();
             Category category = categories.get(position);
 
-            categoryStack.push(categories);
-            channelStack.push(channels);
             callback.onCategorySelected(category);
-            callback.onNavigationLevelChanged(++level);
-
-            if (hasElements(category.getSubCategories()))
-                setCategories(category.getSubCategories());
-            else
-                setCategories(new ArrayList<>());
         }
     }
 

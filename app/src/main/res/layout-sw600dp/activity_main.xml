@@ -15,6 +15,7 @@
             android:layout_weight="@integer/weight_master"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:id="@+id/mainFragment"
             android:name="com.jueggs.podcaster.ui.main.MainFragment"/>
 
         <FrameLayout

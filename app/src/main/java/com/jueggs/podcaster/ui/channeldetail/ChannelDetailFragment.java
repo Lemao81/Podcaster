@@ -1,6 +1,7 @@
 package com.jueggs.podcaster.ui.channeldetail;
 
 import android.content.*;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -48,8 +49,9 @@ public class ChannelDetailFragment extends Fragment implements Callback
     private ChannelDetailAdapter adapter;
     private EpisodeRepository repository;
     private boolean started;
-    private View playButton;
+    private ImageButton playButton;
     private boolean favourized;
+    private int playingPosition;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
@@ -71,12 +73,6 @@ public class ChannelDetailFragment extends Fragment implements Callback
     }
 
     @Override
-    public void onStart()
-    {
-        super.onStart();
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_channel_detail, container, false);
@@ -84,7 +80,7 @@ public class ChannelDetailFragment extends Fragment implements Callback
 
         equipeRecycler(getContext(), recycler, adapter = new ChannelDetailAdapter(getContext(), channel, this, favourized));
 
-        fabPlayPause.setOnClickListener(this::onPlayPauseEpisode);
+        fabPlayPause.setOnClickListener(this::onPlayPauseByFab);
         fabStop.setOnClickListener(this::onStopEpisode);
 
         repository.loadEpisodes(Integer.parseInt(channel.getChannelId()), App.LANGUAGE, this::onEpisodesLoaded);
@@ -100,15 +96,15 @@ public class ChannelDetailFragment extends Fragment implements Callback
     }
 
     @Override
-    public void onPlayPauseEpisode(View view)
+    public void onPlayPauseByImageButton(ImageButton button, int position)
     {
-        if (view.getId() == R.id.playpause && !started)
+        if (!started)
         {
-            int position = recycler.getChildAdapterPosition((View) view.getParent().getParent().getParent()) - 1;
-
-            if (!TextUtils.isEmpty(adapter.getEpisodes().get(position).getMediaLink()))
+            String url = adapter.getEpisodes().get(position).getMediaLink();
+            if (!TextUtils.isEmpty(url))
             {
-                playButton = view;
+                playButton = button;
+                playingPosition = position;
                 getActivity().startService(new Intent(getContext(), MediaService.class)
                         .putExtra(EXTRA_EPISODES, (ArrayList<Episode>) channel.getEpisodes())
                         .putExtra(EXTRA_POSITION, position)
@@ -121,6 +117,11 @@ public class ChannelDetailFragment extends Fragment implements Callback
         }
         else
             getContext().sendBroadcast(new Intent(MediaService.ACTION_PLAY_PAUSE));
+    }
+
+    private void onPlayPauseByFab(View view)
+    {
+        getContext().sendBroadcast(new Intent(MediaService.ACTION_PLAY_PAUSE));
     }
 
     private void onEpisodesLoaded(List<Episode> episodes)
@@ -188,19 +189,6 @@ public class ChannelDetailFragment extends Fragment implements Callback
         getContext().sendBroadcast(new Intent(MediaService.ACTION_STOP));
     }
 
-    private void showPlaySymbol(View view, boolean play)
-    {
-        adapter.showPlaySymbol((ImageButton) view, play);
-        fabPlayPause.setImageDrawable(play ? ContextCompat.getDrawable(getContext(), R.drawable.ic_play_white) :
-                ContextCompat.getDrawable(getContext(), R.drawable.ic_pause_white));
-    }
-
-    @Override
-    public void onStop()
-    {
-        super.onStop();
-    }
-
     @Override
     public void onDestroy()
     {
@@ -218,22 +206,31 @@ public class ChannelDetailFragment extends Fragment implements Callback
                 case ACTION_STARTED:
                     started = true;
                     showViewWithFade(root, console, true);
-                    showPlaySymbol(playButton, false);
+                    showPlaySymbol(false);
                     break;
                 case ACTION_PAUSED:
-                    showPlaySymbol(playButton, true);
+                    showPlaySymbol(true);
                     break;
                 case ACTION_RESUMED:
-                    showPlaySymbol(playButton, false);
+                    showPlaySymbol(false);
                     break;
                 case ACTION_STOPPED:
                     started = false;
                     showViewWithFade(root, console, false);
-                    showPlaySymbol(playButton, true);
+                    showPlaySymbol(true);
                     break;
             }
         }
     };
+
+    private void showPlaySymbol(boolean play)
+    {
+        Drawable drawable = play ? ContextCompat.getDrawable(getContext(), R.drawable.ic_play_black) :
+                ContextCompat.getDrawable(getContext(), R.drawable.ic_pause_black);
+        adapter.setPlayButtonDrawable(playingPosition,drawable);
+        fabPlayPause.setImageDrawable(play ? ContextCompat.getDrawable(getContext(), R.drawable.ic_play_white) :
+                ContextCompat.getDrawable(getContext(), R.drawable.ic_pause_white));
+    }
 
     public static ChannelDetailFragment createInstance(Channel channel)
     {

@@ -34,7 +34,10 @@ public class EpisodeRepository
     public void loadEpisodes(int id, String language, Callback.EpisodesLoaded callback)
     {
         if (hasElements(cache.get(id)) && callback != null)
+        {
+            writeNetworkState(context, Result.SUCCESS);
             callback.onEpisodesLoaded(cache.get(id));
+        }
         else
         {
             this.callback = callback;

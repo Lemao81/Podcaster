@@ -37,11 +37,8 @@ public class MainActivity extends AppCompatActivity
     public static final int TAB_NEWCOMER = 2;
     public static final int TAB_PLAYLISTS = 3;
 
-    private ViewPagerAdapter pagerAdapter;
     private Account account;
 
-    @Bind(R.id.viewPager) ViewPager viewPager;
-    @Bind(R.id.tabs) TabLayout tabs;
     @Nullable @Bind(R.id.toolbar) Toolbar toolbar;
     @Nullable @Bind(R.id.container) FrameLayout container;
 
@@ -73,11 +70,6 @@ public class MainActivity extends AppCompatActivity
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        pagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), this);
-        viewPager.setAdapter(pagerAdapter);
-        tabs.setupWithViewPager(viewPager);
-        //TODO add page selection
     }
 
     private void createAccount()

@@ -1,6 +1,7 @@
 package com.jueggs.podcaster.ui.playlists.tab;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
@@ -30,6 +31,9 @@ import static com.jueggs.utils.Utils.*;
 
 public class PlaylistFragment extends Fragment
 {
+    public static final String STATE_CURRENT_CHANNELS = "state.current.channels";
+    public static final String STATE_CHANNELS_SHOWN = "state.channels.shown";
+
     @Bind(R.id.root) FrameLayout root;
     @Bind(R.id.list) ListView list;
     @Bind(R.id.recycler) RecyclerView recycler;
@@ -37,6 +41,20 @@ public class PlaylistFragment extends Fragment
 
     private List<String> playlists;
     private PlaylistAdapter adapter;
+    private List<Channel> currentChannels;
+    private boolean channelsShown;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+
+        if (savedInstanceState != null)
+        {
+            currentChannels = (List<Channel>) savedInstanceState.getSerializable(STATE_CURRENT_CHANNELS);
+            channelsShown = savedInstanceState.getBoolean(STATE_CHANNELS_SHOWN);
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -56,6 +74,17 @@ public class PlaylistFragment extends Fragment
         return view;
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
+    {
+        if (savedInstanceState != null)
+        {
+            adapter.setChannels(currentChannels);
+            if (channelsShown)
+                showChannels();
+        }
+    }
+
     private void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
         String playlist = playlists.get(position);
@@ -63,12 +92,19 @@ public class PlaylistFragment extends Fragment
         if (hasElements(channels))
         {
             adapter.setChannels(channels);
-            showViewWithFade(root, navBack, true);
-            showViewWithFade(root, list, false);
-            showViewWithFade(root, recycler, true);
+            currentChannels = channels;
+            channelsShown = true;
+            showChannels();
         }
         else
             shortToast(getContext(), R.string.playlist_no_channels);
+    }
+
+    private void showChannels()
+    {
+        showViewWithFade(root, list, false);
+        showViewWithFade(root, navBack, true);
+        showViewWithFade(root, recycler, true);
     }
 
     private void onNavigateBack(View view)
@@ -76,5 +112,13 @@ public class PlaylistFragment extends Fragment
         showViewWithFade(root, navBack, false);
         showViewWithFade(root, list, true);
         showViewWithFade(root, recycler, false);
+        channelsShown = false;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState)
+    {
+        outState.putSerializable(STATE_CURRENT_CHANNELS, (ArrayList) currentChannels);
+        outState.putBoolean(STATE_CHANNELS_SHOWN, channelsShown);
     }
 }

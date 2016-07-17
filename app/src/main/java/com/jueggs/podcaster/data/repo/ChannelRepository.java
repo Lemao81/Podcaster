@@ -34,7 +34,10 @@ public class ChannelRepository
     public void loadChannels(int id, String language, Callback.ChannelsLoaded callback)
     {
         if (hasElements(cache.get(id)) && callback != null)
+        {
+            writeNetworkState(context, Result.SUCCESS);
             callback.onChannelsLoaded(cache.get(id));
+        }
         else
         {
             this.callback = callback;

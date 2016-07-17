@@ -18,6 +18,7 @@ import com.jueggs.podcaster.data.repo.NewcomerRepository;
 import com.jueggs.podcaster.helper.Result;
 import com.jueggs.podcaster.model.Channel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.jueggs.podcaster.data.PodcastContract.*;
@@ -25,6 +26,9 @@ import static com.jueggs.podcaster.utils.Util.*;
 
 public class NewcomerFragment extends Fragment
 {
+    public static final String STATE_ID_CHECKED = "state.id.checked";
+    public static final String STATE_CURRENT_CHANNELS = "state.current.channels";
+
     @Bind(R.id.toggleAudio) ToggleButton toggleAudio;
     @Bind(R.id.toggleVideo) ToggleButton toggleVideo;
     @Bind(R.id.recycler) RecyclerView recycler;
@@ -33,6 +37,20 @@ public class NewcomerFragment extends Fragment
 
     private NewcomerRepository repository;
     private NewcomerAdapter adapter;
+    private int idChecked;
+    private List<Channel> currentChannels;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+
+        if (savedInstanceState != null)
+        {
+            idChecked = savedInstanceState.getInt(STATE_ID_CHECKED);
+            currentChannels = (List<Channel>) savedInstanceState.getSerializable(STATE_CURRENT_CHANNELS);
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -63,6 +81,7 @@ public class NewcomerFragment extends Fragment
     private void onToggleType(View view)
     {
         radio.check(view.getId());
+        idChecked = view.getId();
 
         if (view.getId() == R.id.toggleAudio)
             repository.loadNewcomer(App.LANGUAGE, CHANNEL_TYPE_AUDIO, this::onNewcomerLoaded);
@@ -75,8 +94,17 @@ public class NewcomerFragment extends Fragment
     {
         super.onViewCreated(view, savedInstanceState);
 
-        repository.loadNewcomer(App.LANGUAGE, CHANNEL_TYPE_AUDIO, this::onNewcomerLoaded);
-        radio.check(toggleAudio.getId());
+        if (savedInstanceState == null)
+        {
+            repository.loadNewcomer(App.LANGUAGE, CHANNEL_TYPE_AUDIO, this::onNewcomerLoaded);
+            radio.check(toggleAudio.getId());
+            idChecked = toggleAudio.getId();
+        }
+        else
+        {
+            radio.check(idChecked);
+            adapter.setChannels(currentChannels);
+        }
     }
 
     public void onNewcomerLoaded(List<Channel> channels)
@@ -87,6 +115,7 @@ public class NewcomerFragment extends Fragment
             case Result.SUCCESS:
                 empty.setVisibility(View.GONE);
                 adapter.setChannels(channels);
+                currentChannels = channels;
                 break;
             case Result.NO_NETWORK:
                 showEmptyView(getContext(), empty, R.string.empty_no_network, R.drawable.ic_wifi_off);
@@ -101,5 +130,12 @@ public class NewcomerFragment extends Fragment
                 showEmptyView(getContext(), empty, R.string.empty_unknown, R.drawable.ic_unknown_problem);
                 break;
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState)
+    {
+        outState.putInt(STATE_ID_CHECKED, idChecked);
+        outState.putSerializable(STATE_CURRENT_CHANNELS, (ArrayList) currentChannels);
     }
 }

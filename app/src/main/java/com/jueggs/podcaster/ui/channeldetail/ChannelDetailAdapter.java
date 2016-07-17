@@ -24,6 +24,7 @@ import java.util.List;
 
 public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 {
+    public static final String TAG = ChannelDetailAdapter.class.getSimpleName();
     public static final int VIEWTYPE_DETAILS = 1;
     public static final int VIEWTYPE_EPISODE = 2;
 
@@ -33,6 +34,8 @@ public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
     private Context context;
     private Callback callback;
     private boolean favourized;
+    private int playingPosition;
+    private Drawable playingDrawable;
 
     public ChannelDetailAdapter(Context context, Channel channel, Callback callback, boolean favourized)
     {
@@ -52,9 +55,11 @@ public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
             case VIEWTYPE_DETAILS:
                 view = LayoutInflater.from(context).inflate(R.layout.list_channel_detail, parent, false);
                 return new DetailsViewHolder(view);
-            default:
+            case VIEWTYPE_EPISODE:
                 view = LayoutInflater.from(context).inflate(R.layout.list_episode, parent, false);
                 return new EpisodeViewHolder(view);
+            default:
+                throw new IllegalArgumentException(TAG + ": unknown view type");
         }
     }
 
@@ -86,14 +91,12 @@ public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
             String text = context.getResources().getQuantityString(R.plurals.count_votes_format, count, count);
             holder.votes.setText(text);
             holder.date.setText(DateUtils.createDateString(context, episode.getDate()));
-            holder.play.setOnClickListener(callback::onPlayPauseEpisode);
+            holder.play.setOnClickListener(holder);
+            if (position == playingPosition)
+                holder.play.setImageDrawable(playingDrawable);
+            else
+                holder.play.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_play_black));
         }
-    }
-
-    public void showPlaySymbol(ImageButton button, boolean play)
-    {
-        button.setImageDrawable(play ? ContextCompat.getDrawable(context, R.drawable.ic_play_black) :
-                ContextCompat.getDrawable(context, R.drawable.ic_pause_black));
     }
 
     @Override
@@ -111,6 +114,13 @@ public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
     public void setFavourized(boolean favourized)
     {
         this.favourized = favourized;
+    }
+
+    public void setPlayButtonDrawable(int position, Drawable drawable)
+    {
+        this.playingPosition = position;
+        this.playingDrawable = drawable;
+        notifyItemChanged(position);
     }
 
     @Override
@@ -142,7 +152,7 @@ public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
     }
 
-    class EpisodeViewHolder extends RecyclerView.ViewHolder
+    class EpisodeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
     {
         @Bind(R.id.title) TextView title;
         @Bind(R.id.description) TextView subtitle;
@@ -155,6 +165,14 @@ public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
         {
             super(itemView);
             ButterKnife.bind(this, itemView);
+        }
+
+        @Override
+        public void onClick(View v)
+        {
+            int position = getAdapterPosition();
+
+            callback.onPlayPauseByImageButton(play, position);
         }
     }
 }

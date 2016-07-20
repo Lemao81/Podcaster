@@ -27,6 +27,7 @@ import com.jueggs.podcaster.FlavorConfig;
 import com.jueggs.podcaster.R;
 import com.jueggs.podcaster.sync.SyncAdapter;
 import com.jueggs.podcaster.ui.playlists.manage.ManagePlaylistsActivity;
+import com.jueggs.podcaster.ui.playlists.manage.ManagePlaylistsFragment;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -57,16 +58,8 @@ public class MainActivity extends AppCompatActivity
             getContentResolver().addPeriodicSync(account, getString(R.string.package_name), Bundle.EMPTY, SyncAdapter.SYNC_INTERVAL);
         }
 
-        if (App.getInstance().isTwoPane())
-        {
-            if (savedInstanceState == null)
-            {
-            }
-        }
-        else
-        {
-
-        }
+        if (App.getInstance().isTwoPane() && savedInstanceState == null)
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, new PlaceholderFragment()).commit();
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -98,7 +91,7 @@ public class MainActivity extends AppCompatActivity
         {
             if (App.getInstance().isTwoPane())
             {
-
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, new ManagePlaylistsFragment()).commit();
             }
             else
             {

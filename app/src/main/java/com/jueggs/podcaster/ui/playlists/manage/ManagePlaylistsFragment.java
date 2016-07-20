@@ -10,11 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.jueggs.podcaster.R;
 import com.jueggs.podcaster.utils.DaUtils;
+import com.jueggs.utils.UIUtils;
 
 import java.util.List;
 
@@ -29,6 +31,7 @@ public class ManagePlaylistsFragment extends Fragment implements Callback
     @Bind(R.id.root) FrameLayout root;
     @Bind(R.id.recycler) RecyclerView recycler;
     @Bind(R.id.fab) FloatingActionButton fab;
+    @Bind(R.id.empty) TextView empty;
 
     private ManagePlaylistsAdapter adapter;
     private String toUpdateDelete;
@@ -124,6 +127,12 @@ public class ManagePlaylistsFragment extends Fragment implements Callback
         String message = String.format(getString(R.string.playlist_delete_message_format), toUpdateDelete);
         showConfirmationDialog(getContext(), R.string.playlist_delete_title, message, R.string.playlist_delete_yes,
                 R.string.playlist_delete_no, this::doDelete);
+    }
+
+    @Override
+    public void showEmptyView(boolean show)
+    {
+        showViewWithFade(root, empty, show);
     }
 
     private void doDelete()

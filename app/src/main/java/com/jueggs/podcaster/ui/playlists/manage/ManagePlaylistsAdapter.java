@@ -52,7 +52,9 @@ public class ManagePlaylistsAdapter extends RecyclerView.Adapter<ManagePlaylists
     @Override
     public int getItemCount()
     {
-        return playlists.size();
+        int count = playlists.size();
+        callback.showEmptyView(count == 0);
+        return count;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder

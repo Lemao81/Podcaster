@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -16,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.jueggs.podcaster.R;
 import com.jueggs.podcaster.model.Category;
 import com.jueggs.podcaster.model.Channel;
+import com.jueggs.utils.UIUtils;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -24,6 +26,7 @@ import java.util.Stack;
 
 import static com.jueggs.podcaster.utils.DateUtils.*;
 import static com.jueggs.podcaster.utils.Util.*;
+import static com.jueggs.utils.UIUtils.*;
 import static com.jueggs.utils.Utils.*;
 
 public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
@@ -39,12 +42,14 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private Context context;
     private FragmentManager fragmentManager;
     private Callback callback;
+    private int selectedPosition = INVALID_POSITION;
 
-    public CategoryAdapter(Context context, FragmentManager fragmentManager, Callback callback)
+    public CategoryAdapter(Context context, FragmentManager fragmentManager, Callback callback, int selectedPosition)
     {
         this.context = context;
         this.fragmentManager = fragmentManager;
         this.callback = callback;
+        this.selectedPosition = selectedPosition;
     }
 
     @Override
@@ -144,6 +149,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     class ChannelViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
     {
+        @Bind(R.id.root) LinearLayout root;
         @Bind(R.id.title) public TextView title;
         @Bind(R.id.image) public ImageView image;
         @Bind(R.id.rating) public TextView rating;
@@ -159,6 +165,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         public void bindView(Context context, Channel channel)
         {
+            setSelectionBackground(context, root, getAdapterPosition() == selectedPosition);
             title.setText(channel.getTitle());
             description.setText(channel.getDescription());
             rating.setText(channel.getRating());
@@ -176,6 +183,10 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public void onClick(View v)
         {
             showChannelDetails((Activity) context, fragmentManager, channels.get(getAdapterPosition() - categories.size()), image);
+            notifyItemChanged(selectedPosition);
+            selectedPosition = getAdapterPosition();
+            callback.onChannelSelected(selectedPosition);
+            notifyItemChanged(selectedPosition);
         }
     }
 }

@@ -8,4 +8,6 @@ import java.util.List;
 public interface Callback
 {
     void onCategorySelected(Category category);
+
+    void onChannelSelected(int position);
 }

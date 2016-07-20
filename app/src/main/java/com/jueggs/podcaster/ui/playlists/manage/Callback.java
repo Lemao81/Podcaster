@@ -7,4 +7,6 @@ public interface Callback
     void onEditPlaylist(View view);
 
     void onDeletePlaylist(View view);
+
+    void showEmptyView(boolean show);
 }

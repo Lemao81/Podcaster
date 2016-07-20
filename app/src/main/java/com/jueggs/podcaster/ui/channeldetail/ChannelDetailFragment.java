@@ -127,7 +127,7 @@ public class ChannelDetailFragment extends Fragment implements Callback
     {
         if (!started)
         {
-            String url = adapter.getEpisodes().get(position).getMediaLink();
+            String url = adapter.getEpisodes().get(position - 1).getMediaLink();
             if (!TextUtils.isEmpty(url))
             {
                 playingPosition = position;
@@ -205,6 +205,12 @@ public class ChannelDetailFragment extends Fragment implements Callback
             else
                 shortToast(getContext(), R.string.playlist_no_playlists);
         }
+    }
+
+    @Override
+    public void onDownload(Episode episode)
+    {
+
     }
 
     private void onPlaylistSelected(String playlist)

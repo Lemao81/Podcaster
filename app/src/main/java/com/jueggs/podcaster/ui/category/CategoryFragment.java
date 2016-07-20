@@ -35,6 +35,7 @@ public class CategoryFragment extends Fragment implements Callback
     public static final String STATE_CHANNEL_STACK = "state.channel.stack";
     public static final String STATE_CURRENT_CHANNELS = "state.current.channels";
     public static final String STATE_CURRENT_CATEOGRIES = "state.current.categories";
+    public static final String STATE_SELECTED_POSITION = "state.selected.channel";
     public static final String STATE_LEVEL = "state.level";
 
     @Bind(R.id.root) FrameLayout root;
@@ -51,6 +52,7 @@ public class CategoryFragment extends Fragment implements Callback
     private List<Category> currentCategories;
     private List<Channel> currentChannels;
     private int level;
+    private int selectedPosition = INVALID_POSITION;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
@@ -62,6 +64,7 @@ public class CategoryFragment extends Fragment implements Callback
             channelStack = (Stack<List<Channel>>) savedInstanceState.getSerializable(STATE_CHANNEL_STACK);
             currentChannels = (List<Channel>) savedInstanceState.getSerializable(STATE_CURRENT_CHANNELS);
             currentCategories = (List<Category>) savedInstanceState.getSerializable(STATE_CURRENT_CATEOGRIES);
+            selectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION, INVALID_POSITION);
             level = savedInstanceState.getInt(STATE_LEVEL);
         }
     }
@@ -72,7 +75,7 @@ public class CategoryFragment extends Fragment implements Callback
         View view = inflater.inflate(R.layout.fragment_categories, container, false);
         ButterKnife.bind(this, view);
 
-        equipeRecycler(getContext(), recycler, adapter = new CategoryAdapter(getActivity(), getActivity().getSupportFragmentManager(), this));
+        equipeRecycler(getContext(), recycler, adapter = new CategoryAdapter(getActivity(), getActivity().getSupportFragmentManager(), this, selectedPosition));
         categoryRepository = CategoryRepository.getInstance(getContext());
         channelRepository = ChannelRepository.getInstance(getContext());
 
@@ -127,6 +130,7 @@ public class CategoryFragment extends Fragment implements Callback
                 adapter.setCategories(currentCategories);
             if (currentChannels != null)
                 adapter.setChannels(currentChannels);
+            if (selectedPosition != INVALID_POSITION) recycler.smoothScrollToPosition(selectedPosition);
             onNavigationLevelChanged(level);
         }
         else
@@ -162,6 +166,7 @@ public class CategoryFragment extends Fragment implements Callback
     {
         showViewWithFade(root, navBack, level != 0);
         showViewWithFade(root, scroll, hasElements(adapter.getChannels()));
+        selectedPosition = INVALID_POSITION;
     }
 
     @Override
@@ -184,6 +189,12 @@ public class CategoryFragment extends Fragment implements Callback
             currentCategories = new ArrayList<>();
         }
 
+    }
+
+    @Override
+    public void onChannelSelected(int position)
+    {
+        selectedPosition = position;
     }
 
     private void onChannelsLoaded(List<Channel> channels)
@@ -219,6 +230,7 @@ public class CategoryFragment extends Fragment implements Callback
         outState.putSerializable(STATE_CHANNEL_STACK, channelStack);
         outState.putSerializable(STATE_CURRENT_CHANNELS, (ArrayList) currentChannels);
         outState.putSerializable(STATE_CURRENT_CATEOGRIES, (ArrayList) currentCategories);
+        outState.putInt(STATE_SELECTED_POSITION, selectedPosition);
         outState.putInt(STATE_LEVEL, level);
     }
 }

@@ -93,10 +93,13 @@
     <string name="description_play_pause_podcast">Play or pause podcast</string>
     <string name="description_favourize">Favourize</string>
     <string name="description_share">Share</string>
+    <string name="description_download">Download</string>
     <string name="description_edit_playlist">Edit playlist</string>
     <string name="description_delete_playlist">Delete playlist</string>
     <string name="description_previous_episode">Previous episode</string>
     <string name="description_next_episode">Next episode</string>
 
     <string name="share_title">Send to</string>
+
+    <string name="empty_playlist_list">No playlists created yet</string>
 </resources>

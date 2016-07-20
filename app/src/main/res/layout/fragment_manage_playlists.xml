@@ -18,4 +18,14 @@
         android:contentDescription="@string/description_add_playlist"
         android:src="@drawable/ic_add_white" />
 
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:id="@+id/empty"
+        android:visibility="gone"
+        android:text="@string/empty_playlist_list"
+        android:minHeight="?android:attr/listPreferredItemHeight"/>
+
 </FrameLayout>

@@ -97,6 +97,7 @@ public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
             holder.votes.setText(text);
             holder.date.setText(DateUtils.createDateString(context, episode.getDate()));
             holder.play.setOnClickListener(holder);
+            holder.download.setOnClickListener(holder);
             if (position == playingPosition)
                 holder.play.setImageDrawable(playingDrawable);
             else
@@ -172,6 +173,7 @@ public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
         @Bind(R.id.votes) TextView votes;
         @Bind(R.id.date) TextView date;
         @Bind(R.id.playpause) ImageButton play;
+        @Bind(R.id.download) ImageButton download;
 
         public EpisodeViewHolder(View itemView)
         {
@@ -184,7 +186,16 @@ public class ChannelDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
         {
             int position = getAdapterPosition();
 
-            callback.onPlayPauseByImageButton(play, position);
+            switch (v.getId())
+            {
+                case R.id.playpause:
+                    callback.onPlayPauseByImageButton(play, position);
+                    break;
+                case R.id.download:
+                    callback.onDownload(episodes.get(position - 1));
+                    break;
+            }
+
         }
     }
 }

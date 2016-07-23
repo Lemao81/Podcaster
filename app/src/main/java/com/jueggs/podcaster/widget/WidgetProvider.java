@@ -107,6 +107,8 @@ public class WidgetProvider extends AppWidgetProvider
                                     appWidgetManager.updateAppWidget(widgetId, views);
                             }
                         });
+            else
+                views.setImageViewResource(R.id.image, R.drawable.channel_placeholder);
         }
         else
         {

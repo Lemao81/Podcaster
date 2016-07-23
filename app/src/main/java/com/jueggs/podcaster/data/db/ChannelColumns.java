@@ -9,7 +9,7 @@ public interface ChannelColumns
 {
     @DataType(INTEGER) @NotNull @PrimaryKey @AutoIncrement String _ID = "_id";
     @DataType(TEXT) @NotNull @Unique(onConflict = REPLACE) String CHANNEL_ID = "channel_id";
-    @DataType(TEXT) @NotNull @References(table = PlaylistsDb.PLAYLIST, column = PlaylistColumns.NAME) String PLAYLIST = "playlist";
+    @DataType(TEXT) @NotNull @References(table = PodcasterDb.PLAYLIST, column = PlaylistColumns.NAME) String PLAYLIST = "playlist";
     @DataType(TEXT) String TITLE = "title";
     @DataType(TEXT) String CHANNEL_TITLE = "channel_title";
     @DataType(TEXT) String SUBTITLE = "subtitle";

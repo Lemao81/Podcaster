@@ -11,4 +11,10 @@
         android:id="@+id/menu_playlists"
         android:title="@string/menu_playlists"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_downloads"
+        android:title="@string/menu_playlists"
+        android:icon="@drawable/ic_download"
+        app:showAsAction="ifRoom" />
 </menu>

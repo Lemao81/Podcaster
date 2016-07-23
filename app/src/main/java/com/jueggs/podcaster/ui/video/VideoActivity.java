@@ -2,6 +2,7 @@ package com.jueggs.podcaster.ui.video;
 
 import android.net.Uri;
 import android.os.Build;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -15,8 +16,11 @@ import com.jueggs.podcaster.R;
 public class VideoActivity extends AppCompatActivity
 {
     public static final String EXTRA_URI = "com.jueggs.podcaster.EXTRA_URI";
+    public static final String STATE_POSITION = "com.jueggs.podcaster.STATE_POSITION";
 
     @Bind(R.id.video) VideoView video;
+
+    private int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -36,6 +40,12 @@ public class VideoActivity extends AppCompatActivity
         Uri uri = Uri.parse(url);
         video.setVideoURI(uri);
         video.start();
+
+        if (savedInstanceState != null)
+        {
+            position = savedInstanceState.getInt(STATE_POSITION);
+            video.seekTo(position);
+        }
     }
 
     @Override
@@ -62,5 +72,13 @@ public class VideoActivity extends AppCompatActivity
                         | View.SYSTEM_UI_FLAG_FULLSCREEN);
             }
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+
+        outState.putInt(STATE_POSITION, video.getCurrentPosition());
     }
 }

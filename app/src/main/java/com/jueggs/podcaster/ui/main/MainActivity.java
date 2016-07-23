@@ -26,6 +26,8 @@ import com.jueggs.podcaster.App;
 import com.jueggs.podcaster.FlavorConfig;
 import com.jueggs.podcaster.R;
 import com.jueggs.podcaster.sync.SyncAdapter;
+import com.jueggs.podcaster.ui.download.DownloadActivity;
+import com.jueggs.podcaster.ui.download.DownloadFragment;
 import com.jueggs.podcaster.ui.playlists.manage.ManagePlaylistsActivity;
 import com.jueggs.podcaster.ui.playlists.manage.ManagePlaylistsFragment;
 
@@ -61,6 +63,12 @@ public class MainActivity extends AppCompatActivity
         if (App.getInstance().isTwoPane() && savedInstanceState == null)
             getSupportFragmentManager().beginTransaction().replace(R.id.container, new PlaceholderFragment()).commit();
 
+        if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(EXTRA_TAB))
+        {
+            MainFragment fragment = (MainFragment) getSupportFragmentManager().findFragmentById(R.id.mainFragment);
+            fragment.setTab(getIntent().getIntExtra(EXTRA_TAB, TAB_CATEGORY));
+        }
+
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
@@ -83,22 +91,24 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        int id = item.getItemId();
-
-        if (id == R.id.menu_settings)
-            return true;
-        if (id == R.id.menu_playlists)
+        switch (item.getItemId())
         {
-            if (App.getInstance().isTwoPane())
-            {
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, new ManagePlaylistsFragment()).commit();
-            }
-            else
-            {
-                startActivity(new Intent(this, ManagePlaylistsActivity.class),
-                        ActivityOptionsCompat.makeSceneTransitionAnimation(this).toBundle());
-            }
-            return true;
+            case R.id.menu_settings:
+                return true;
+            case R.id.menu_playlists:
+                if (App.getInstance().isTwoPane())
+                    getSupportFragmentManager().beginTransaction().replace(R.id.container, new ManagePlaylistsFragment()).commit();
+                else
+                    startActivity(new Intent(this, ManagePlaylistsActivity.class),
+                            ActivityOptionsCompat.makeSceneTransitionAnimation(this).toBundle());
+                return true;
+            case R.id.menu_downloads:
+                if (App.getInstance().isTwoPane())
+                    getSupportFragmentManager().beginTransaction().replace(R.id.container, new DownloadFragment()).commit();
+                else
+                    startActivity(new Intent(this, DownloadActivity.class),
+                            ActivityOptionsCompat.makeSceneTransitionAnimation(this).toBundle());
+                break;
         }
 
         return super.onOptionsItemSelected(item);

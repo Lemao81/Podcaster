@@ -25,6 +25,7 @@ import com.jueggs.podcaster.data.repo.episode.EpisodeRepository;
 import com.jueggs.podcaster.helper.Result;
 import com.jueggs.podcaster.model.Channel;
 import com.jueggs.podcaster.model.Episode;
+import com.jueggs.podcaster.service.DownloadService;
 import com.jueggs.podcaster.service.MediaService;
 import com.jueggs.podcaster.ui.video.VideoActivity;
 
@@ -97,6 +98,8 @@ public class ChannelDetailFragment extends Fragment implements Callback
         ButterKnife.bind(this, view);
 
         equipeRecycler(getContext(), recycler, adapter = new ChannelDetailAdapter(getContext(), channel, this, favourized));
+        if (savedInstanceState != null)
+            recycler.smoothScrollToPosition(playingPosition);
 
         fabPlayPause.setOnClickListener(this::onPlayPauseByFab);
         fabStop.setOnClickListener(this::onStopEpisode);
@@ -210,7 +213,7 @@ public class ChannelDetailFragment extends Fragment implements Callback
     @Override
     public void onDownload(Episode episode)
     {
-
+        getContext().startService(new Intent(getContext(), DownloadService.class).putExtra(DownloadService.EXTRA_EPISODE, episode));
     }
 
     private void onPlaylistSelected(String playlist)
@@ -257,23 +260,20 @@ public class ChannelDetailFragment extends Fragment implements Callback
                     started = true;
                     playing = true;
                     showViewWithFade(root, console, true);
-                    showPlaySymbol(playing);
                     break;
                 case ACTION_PAUSED:
                     playing = false;
-                    showPlaySymbol(playing);
                     break;
                 case ACTION_RESUMED:
                     playing = true;
-                    showPlaySymbol(playing);
                     break;
                 case ACTION_STOPPED:
                     started = false;
                     playing = false;
                     showViewWithFade(root, console, false);
-                    showPlaySymbol(playing);
                     break;
             }
+            showPlaySymbol(playing);
         }
     };
 

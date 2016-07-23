@@ -1,7 +1,6 @@
 package com.jueggs.podcaster.utils;
 
 import android.app.Activity;
-import android.app.ActivityOptions;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -20,24 +19,18 @@ import com.jueggs.decorator.DividerDecoration;
 import com.jueggs.podcaster.App;
 import com.jueggs.podcaster.R;
 import com.jueggs.podcaster.data.db.ChannelColumns;
+import com.jueggs.podcaster.data.db.EpisodeColumns;
 import com.jueggs.podcaster.data.db.PlaylistColumns;
-import com.jueggs.podcaster.data.db.PlaylistsDb;
 import com.jueggs.podcaster.helper.Result;
 import com.jueggs.podcaster.model.Channel;
-import com.jueggs.podcaster.ui.category.CategoryAdapter;
+import com.jueggs.podcaster.model.Episode;
 import com.jueggs.podcaster.ui.channeldetail.ChannelDetailActivity;
 import com.jueggs.podcaster.ui.channeldetail.ChannelDetailFragment;
-import net.simonvt.schematic.annotation.DataType;
-import net.simonvt.schematic.annotation.NotNull;
-import net.simonvt.schematic.annotation.References;
-import net.simonvt.schematic.annotation.Unique;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.jueggs.podcaster.data.db.ChannelColumns.ProjectionCompleteIndices.*;
-import static net.simonvt.schematic.annotation.ConflictResolutionType.REPLACE;
-import static net.simonvt.schematic.annotation.DataType.Type.TEXT;
 
 public class Util
 {
@@ -80,7 +73,7 @@ public class Util
         List<Channel> channels = null;
         if (cursor.moveToFirst())
         {
-            channels = new ArrayList<>();
+            channels = new ArrayList<>(cursor.getCount());
             do
             {
                 Channel channel = new Channel();
@@ -104,10 +97,57 @@ public class Util
         return channels;
     }
 
+    public static List<Episode> transformCursorToEpisode(Cursor cursor)
+    {
+        List<Episode> episodes = null;
+        if (cursor.moveToFirst())
+        {
+            episodes = new ArrayList<>(cursor.getCount());
+            do
+            {
+                Episode episode = new Episode();
+                episode.setShowId(cursor.getString(EpisodeColumns.ProjectionCompleteIndices.SHOW_ID));
+                episode.setTitle(cursor.getString(EpisodeColumns.ProjectionCompleteIndices.TITLE));
+                episode.setDescription(cursor.getString(EpisodeColumns.ProjectionCompleteIndices.DESCRIPTION));
+                episode.setMediaLink(cursor.getString(EpisodeColumns.ProjectionCompleteIndices.MEDIA_LINK));
+                episode.setPodLink(cursor.getString(EpisodeColumns.ProjectionCompleteIndices.POD_LINK));
+                episode.setAuthor(cursor.getString(EpisodeColumns.ProjectionCompleteIndices.AUTHOR));
+                episode.setRating(cursor.getString(EpisodeColumns.ProjectionCompleteIndices.RATING));
+                episode.setVotes(cursor.getString(EpisodeColumns.ProjectionCompleteIndices.VOTES));
+                episode.setCopyright(cursor.getString(EpisodeColumns.ProjectionCompleteIndices.COPYRIGHT));
+                episode.setType(cursor.getString(EpisodeColumns.ProjectionCompleteIndices.TYPE));
+                episode.setMimeType(cursor.getString(EpisodeColumns.ProjectionCompleteIndices.MIME_TYPE));
+                episode.setDate(cursor.getString(EpisodeColumns.ProjectionCompleteIndices.DATE));
+                episode.setSize(cursor.getString(EpisodeColumns.ProjectionCompleteIndices.SIZE));
+                episodes.add(episode);
+            } while (cursor.moveToNext());
+        }
+        return episodes;
+    }
+
     public static ContentValues createPlaylistValues(String name)
     {
         ContentValues values = new ContentValues(1);
         values.put(PlaylistColumns.NAME, name);
+        return values;
+    }
+
+    public static ContentValues createEpisodeValues(Episode episode)
+    {
+        ContentValues values = new ContentValues();
+        values.put(EpisodeColumns.SHOW_ID, episode.getShowId());
+        values.put(EpisodeColumns.TITLE, episode.getTitle());
+        values.put(EpisodeColumns.DESCRIPTION, episode.getDescription());
+        values.put(EpisodeColumns.MEDIA_LINK, episode.getMediaLink());
+        values.put(EpisodeColumns.POD_LINK, episode.getPodLink());
+        values.put(EpisodeColumns.AUTHOR, episode.getAuthor());
+        values.put(EpisodeColumns.RATING, episode.getRating());
+        values.put(EpisodeColumns.VOTES, episode.getVotes());
+        values.put(EpisodeColumns.COPYRIGHT, episode.getCopyright());
+        values.put(EpisodeColumns.TYPE, episode.getType());
+        values.put(EpisodeColumns.MIME_TYPE, episode.getMimeType());
+        values.put(EpisodeColumns.DATE, episode.getDate());
+        values.put(EpisodeColumns.SIZE, episode.getSize());
         return values;
     }
 

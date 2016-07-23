@@ -29,8 +29,8 @@
 
         <ImageView
             android:id="@+id/emptyImage"
-            android:layout_width="@dimen/image_size_small"
-            android:layout_height="@dimen/image_size_small"
+            android:layout_width="@dimen/image_size_normal"
+            android:layout_height="@dimen/image_size_normal"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/space_xlarge"
             tools:src="@drawable/ic_wifi_off" />

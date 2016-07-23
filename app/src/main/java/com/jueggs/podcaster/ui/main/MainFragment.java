@@ -51,6 +51,11 @@ public class MainFragment extends Fragment
         return view;
     }
 
+    public void setTab(int position)
+    {
+        viewPager.setCurrentItem(position);
+    }
+
     private OnPageChangeListenerAdapter pageChangeListener = new OnPageChangeListenerAdapter()
     {
         @Override

@@ -21,7 +21,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.jueggs.podcaster.R;
 import com.jueggs.podcaster.data.db.PlaylistColumns;
-import com.jueggs.podcaster.data.db.PlaylistsProvider;
+import com.jueggs.podcaster.data.db.PodcasterProvider;
 import com.jueggs.podcaster.model.Channel;
 
 import java.util.ArrayList;
@@ -132,7 +132,7 @@ public class PlaylistFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args)
     {
-        Uri uri = PlaylistsProvider.Playlist.BASE_URI;
+        Uri uri = PodcasterProvider.Playlist.BASE_URI;
         return new CursorLoader(getContext(), uri, null, null, null, null);
     }
 

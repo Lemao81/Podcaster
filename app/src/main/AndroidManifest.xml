@@ -20,6 +20,7 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
+        <!--activities-->
         <activity
             android:name=".ui.main.MainActivity"
             android:label="@string/app_name"
@@ -32,30 +33,38 @@
         </activity>
         <activity
             android:name=".ui.channeldetail.ChannelDetailActivity"
-            android:label="@string/title_activity_channel_detail"
             android:parentActivityName=".ui.main.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.jueggs.podcaster.ui.main.MainActivity" />
         </activity>
-
-        <service android:name=".service.MediaService" />
-
         <activity
             android:name=".ui.playlists.manage.ManagePlaylistsActivity"
-            android:label="@string/title_activity_manage_playlists"
             android:parentActivityName=".ui.main.MainActivity"
             android:theme="@style/ManagePlaylists">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.jueggs.podcaster.ui.main.MainActivity" />
         </activity>
+        <activity
+            android:name=".ui.download.DownloadActivity"
+            android:parentActivityName=".ui.main.MainActivity"
+            android:theme="@style/Download">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.jueggs.podcaster.ui.main.MainActivity" />
+        </activity>
+        <activity
+            android:name=".ui.video.VideoActivity"
+            android:theme="@style/Video" />
 
+        <!--provider-->
         <provider
-            android:name=".data.db.generated.PlaylistsProvider"
+            android:name=".data.db.generated.PodcasterProvider"
             android:authorities="com.jueggs.podcaster" />
 
+        <!--receiver-->
         <receiver android:name=".widget.WidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -95,15 +104,15 @@
                 android:resource="@xml/authenticator" />
         </service>
 
-        <!-- data services -->
+        <!-- services -->
         <service android:name=".data.repo.category.CategoryFetchService" />
         <service android:name=".data.repo.channel.ChannelFetchService" />
         <service android:name=".data.repo.chart.ChartFetchService" />
         <service android:name=".data.repo.newcomer.NewcomerFetchService" />
         <service android:name=".data.repo.episode.EpisodeFetchService" />
+        <service android:name=".service.MediaService" />
+        <service android:name=".service.DownloadService" />
 
-        <activity android:name=".ui.video.VideoActivity"
-            android:theme="@style/Video"/>
     </application>
 
 </manifest>

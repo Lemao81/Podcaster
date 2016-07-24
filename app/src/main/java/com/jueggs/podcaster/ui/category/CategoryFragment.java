@@ -131,7 +131,8 @@ public class CategoryFragment extends Fragment implements Callback
             if (currentChannels != null)
                 adapter.setChannels(currentChannels);
             if (selectedPosition != INVALID_POSITION) recycler.smoothScrollToPosition(selectedPosition);
-            onNavigationLevelChanged(level);
+            showViewWithFade(root, navBack, level != 0);
+            showViewWithFade(root, scroll, hasElements(adapter.getChannels()));
         }
         else
             categoryRepository.loadCategories(App.LANGUAGE, this::onCategoriesLoaded);

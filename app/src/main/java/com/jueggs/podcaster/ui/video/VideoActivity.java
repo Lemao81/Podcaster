@@ -12,11 +12,14 @@ import android.widget.VideoView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.jueggs.podcaster.R;
+import com.jueggs.podcaster.service.MediaService;
 
 public class VideoActivity extends AppCompatActivity
 {
     public static final String EXTRA_URI = "com.jueggs.podcaster.EXTRA_URI";
     public static final String STATE_POSITION = "com.jueggs.podcaster.STATE_POSITION";
+    public static final String FILE_URI_BASE = "file://";
+    public static final String SEP = "/";
 
     @Bind(R.id.video) VideoView video;
 
@@ -33,11 +36,16 @@ public class VideoActivity extends AppCompatActivity
         controller.setAnchorView(video);
         video.setMediaController(controller);
 
-        String url = getIntent().getStringExtra(EXTRA_URI);
-        if (TextUtils.isEmpty(url))
+        String filePath = null;
+        String url = null;
+        if (getIntent().getExtras().containsKey(MediaService.EXTRA_FILE_PATH))
+            filePath = FILE_URI_BASE + getIntent().getStringExtra(MediaService.EXTRA_FILE_PATH);
+        else
+            url = getIntent().getStringExtra(EXTRA_URI);
+        if (TextUtils.isEmpty(url) && TextUtils.isEmpty(filePath))
             finish();
 
-        Uri uri = Uri.parse(url);
+        Uri uri = Uri.parse(filePath != null ? filePath : url);
         video.setVideoURI(uri);
         video.start();
 

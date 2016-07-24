@@ -25,11 +25,8 @@ import static com.jueggs.podcaster.data.PodcastContract.*;
 import static com.jueggs.podcaster.utils.Util.*;
 import static com.jueggs.utils.Utils.*;
 
-public class ChartsFragment extends Fragment implements Callback
+public class ChartsFragment extends Fragment
 {
-    public static final String STATE_SELECTED_POSITION = "state.selected.channel";
-    public static final String STATE_SELECTED_TYPE = "state.selected.type";
-
     @Bind(R.id.recyclerAudio) RecyclerView recyclerAudio;
     @Bind(R.id.recyclerVideo) RecyclerView recyclerVideo;
     @Bind(R.id.empty) LinearLayout empty;
@@ -37,20 +34,6 @@ public class ChartsFragment extends Fragment implements Callback
     private ChartRepository repository;
     private ChartsAdapter audioAdapter;
     private ChartsAdapter videoAdapter;
-    private int selectedPosition = INVALID_POSITION;
-    private int selectedType = CHANNEL_TYPE_AUDIO;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-
-        if (savedInstanceState != null)
-        {
-            selectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION, INVALID_POSITION);
-            selectedType = savedInstanceState.getInt(STATE_SELECTED_TYPE, INVALID_POSITION);
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -58,10 +41,8 @@ public class ChartsFragment extends Fragment implements Callback
         View view = inflater.inflate(R.layout.fragment_charts, container, false);
         ButterKnife.bind(this, view);
 
-        equipeRecycler(getContext(), recyclerAudio, audioAdapter = new ChartsAdapter(getActivity(), getActivity().getSupportFragmentManager()
-                , this, selectedType == CHANNEL_TYPE_AUDIO ? selectedPosition : INVALID_POSITION, CHANNEL_TYPE_AUDIO));
-        equipeRecycler(getContext(), recyclerVideo, videoAdapter = new ChartsAdapter(getActivity(), getActivity().getSupportFragmentManager()
-                , this, selectedType == CHANNEL_TYPE_VIDEO ? selectedPosition : INVALID_POSITION, CHANNEL_TYPE_VIDEO));
+        equipeRecycler(getContext(), recyclerAudio, audioAdapter = new ChartsAdapter(getActivity(), getActivity().getSupportFragmentManager()));
+        equipeRecycler(getContext(), recyclerVideo, videoAdapter = new ChartsAdapter(getActivity(), getActivity().getSupportFragmentManager()));
 
         repository = ChartRepository.getInstance(getContext());
 
@@ -117,19 +98,5 @@ public class ChartsFragment extends Fragment implements Callback
             audioAdapter.setChannels(audios);
             videoAdapter.setChannels(videos);
         }
-    }
-
-    @Override
-    public void onChannelSelected(int position, int type)
-    {
-        selectedPosition = position;
-        selectedType = type;
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState)
-    {
-        outState.putInt(STATE_SELECTED_POSITION, selectedPosition);
-        outState.putInt(STATE_SELECTED_TYPE, selectedType);
     }
 }

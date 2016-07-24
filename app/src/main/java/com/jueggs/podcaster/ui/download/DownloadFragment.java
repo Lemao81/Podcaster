@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
@@ -28,6 +29,7 @@ import com.jueggs.podcaster.service.MediaService;
 import com.jueggs.podcaster.ui.video.VideoActivity;
 import com.jueggs.podcaster.utils.DaUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -110,15 +112,18 @@ public class DownloadFragment extends Fragment implements Callback, SwipeCallbac
             if (!TextUtils.isEmpty(url))
             {
                 playingPosition = position;
+                String filePath = new File(getContext().getExternalFilesDir(null), episode.getShowId()).toString();
                 if (episode.getType().equals(PodcastContract.CHANNEL_TYPE_AUDIO_STRING))
                 {
                     getActivity().startService(new Intent(getContext(), MediaService.class)
+                            .putExtra(EXTRA_FILE_PATH, filePath)
                             .putExtra(EXTRA_EPISODES, (ArrayList<Episode>) adapter.getEpisodes())
                             .putExtra(EXTRA_POSITION, position)
                             .putExtra(EXTRA_IMAGE, ""));
                 }
                 else if (episode.getType().equals(PodcastContract.CHANNEL_TYPE_VIDEO_STRING))
-                    getContext().startActivity(new Intent(getContext(), VideoActivity.class).putExtra(VideoActivity.EXTRA_URI, url));
+                    getContext().startActivity(new Intent(getContext(), VideoActivity.class)
+                            .putExtra(EXTRA_FILE_PATH, filePath));
             }
         }
         else

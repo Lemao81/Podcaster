@@ -138,13 +138,11 @@ public class ChannelDetailFragment extends Fragment implements Callback
                 {
                     getActivity().startService(new Intent(getContext(), MediaService.class)
                             .putExtra(EXTRA_EPISODES, (ArrayList<Episode>) channel.getEpisodes())
-                            .putExtra(EXTRA_POSITION, position)
+                            .putExtra(EXTRA_POSITION, position - 1)
                             .putExtra(EXTRA_IMAGE, channel.getImage()));
                 }
                 else if (channel.getChannelType().equals(PodcastContract.CHANNEL_TYPE_VIDEO_STRING))
-                {
                     getContext().startActivity(new Intent(getContext(), VideoActivity.class).putExtra(VideoActivity.EXTRA_URI, url));
-                }
                 App.getInstance().getTracker().send(new HitBuilders.EventBuilder()
                         .setCategory(App.TRACK_CAT_CHANNEL)
                         .setAction(App.TRACK_ACTION_PLAYED)

@@ -14,6 +14,7 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.bumptech.glide.Glide;
+import com.jueggs.podcaster.App;
 import com.jueggs.podcaster.R;
 import com.jueggs.podcaster.model.Category;
 import com.jueggs.podcaster.model.Channel;
@@ -165,7 +166,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         public void bindView(Context context, Channel channel)
         {
-            setSelectionBackground(context, root, getAdapterPosition() == selectedPosition);
+            if (App.getInstance().isTwoPane())
+                setSelectionBackground(context, root, getAdapterPosition() == selectedPosition);
             title.setText(channel.getTitle());
             description.setText(channel.getDescription());
             rating.setText(channel.getRating());

@@ -31,6 +31,7 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
     public static final String TAG_WIFILOCK = "com.jueggs.podcaster.TAG_WIFILOCK";
     public static final int NOTIFICATION_ID = 1;
 
+    public static final String EXTRA_FILE_PATH = "com.jueggs.podcaster.EXTRA_FILE_PATH";
     public static final String EXTRA_TITLE = "com.jueggs.podcaster.EXTRA_TITLE";
     public static final String EXTRA_IMAGE = "com.jueggs.podcaster.EXTRA_IMAGE";
     public static final String EXTRA_POSITION = "com.jueggs.podcaster.EXTRA_POSITION";
@@ -53,6 +54,7 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
     private List<Episode> episodes;
     private int position;
     private Episode playing;
+    private String filePath;
 
     @Override
     public void onCreate()
@@ -74,6 +76,9 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
         episodes = (ArrayList<Episode>) intent.getSerializableExtra(EXTRA_EPISODES);
         position = intent.getIntExtra(EXTRA_POSITION, 0);
         image = intent.getStringExtra(EXTRA_IMAGE);
+        if (intent.getExtras().containsKey(EXTRA_FILE_PATH))
+            filePath = intent.getStringExtra(EXTRA_FILE_PATH);
+
         playing = episodes.get(position);
 
         am = (AudioManager) getSystemService(AUDIO_SERVICE);
@@ -94,7 +99,10 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
         try
         {
             player.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            player.setDataSource(playing.getMediaLink());
+            if (filePath != null)
+                player.setDataSource(filePath);
+            else
+                player.setDataSource(playing.getMediaLink());
             player.setOnPreparedListener(this);
             player.prepareAsync();
         }

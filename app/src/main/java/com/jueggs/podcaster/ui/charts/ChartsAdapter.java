@@ -8,10 +8,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.bumptech.glide.Glide;
+import com.jueggs.podcaster.App;
 import com.jueggs.podcaster.R;
 import com.jueggs.podcaster.model.Channel;
 import com.jueggs.podcaster.utils.Util;
@@ -20,23 +22,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.jueggs.podcaster.utils.Util.*;
+import static com.jueggs.utils.UIUtils.setSelectionBackground;
 
 public class ChartsAdapter extends RecyclerView.Adapter<ChartsAdapter.ViewHolder>
 {
+    @Bind(R.id.root) LinearLayout root;
+
     private List<Channel> channels = new ArrayList<>();
     private Context context;
     private FragmentManager fragmentManager;
+    private int selectedPosition;
+    private int selectedType;
+    private Callback callback;
 
-    public ChartsAdapter(Context context, FragmentManager fragmentManager)
+    public ChartsAdapter(Context context, FragmentManager fragmentManager, Callback callback, int selectedPosition, int selectedType)
     {
         this.context = context;
         this.fragmentManager = fragmentManager;
+        this.callback = callback;
+        this.selectedPosition = selectedPosition;
+        this.selectedType = selectedType;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
         View view = LayoutInflater.from(context).inflate(R.layout.list_charts, parent, false);
+        ButterKnife.bind(this, view);
         return new ViewHolder(view);
     }
 
@@ -44,6 +56,8 @@ public class ChartsAdapter extends RecyclerView.Adapter<ChartsAdapter.ViewHolder
     public void onBindViewHolder(ViewHolder holder, int position)
     {
         Channel channel = channels.get(position);
+        if (App.getInstance().isTwoPane())
+            setSelectionBackground(context, root, holder.getAdapterPosition() == selectedPosition);
         holder.ranking.setText(String.valueOf(position + 1));
         holder.title.setText(channel.getTitle());
         holder.itemView.setOnClickListener(holder);
@@ -79,6 +93,10 @@ public class ChartsAdapter extends RecyclerView.Adapter<ChartsAdapter.ViewHolder
         public void onClick(View v)
         {
             showChannelDetails((Activity) context, fragmentManager, channels.get(getAdapterPosition()), image);
+            notifyItemChanged(selectedPosition);
+            selectedPosition = getAdapterPosition();
+            callback.onChannelSelected(selectedPosition, selectedType);
+            notifyItemChanged(selectedPosition);
         }
     }
 }

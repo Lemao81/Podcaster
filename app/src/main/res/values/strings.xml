@@ -1,17 +1,20 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
 
+    <!--app-->
     <string name="app_name">Podcaster</string>
+    <string name="package_name">com.jueggs.podcaster</string>
+    <string name="account_name">podcaster_account</string>
+
+    <!--menu-->
     <string name="menu_settings">Settings</string>
     <string name="menu_playlists">Manage Playlists</string>
     <string name="menu_downloads">Downloads</string>
+
+    <!--formats-->
     <string name="section_format">Hello World from section: %1$d</string>
 
-    <string name="title_categories">Category</string>
-    <string name="title_charts">Charts</string>
-    <string name="title_new">New</string>
-    <string name="title_playlists">Playlist</string>
-
+    <!--plurals-->
     <plurals name="count_subcategories_format">
         <item quantity="one"><xliff:g id="count_subcategories_one">(%d subcategory)</xliff:g></item>
         <item quantity="other"><xliff:g id="count_subcategories_other">(%d subcategories)</xliff:g></item>
@@ -25,22 +28,30 @@
         <item quantity="other"><xliff:g id="count_votes_other">(%d votes)</xliff:g></item>
     </plurals>
 
+    <!--titles-->
     <string name="title_audio">Audio</string>
     <string name="title_video">Video</string>
-
-    <string name="today">Today</string>
-    <string name="yesterday">Yesterday</string>
-
     <string name="detail_episode_title">Episodes of the podcast:</string>
+    <string name="no_title">no title</string>
+    <string name="share_title">Send to</string>
+    <string name="title_categories">Category</string>
+    <string name="title_charts">Charts</string>
+    <string name="title_new">New</string>
+    <string name="title_playlists">Playlist</string>
 
+    <!--error-->
     <string name="error_streaming_failed">Could not stream the given url</string>
     <string name="error_media_player">An error occurred at the media player </string>
     <string name="error_audio_focus">Could not retrieve audio focus - something else occupying audio?</string>
 
-    <string name="no_title">no title</string>
+    <!--notification-->
     <string name="notification_episode_format"><xliff:g id="notification_episode_format">Episode %d</xliff:g></string>
     <string name="notification_stop">Stop</string>
+    <string name="notification_title">Newest Podcasts</string>
+    <string name="notification_content">Audio + video newcomer</string>
+    <string name="notification_ticker">New podcasts at podcast.de</string>
 
+    <!--playlist-->
     <string name="playlist_input_title_add">Add Playlist</string>
     <string name="playlist_input_title_edit">Edit Playlist</string>
     <string name="playlist_input_hint">Name</string>
@@ -56,32 +67,31 @@
     <string name="playlist_no_playlists">You need to create a playlist first</string>
     <string name="playlist_no_channels">No podcasts attached yet</string>
 
+    <!--messages-->
     <string name="msg_playlist_updated">Playlist changed</string>
     <string name="msg_playlist_added">Playlist added</string>
     <string name="msg_playlist_deleted">Playlist removed</string>
     <string name="msg_channel_added">Podcast added</string>
     <string name="msg_channel_deleted">Podcast removed</string>
+
+    <!--widget-->
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
 
-    <string name="transition_channel_img">transition_channel_img</string>
-
-    <string name="package_name">com.jueggs.podcaster</string>
-    <string name="account_name">podcaster_account</string>
-
+    <!--prefs-->
     <string name="pref_enable_notification">enable_notification</string>
     <string name="pref_last_notification">last_notification</string>
     <string name="pref_network_state">network_state</string>
 
-    <string name="notification_title">Newest Podcasts</string>
-    <string name="notification_content">Audio + video newcomer</string>
-    <string name="notification_ticker">New podcasts at podcast.de</string>
-
+    <!--empties-->
     <string name="empty_no_network">Data could not be loaded, please turn on network connection</string>
     <string name="empty_server_down">Data could not be loaded, server seems to be unavailable</string>
     <string name="empty_invalid_data">Invalid data retrieved </string>
     <string name="empty_unknown">Data could not be loaded, an unknown problem occurred</string>
+    <string name="empty_playlist_list">No playlists created yet</string>
+    <string name="empty_download_list">Nothing downloaded right now</string>
 
+    <!--description-->
     <string name="description_navigate_back">Navigate back</string>
     <string name="description_goto_first_channel">Go to first channel</string>
     <string name="description_play_pause">Play or pause episode</string>
@@ -98,11 +108,12 @@
     <string name="description_previous_episode">Previous episode</string>
     <string name="description_next_episode">Next episode</string>
 
-    <string name="share_title">Send to</string>
-
-    <string name="empty_playlist_list">No playlists created yet</string>
-    <string name="empty_download_list">Nothing downloaded right now</string>
+    <!--download-->
     <string name="download_started">Start downloading...</string>
     <string name="download_finished_format"><xliff:g id="download_finished_format">Episode \'%s\' downloaded</xliff:g></string>
     <string name="download_failed_format"><xliff:g id="download_finished_format">Download of episode \'%s\' failed</xliff:g></string>
+
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="transition_channel_img">transition_channel_img</string>
 </resources>
